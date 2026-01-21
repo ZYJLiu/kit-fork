@@ -3,6 +3,7 @@ import '@solana/test-matchers/toBeFrozenObject';
 import {
     SOLANA_ERROR__INSTRUCTION_ERROR__INVALID_ARGUMENT,
     SOLANA_ERROR__INSTRUCTION_PLANS__FAILED_TO_EXECUTE_TRANSACTION_PLAN,
+    SOLANA_ERROR__INSTRUCTION_PLANS__NON_DIVISIBLE_TRANSACTION_PLANS_NOT_SUPPORTED,
     SolanaError,
 } from '@solana/errors';
 
@@ -16,7 +17,6 @@ import { createTransactionPlanExecutor } from '../transaction-plan-executor';
 import {
     canceledSingleTransactionPlanResult,
     failedSingleTransactionPlanResult,
-    nonDivisibleSequentialTransactionPlanResult,
     parallelTransactionPlanResult,
     sequentialTransactionPlanResult,
     successfulSingleTransactionPlanResult,
@@ -31,9 +31,16 @@ async function expectFailedToExecute(
     error: SolanaError<typeof SOLANA_ERROR__INSTRUCTION_PLANS__FAILED_TO_EXECUTE_TRANSACTION_PLAN>,
 ): Promise<void> {
     const transactionPlanResult = error.context.transactionPlanResult;
-    await expect(promise).rejects.toThrow(error);
-    // This second expectation is necessary since `toThrow` will only check the
-    // error message and `transactionPlanResult` is not part of the message.
+    // Check for the error code and message (but not the full context since transactionPlanResult is non-enumerable)
+    await expect(promise).rejects.toThrow(
+        expect.objectContaining({
+            context: expect.objectContaining({
+                __code: SOLANA_ERROR__INSTRUCTION_PLANS__FAILED_TO_EXECUTE_TRANSACTION_PLAN,
+            }),
+            name: 'SolanaError',
+        }),
+    );
+    // This second expectation checks for transactionPlanResult which is a non-enumerable property
     await expect(promise).rejects.toThrow(
         expect.objectContaining({ context: expect.objectContaining({ transactionPlanResult }) }),
     );
@@ -102,12 +109,29 @@ describe('createTransactionPlanExecutor', () => {
             );
         });
 
+        it('can use any error object as a failure cause', async () => {
+            expect.assertions(2);
+            const messageA = createMessage('A');
+            const cause = new Error('Custom error message');
+            const executeTransactionMessage = jest.fn().mockRejectedValue(cause);
+            const executor = createTransactionPlanExecutor({ executeTransactionMessage });
+
+            const promise = executor(singleTransactionPlan(messageA));
+            await expectFailedToExecute(
+                promise,
+                new SolanaError(SOLANA_ERROR__INSTRUCTION_PLANS__FAILED_TO_EXECUTE_TRANSACTION_PLAN, {
+                    cause,
+                    transactionPlanResult: failedSingleTransactionPlanResult(messageA, cause),
+                }),
+            );
+        });
+
         it('can abort single transaction plans', async () => {
             expect.assertions(2);
             const messageA = createMessage('A');
             const abortController = new AbortController();
             const abortSignal = abortController.signal;
-            const cause = new Error('Aborted during execution') as SolanaError;
+            const cause = new Error('Aborted during execution');
             const executeTransactionMessage = jest.fn().mockReturnValueOnce(FOREVER_PROMISE);
             const executor = createTransactionPlanExecutor({ executeTransactionMessage });
 
@@ -129,7 +153,7 @@ describe('createTransactionPlanExecutor', () => {
             const messageA = createMessage('A');
             const abortController = new AbortController();
             const abortSignal = abortController.signal;
-            const cause = new Error('Aborted before execution') as SolanaError;
+            const cause = new Error('Aborted before execution');
             const executeTransactionMessage = jest.fn().mockReturnValueOnce(FOREVER_PROMISE);
             const executor = createTransactionPlanExecutor({ executeTransactionMessage });
 
@@ -178,7 +202,7 @@ describe('createTransactionPlanExecutor', () => {
             expect(executeTransactionMessage).toHaveBeenNthCalledWith(2, messageB, { abortSignal: undefined });
         });
 
-        it('successfully executes a non-divisible sequential transaction plan', async () => {
+        it('throws when encountering a non-divisible sequential transaction plan', async () => {
             expect.assertions(1);
             const messageA = createMessage('A');
             const messageB = createMessage('B');
@@ -186,12 +210,23 @@ describe('createTransactionPlanExecutor', () => {
             const executor = createTransactionPlanExecutor({ executeTransactionMessage });
 
             const promise = executor(nonDivisibleSequentialTransactionPlan([messageA, messageB]));
-            await expect(promise).resolves.toStrictEqual(
-                nonDivisibleSequentialTransactionPlanResult([
-                    successfulSingleTransactionPlanResult(messageA, createTransaction('A')),
-                    successfulSingleTransactionPlanResult(messageB, createTransaction('B')),
-                ]),
+            await expect(promise).rejects.toThrow(
+                new SolanaError(SOLANA_ERROR__INSTRUCTION_PLANS__NON_DIVISIBLE_TRANSACTION_PLANS_NOT_SUPPORTED),
             );
+        });
+
+        it('does no execute transactions before checking for non-divisible plans', async () => {
+            expect.assertions(1);
+            const messageA = createMessage('A');
+            const messageB = createMessage('B');
+            const messageC = createMessage('C');
+            const executeTransactionMessage = jest.fn().mockImplementation(forwardId);
+            const executor = createTransactionPlanExecutor({ executeTransactionMessage });
+
+            await executor(
+                sequentialTransactionPlan([messageA, nonDivisibleSequentialTransactionPlan([messageB, messageC])]),
+            ).catch(() => {});
+            expect(executeTransactionMessage).not.toHaveBeenCalled();
         });
 
         it('passes the abort signal to the `executeTransactionMessage` function', async () => {
@@ -291,7 +326,7 @@ describe('createTransactionPlanExecutor', () => {
             const messageC = createMessage('C');
             const abortController = new AbortController();
             const abortSignal = abortController.signal;
-            const cause = new Error('Aborted during execution') as SolanaError;
+            const cause = new Error('Aborted during execution');
             const executeTransactionMessage = jest
                 .fn()
                 .mockImplementationOnce(forwardId)
@@ -327,7 +362,7 @@ describe('createTransactionPlanExecutor', () => {
             const messageB = createMessage('B');
             const abortController = new AbortController();
             const abortSignal = abortController.signal;
-            const cause = new Error('Aborted before execution') as SolanaError;
+            const cause = new Error('Aborted before execution');
             const executeTransactionMessage = jest.fn();
             const executor = createTransactionPlanExecutor({ executeTransactionMessage });
 
@@ -449,7 +484,7 @@ describe('createTransactionPlanExecutor', () => {
             const messageC = createMessage('C');
             const abortController = new AbortController();
             const abortSignal = abortController.signal;
-            const cause = new Error('Aborted during execution') as SolanaError;
+            const cause = new Error('Aborted during execution');
             const executeTransactionMessage = jest.fn().mockImplementation((message: { id: string }) => {
                 // eslint-disable-next-line jest/no-conditional-in-test
                 return message.id === 'B' ? FOREVER_PROMISE : forwardId(message);
@@ -480,7 +515,7 @@ describe('createTransactionPlanExecutor', () => {
             const messageC = createMessage('C');
             const abortController = new AbortController();
             const abortSignal = abortController.signal;
-            const cause = new Error('Aborted before execution') as SolanaError;
+            const cause = new Error('Aborted before execution');
             const executeTransactionMessage = jest.fn().mockImplementation(forwardId);
             const executor = createTransactionPlanExecutor({ executeTransactionMessage });
 
@@ -527,7 +562,7 @@ describe('createTransactionPlanExecutor', () => {
                 parallelTransactionPlan([
                     sequentialTransactionPlan([messageA, parallelTransactionPlan([messageB, messageC]), messageD]),
                     messageE,
-                    nonDivisibleSequentialTransactionPlan([messageF, messageG]),
+                    sequentialTransactionPlan([messageF, messageG]),
                 ]),
             );
 
@@ -542,7 +577,7 @@ describe('createTransactionPlanExecutor', () => {
                         successfulSingleTransactionPlanResult(messageD, createTransaction('D')),
                     ]),
                     successfulSingleTransactionPlanResult(messageE, createTransaction('E')),
-                    nonDivisibleSequentialTransactionPlanResult([
+                    sequentialTransactionPlanResult([
                         successfulSingleTransactionPlanResult(messageF, createTransaction('F')),
                         successfulSingleTransactionPlanResult(messageG, createTransaction('G')),
                     ]),
@@ -572,7 +607,7 @@ describe('createTransactionPlanExecutor', () => {
                 parallelTransactionPlan([
                     sequentialTransactionPlan([messageA, parallelTransactionPlan([messageB, messageC]), messageD]),
                     messageE,
-                    nonDivisibleSequentialTransactionPlan([messageF, messageG]),
+                    sequentialTransactionPlan([messageF, messageG]),
                 ]),
             );
 
@@ -590,7 +625,7 @@ describe('createTransactionPlanExecutor', () => {
                             canceledSingleTransactionPlanResult(messageD),
                         ]),
                         successfulSingleTransactionPlanResult(messageE, createTransaction('E')),
-                        nonDivisibleSequentialTransactionPlanResult([
+                        sequentialTransactionPlanResult([
                             successfulSingleTransactionPlanResult(messageF, createTransaction('F')),
                             successfulSingleTransactionPlanResult(messageG, createTransaction('G')),
                         ]),
@@ -612,7 +647,7 @@ describe('createTransactionPlanExecutor', () => {
             const messageG = createMessage('G');
             const abortController = new AbortController();
             const abortSignal = abortController.signal;
-            const cause = new Error('Aborted during execution') as SolanaError;
+            const cause = new Error('Aborted during execution');
             const executeTransactionMessage = jest.fn().mockImplementation((message: { id: string }) => {
                 // eslint-disable-next-line jest/no-conditional-in-test
                 return message.id === 'C' ? FOREVER_PROMISE : forwardId(message);
@@ -623,7 +658,7 @@ describe('createTransactionPlanExecutor', () => {
                 parallelTransactionPlan([
                     sequentialTransactionPlan([messageA, parallelTransactionPlan([messageB, messageC]), messageD]),
                     messageE,
-                    nonDivisibleSequentialTransactionPlan([messageF, messageG]),
+                    sequentialTransactionPlan([messageF, messageG]),
                 ]),
                 { abortSignal },
             );
@@ -645,7 +680,7 @@ describe('createTransactionPlanExecutor', () => {
                             canceledSingleTransactionPlanResult(messageD),
                         ]),
                         successfulSingleTransactionPlanResult(messageE, createTransaction('E')),
-                        nonDivisibleSequentialTransactionPlanResult([
+                        sequentialTransactionPlanResult([
                             successfulSingleTransactionPlanResult(messageF, createTransaction('F')),
                             successfulSingleTransactionPlanResult(messageG, createTransaction('G')),
                         ]),
@@ -665,7 +700,7 @@ describe('createTransactionPlanExecutor', () => {
             const messageG = createMessage('G');
             const abortController = new AbortController();
             const abortSignal = abortController.signal;
-            const cause = new Error('Aborted during execution') as SolanaError;
+            const cause = new Error('Aborted during execution');
             const executeTransactionMessage = jest.fn().mockImplementation(forwardId);
             const executor = createTransactionPlanExecutor({ executeTransactionMessage });
 
@@ -674,7 +709,7 @@ describe('createTransactionPlanExecutor', () => {
                 parallelTransactionPlan([
                     sequentialTransactionPlan([messageA, parallelTransactionPlan([messageB, messageC]), messageD]),
                     messageE,
-                    nonDivisibleSequentialTransactionPlan([messageF, messageG]),
+                    sequentialTransactionPlan([messageF, messageG]),
                 ]),
                 { abortSignal },
             );
@@ -693,7 +728,7 @@ describe('createTransactionPlanExecutor', () => {
                             canceledSingleTransactionPlanResult(messageD),
                         ]),
                         canceledSingleTransactionPlanResult(messageE),
-                        nonDivisibleSequentialTransactionPlanResult([
+                        sequentialTransactionPlanResult([
                             canceledSingleTransactionPlanResult(messageF),
                             canceledSingleTransactionPlanResult(messageG),
                         ]),

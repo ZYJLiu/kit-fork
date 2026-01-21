@@ -10,12 +10,12 @@
                 "compile:typedefs",
                 "test:lint",
                 "test:prettier",
-                "test:treeshakability:browser",
-                "test:treeshakability:native",
-                "test:treeshakability:node",
                 "test:typecheck",
                 "test:unit:browser",
-                "test:unit:node"
+                "test:unit:node",
+                "test:treeshakability:browser",
+                "test:treeshakability:native",
+                "test:treeshakability:node"
             ],
             "outputs": ["dist/**"]
         },
@@ -53,7 +53,15 @@
                 "test:treeshakability:native",
                 "test:treeshakability:node"
             ],
-            "passThroughEnv": ["GH_TOKEN", "GITHUB_OUTPUT", "GITHUB_TOKEN", "NPM_TOKEN", "PUBLISH_TAG"]
+            "passThroughEnv": [
+                "ACTIONS_ID_TOKEN_REQUEST_TOKEN",
+                "ACTIONS_ID_TOKEN_REQUEST_URL",
+                "GH_TOKEN",
+                "GITHUB_*",
+                "NODE_AUTH_TOKEN",
+                "NPM_CONFIG_USERCONFIG",
+                "PUBLISH_TAG"
+            ]
         },
         "style:fix": {
             "inputs": ["$TURBO_DEFAULT$", "*"],
@@ -62,11 +70,6 @@
         "test:lint": {
             "dependsOn": ["^compile:typedefs"],
             "inputs": ["$TURBO_DEFAULT$", "src/**", "test/**"],
-            "outputs": []
-        },
-        "test:live-with-test-validator": {
-            "dependsOn": ["^compile:js"],
-            "inputs": ["$TURBO_DEFAULT$", "src/**"],
             "outputs": []
         },
         "test:prettier": {

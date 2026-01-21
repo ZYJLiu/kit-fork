@@ -4,6 +4,7 @@ import {
     address,
     appendTransactionMessageInstruction,
     assertIsSendableTransaction,
+    assertIsTransactionWithBlockhashLifetime,
     createTransactionMessage,
     getSignatureFromTransaction,
     lamports,
@@ -70,7 +71,7 @@ export function SolanaSignTransactionFeaturePanel({ account }: Props) {
         [rpc, rpcSubscriptions],
     );
     const wallets = useWallets();
-    const [error, setError] = useState(NO_ERROR);
+    const [error, setError] = useState<unknown>(NO_ERROR);
     const [lastSignature, setLastSignature] = useState<Signature | undefined>();
     const [solQuantityString, setSolQuantityString] = useState<string>('');
     const [recipientAccountStorageKey, setRecipientAccountStorageKey] = useState<string | undefined>();
@@ -122,6 +123,7 @@ export function SolanaSignTransactionFeaturePanel({ account }: Props) {
             );
             const transaction = await signTransactionMessageWithSigners(message);
             assertIsSendableTransaction(transaction);
+            assertIsTransactionWithBlockhashLifetime(transaction);
             setSignTransactionState({
                 kind: 'ready-to-send',
                 recipientAddress: recipientAccount.address as Address,
@@ -233,7 +235,9 @@ export function SolanaSignTransactionFeaturePanel({ account }: Props) {
                 >
                     <Dialog.Trigger>
                         <Button
-                            color={error ? undefined : 'red'}
+                            color={
+                                error ? (signTransactionState.kind === 'ready-to-send' ? 'green' : undefined) : 'red'
+                            }
                             disabled={solQuantityString === '' || !recipientAccount}
                             loading={formLoading}
                             type="submit"

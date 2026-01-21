@@ -1,5 +1,43 @@
 # @solana/rpc-transport-http
 
+## 5.4.0
+
+### Patch Changes
+
+- [#1187](https://github.com/anza-xyz/kit/pull/1187) [`f5f89eb`](https://github.com/anza-xyz/kit/commit/f5f89eb8e769d5b6056b2f686d51a7ef4a0d1d09) Thanks [@mcintyre94](https://github.com/mcintyre94)! - Make Typescript peer dependency optional + reduce required version to ^5
+
+- Updated dependencies [[`f5f89eb`](https://github.com/anza-xyz/kit/commit/f5f89eb8e769d5b6056b2f686d51a7ef4a0d1d09), [`189de37`](https://github.com/anza-xyz/kit/commit/189de37f76bcb273986d750fd6ed6541f711103b)]:
+    - @solana/rpc-spec-types@5.4.0
+    - @solana/rpc-spec@5.4.0
+    - @solana/errors@5.4.0
+
+## 5.3.0
+
+### Patch Changes
+
+- Updated dependencies []:
+    - @solana/errors@5.3.0
+    - @solana/rpc-spec@5.3.0
+    - @solana/rpc-spec-types@5.3.0
+
+## 5.2.0
+
+### Patch Changes
+
+- Updated dependencies [[`b80b092`](https://github.com/anza-xyz/kit/commit/b80b09239762262116cb70b43271ad98a2f716b5)]:
+    - @solana/errors@5.2.0
+    - @solana/rpc-spec@5.2.0
+    - @solana/rpc-spec-types@5.2.0
+
+## 5.1.0
+
+### Patch Changes
+
+- Updated dependencies [[`becf5f6`](https://github.com/anza-xyz/kit/commit/becf5f63f1b97d43109b2488c7cd0806ce6329f4), [`32214f5`](https://github.com/anza-xyz/kit/commit/32214f57cfb79fb2566e773acec71635bac641df)]:
+    - @solana/errors@5.1.0
+    - @solana/rpc-spec@5.1.0
+    - @solana/rpc-spec-types@5.1.0
+
 ## 5.0.0
 
 ### Patch Changes

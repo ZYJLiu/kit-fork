@@ -1,3 +1,5 @@
+import '@solana/test-matchers/toBeFrozenObject';
+
 import { isSolanaError, SolanaError } from '../error';
 import { getErrorMessage } from '../message-formatter';
 
@@ -24,6 +26,9 @@ describe('SolanaError', () => {
         });
         it('calls the message formatter with the code and context', () => {
             expect(getErrorMessage).toHaveBeenCalledWith(123, expect.objectContaining({ foo: 'bar' }));
+        });
+        it('freezes the context object', () => {
+            expect(errorWithContext.context).toBeFrozenObject();
         });
     });
     describe('given an error with no context', () => {
@@ -68,10 +73,7 @@ describe('SolanaError', () => {
             expect(errorWithOption.context).not.toHaveProperty(propName);
         });
         it('calls the message formatter with the error option omitted', () => {
-            expect(getErrorMessage).toHaveBeenCalledWith(
-                123,
-                expect.not.objectContaining({ [propName]: errorOptionValue }),
-            );
+            expect(getErrorMessage).toHaveBeenCalledWith(123, undefined);
         });
     });
     it('sets its message to the output of the message formatter', async () => {

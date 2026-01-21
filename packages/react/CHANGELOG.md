@@ -1,5 +1,67 @@
 # @solana/react
 
+## 5.4.0
+
+### Minor Changes
+
+- [#1154](https://github.com/anza-xyz/kit/pull/1154) [`fec04ae`](https://github.com/anza-xyz/kit/commit/fec04ae9cd0939c556b832e20440d27c4574561a) Thanks [@ningthoujamSwamikumar](https://github.com/ningthoujamSwamikumar)! - Add a context provider `<SelectedWalletAccountContext>` and `useSelectedWalletAccount` to persist a selected wallet account
+
+- [#1105](https://github.com/anza-xyz/kit/pull/1105) [`a301da8`](https://github.com/anza-xyz/kit/commit/a301da85ec21901fd1836d784ba46cc1d8ddddc2) Thanks [@rajgoesout](https://github.com/rajgoesout)! - Add `useSignTransactions` and `useSignAndSendTransactions` hooks that you can use to send multiple transactions to a connected wallet.
+
+### Patch Changes
+
+- [#1199](https://github.com/anza-xyz/kit/pull/1199) [`9bde4d7`](https://github.com/anza-xyz/kit/commit/9bde4d74f8d338495112ff00519177857b78884f) Thanks [@rajgoesout](https://github.com/rajgoesout)! - Correct featureName in `signTransaction` error
+
+- Updated dependencies [[`f5f89eb`](https://github.com/anza-xyz/kit/commit/f5f89eb8e769d5b6056b2f686d51a7ef4a0d1d09), [`189de37`](https://github.com/anza-xyz/kit/commit/189de37f76bcb273986d750fd6ed6541f711103b)]:
+    - @solana/transaction-messages@5.4.0
+    - @solana/transactions@5.4.0
+    - @solana/addresses@5.4.0
+    - @solana/promises@5.4.0
+    - @solana/signers@5.4.0
+    - @solana/errors@5.4.0
+    - @solana/keys@5.4.0
+
+## 5.3.0
+
+### Patch Changes
+
+- Updated dependencies []:
+    - @solana/addresses@5.3.0
+    - @solana/errors@5.3.0
+    - @solana/keys@5.3.0
+    - @solana/promises@5.3.0
+    - @solana/signers@5.3.0
+    - @solana/transaction-messages@5.3.0
+    - @solana/transactions@5.3.0
+
+## 5.2.0
+
+### Patch Changes
+
+- Updated dependencies [[`b80b092`](https://github.com/anza-xyz/kit/commit/b80b09239762262116cb70b43271ad98a2f716b5), [`109c78e`](https://github.com/anza-xyz/kit/commit/109c78e8972857323558ca913706a95cdb70c549), [`6dbaf66`](https://github.com/anza-xyz/kit/commit/6dbaf66015198bd912ec0800c1db1fd63b68e7a2)]:
+    - @solana/errors@5.2.0
+    - @solana/keys@5.2.0
+    - @solana/transaction-messages@5.2.0
+    - @solana/transactions@5.2.0
+    - @solana/signers@5.2.0
+    - @solana/addresses@5.2.0
+    - @solana/promises@5.2.0
+
+## 5.1.0
+
+### Patch Changes
+
+- [#1040](https://github.com/anza-xyz/kit/pull/1040) [`32b13a8`](https://github.com/anza-xyz/kit/commit/32b13a8973fe0645af1f87f0068c289730b4062c) Thanks [@OrmEmbaar](https://github.com/OrmEmbaar)! - Add a function called bytesEqual to codecs-core that you can use to compare two byte arrays for equality.
+
+- Updated dependencies [[`becf5f6`](https://github.com/anza-xyz/kit/commit/becf5f63f1b97d43109b2488c7cd0806ce6329f4), [`32214f5`](https://github.com/anza-xyz/kit/commit/32214f57cfb79fb2566e773acec71635bac641df), [`32b13a8`](https://github.com/anza-xyz/kit/commit/32b13a8973fe0645af1f87f0068c289730b4062c), [`2f7bda8`](https://github.com/anza-xyz/kit/commit/2f7bda81ca8248797957bdf693e812abc90b1951), [`81a0eec`](https://github.com/anza-xyz/kit/commit/81a0eec57d196d4ce6b86897640dcab85c5deafd)]:
+    - @solana/errors@5.1.0
+    - @solana/addresses@5.1.0
+    - @solana/transactions@5.1.0
+    - @solana/transaction-messages@5.1.0
+    - @solana/signers@5.1.0
+    - @solana/keys@5.1.0
+    - @solana/promises@5.1.0
+
 ## 5.0.0
 
 ### Patch Changes

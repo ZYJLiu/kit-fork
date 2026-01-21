@@ -1,6 +1,6 @@
-import { SolanaError } from '@solana/errors';
+import { Signature } from '@solana/keys';
 import { BaseTransactionMessage, TransactionMessageWithFeePayer } from '@solana/transaction-messages';
-import { Transaction } from '@solana/transactions';
+import { getSignatureFromTransaction, Transaction } from '@solana/transactions';
 
 /**
  * The result of executing a transaction plan.
@@ -168,8 +168,8 @@ export type SingleTransactionPlanResult<
  * @template TContext - The type of the context object that may be passed along with successful results
  */
 export type TransactionPlanResultStatus<TContext extends TransactionPlanResultContext = TransactionPlanResultContext> =
-    | Readonly<{ context: TContext; kind: 'successful'; transaction: Transaction }>
-    | Readonly<{ error: SolanaError; kind: 'failed' }>
+    | Readonly<{ context: TContext; kind: 'successful'; signature: Signature; transaction?: Transaction }>
+    | Readonly<{ error: Error; kind: 'failed' }>
     | Readonly<{ kind: 'canceled' }>;
 
 /**
@@ -288,7 +288,52 @@ export function successfulSingleTransactionPlanResult<
     return Object.freeze({
         kind: 'single',
         message: transactionMessage,
-        status: Object.freeze({ context: context ?? ({} as TContext), kind: 'successful', transaction }),
+        status: Object.freeze({
+            context: context ?? ({} as TContext),
+            kind: 'successful',
+            signature: getSignatureFromTransaction(transaction),
+            transaction,
+        }),
+    });
+}
+
+/**
+ * Creates a successful {@link SingleTransactionPlanResult} from a transaction message and signature.
+ *
+ * This function creates a single result with a 'successful' status, indicating that
+ * the transaction was successfully executed. It also includes the original transaction
+ * message, the signature of the executed transaction, and an optional context object.
+ *
+ * @template TContext - The type of the context object
+ * @template TTransactionMessage - The type of the transaction message
+ * @param transactionMessage - The original transaction message
+ * @param signature - The signature of the successfully executed transaction
+ * @param context - Optional context object to be included with the result
+ *
+ * @example
+ * ```ts
+ * const result = successfulSingleTransactionPlanResult(
+ *   transactionMessage,
+ *   signature
+ * );
+ * result satisfies SingleTransactionPlanResult;
+ * ```
+ *
+ * @see {@link SingleTransactionPlanResult}
+ */
+export function successfulSingleTransactionPlanResultFromSignature<
+    TContext extends TransactionPlanResultContext = TransactionPlanResultContext,
+    TTransactionMessage extends BaseTransactionMessage & TransactionMessageWithFeePayer = BaseTransactionMessage &
+        TransactionMessageWithFeePayer,
+>(
+    transactionMessage: TTransactionMessage,
+    signature: Signature,
+    context?: TContext,
+): SingleTransactionPlanResult<TContext, TTransactionMessage> {
+    return Object.freeze({
+        kind: 'single',
+        message: transactionMessage,
+        status: Object.freeze({ context: context ?? ({} as TContext), kind: 'successful', signature }),
     });
 }
 
@@ -322,10 +367,7 @@ export function failedSingleTransactionPlanResult<
     TContext extends TransactionPlanResultContext = TransactionPlanResultContext,
     TTransactionMessage extends BaseTransactionMessage & TransactionMessageWithFeePayer = BaseTransactionMessage &
         TransactionMessageWithFeePayer,
->(
-    transactionMessage: TTransactionMessage,
-    error: SolanaError,
-): SingleTransactionPlanResult<TContext, TTransactionMessage> {
+>(transactionMessage: TTransactionMessage, error: Error): SingleTransactionPlanResult<TContext, TTransactionMessage> {
     return Object.freeze({
         kind: 'single',
         message: transactionMessage,
@@ -360,5 +402,93 @@ export function canceledSingleTransactionPlanResult<
         kind: 'single',
         message: transactionMessage,
         status: Object.freeze({ kind: 'canceled' }),
+    });
+}
+
+/**
+ * Flattens a {@link TransactionPlanResult} into an array of {@link SingleTransactionPlanResult}.
+ * @param result The transaction plan result to flatten
+ * @returns An array of single transaction plan results
+ */
+export function flattenTransactionPlanResult(result: TransactionPlanResult): SingleTransactionPlanResult[] {
+    const transactionPlanResults: SingleTransactionPlanResult[] = [];
+
+    function traverse(result: TransactionPlanResult) {
+        if (result.kind === 'single') {
+            transactionPlanResults.push(result);
+        } else {
+            for (const subResult of result.plans) {
+                traverse(subResult);
+            }
+        }
+    }
+
+    traverse(result);
+    return transactionPlanResults;
+}
+
+/**
+ * A {@link SingleTransactionPlanResult} with 'successful' status.
+ */
+export type SuccessfulSingleTransactionPlanResult = SingleTransactionPlanResult & { status: { kind: 'successful' } };
+
+/**
+ * A {@link SingleTransactionPlanResult} with 'failed' status.
+ */
+export type FailedSingleTransactionPlanResult = SingleTransactionPlanResult & { status: { kind: 'failed' } };
+
+/**
+ * A {@link SingleTransactionPlanResult} with 'canceled' status.
+ */
+export type CanceledSingleTransactionPlanResult = SingleTransactionPlanResult & { status: { kind: 'canceled' } };
+
+/**
+ * A summary of a {@link TransactionPlanResult}, categorizing transactions by their execution status.
+ * - `successful`: Indicates whether all transactions were successful (i.e., no failed or canceled transactions).
+ * - `successfulTransactions`: An array of successful transactions, each including its signature.
+ * - `failedTransactions`: An array of failed transactions, each including the error that caused the failure.
+ * - `canceledTransactions`: An array of canceled transactions.
+ */
+export type TransactionPlanResultSummary = Readonly<{
+    canceledTransactions: CanceledSingleTransactionPlanResult[];
+    failedTransactions: FailedSingleTransactionPlanResult[];
+    successful: boolean;
+    successfulTransactions: SuccessfulSingleTransactionPlanResult[];
+}>;
+
+/**
+ * Summarize a {@link TransactionPlanResult} into a {@link TransactionPlanResultSummary}.
+ * @param result The transaction plan result to summarize
+ * @returns A summary of the transaction plan result
+ */
+export function summarizeTransactionPlanResult(result: TransactionPlanResult): TransactionPlanResultSummary {
+    const successfulTransactions: TransactionPlanResultSummary['successfulTransactions'] = [];
+    const failedTransactions: TransactionPlanResultSummary['failedTransactions'] = [];
+    const canceledTransactions: TransactionPlanResultSummary['canceledTransactions'] = [];
+
+    const flattenedResults = flattenTransactionPlanResult(result);
+
+    for (const singleResult of flattenedResults) {
+        switch (singleResult.status.kind) {
+            case 'successful': {
+                successfulTransactions.push(singleResult as SuccessfulSingleTransactionPlanResult);
+                break;
+            }
+            case 'failed': {
+                failedTransactions.push(singleResult as FailedSingleTransactionPlanResult);
+                break;
+            }
+            case 'canceled': {
+                canceledTransactions.push(singleResult as CanceledSingleTransactionPlanResult);
+                break;
+            }
+        }
+    }
+
+    return Object.freeze({
+        canceledTransactions,
+        failedTransactions,
+        successful: failedTransactions.length === 0 && canceledTransactions.length === 0,
+        successfulTransactions,
     });
 }

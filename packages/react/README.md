@@ -306,3 +306,179 @@ function SignAndSendTransactionButton({ account, transactionBytes }) {
     );
 }
 ```
+
+### `useSignTransactions(uiWalletAccount, chain)`
+
+Given a `UiWalletAccount` and a chain that begins with `solana:`, this hook returns a function you can call to sign one or more serialized transactions in a single request.
+
+#### Arguments
+
+One or more config objects with the following properties:
+
+- `options`: An object with the following properties:
+    - `minContextSlot`: A slot at which any blockhash/nonce in the transaction is known to exist. This may be used by the signer and/or RPC to determine the validity of the blockhashes/nonces it has observed.
+- `transaction`: A `Uint8Array` of bytes that conforms to the [Solana transaction schema](https://solana.com/docs/core/transactions#transaction)
+
+#### Returns
+
+An array of objects with the following properties:
+
+- `signedTransaction`: A `Uint8Array` of bytes that conforms to the [Solana transaction schema](https://solana.com/docs/core/transactions#transaction)
+
+#### Example
+
+```tsx
+import { useSignTransactions } from '@solana/react';
+
+function SignTransactionsButton({ account, transactionBytes1, transactionBytes2 }) {
+    const signTransactions = useSignTransactions(account, 'solana:devnet');
+    return (
+        <button
+            onClick={async () => {
+                try {
+                    const [{ signedTransaction: first }, { signedTransaction: second }] = await signTransactions(
+                        { transaction: transactionBytes1 },
+                        { transaction: transactionBytes2 },
+                    );
+                    window.alert(`Signed transaction bytes: ${first.toString()} and ${second.toString()}`);
+                } catch (e) {
+                    console.error('Failed to sign transactions', e);
+                }
+            }}
+        >
+            Sign Transactions
+        </button>
+    );
+}
+```
+
+### `useSignAndSendTransactions(uiWalletAccount, chain)`
+
+Given a `UiWalletAccount` and a chain that begins with `solana:`, this hook returns a function you can call to sign and send one or more serialized transactions in a single request.
+
+#### Arguments
+
+One or more config objects with the following properties:
+
+- `options`: An object with the following properties:
+    - `minContextSlot`: A slot at which any blockhash/nonce in the transaction is known to exist. This may be used by the signer and/or RPC to determine the validity of the blockhashes/nonces it has observed.
+- `transaction`: A `Uint8Array` of bytes that conforms to the [Solana transaction schema](https://solana.com/docs/core/transactions#transaction)
+
+#### Returns
+
+An array of objects with the following properties:
+
+- `signature`: A `Uint8Array` of bytes representing the signature of each sent transaction.
+
+#### Example
+
+```tsx
+import { getBase58Decoder } from '@solana/codecs-strings';
+import { useSignAndSendTransactions } from '@solana/react';
+
+function SignAndSendTransactionsButton({ account, transactionBytes1, transactionBytes2 }) {
+    const signAndSendTransactions = useSignAndSendTransactions(account, 'solana:devnet');
+    return (
+        <button
+            onClick={async () => {
+                try {
+                    const [first, second] = await signAndSendTransactions(
+                        { transaction: transactionBytes1 },
+                        { transaction: transactionBytes2 },
+                    );
+                    const [firstSignature, secondSignature] = [first.signature, second.signature].map(signature =>
+                        getBase58Decoder().decode(signature),
+                    );
+                    window.alert(
+                        `View transactions: https://explorer.solana.com/tx/${firstSignature}?cluster=devnet and https://explorer.solana.com/tx/${secondSignature}?cluster=devnet`,
+                    );
+                } catch (e) {
+                    console.error('Error returned by signAndSendTransactions', e);
+                }
+            }}
+        >
+            Sign and Send Transactions
+        </button>
+    );
+}
+```
+
+### `useSelectedWalletAccount()`
+
+This hook returns the wallet account that is selected, a function to change the selection, and a list of wallets which pass a filter condition you have provided. This hook must be used in a React Component inside `SelectedWalletAccountContextProvider`.
+
+#### Arguments
+
+This hook doesn't take any arguments.
+
+#### Returns
+
+The function returns an array consisting of the following elements in the order given:
+
+- `SelectedWalletAccount`: This element could be a `UiWalletAccount` or `undefined`, and represents the selected wallet account.
+- `SetSelectedWalletAccount`: A setter function to set the SelectedWalletAccount state. It takes an argument which could be a callback function `(prevState)=>newState` or `newState`.
+- `filteredWallets`: List of filtered wallets using the function provided as `filterWallet` function in `SelectedWalletAccountContextProvider`
+
+#### Example
+
+```tsx
+import React from 'react';
+import { useSelectedWalletAccount } from '@solana/react';
+
+function WalletInfo() {
+    const [selectedAccount, setSelectedAccount, filteredWallets] = useSelectedWalletAccount();
+
+    if (!selectedAccount) {
+        return <div>No wallet selected</div>;
+    }
+
+    return (
+        <div>
+            <p>Address: {selectedAccount.address}</p>
+
+            <button onClick={() => setSelectedAccount(undefined)}>Clear selection</button>
+
+            <p>Available wallets: {filteredWallets.length}</p>
+        </div>
+    );
+}
+```
+
+### `SelectedWalletAccountContextProvider`
+
+This is a react context provider for `SelectedWalletAccountContext`. It provides its children access to the context by using either `useSelectedWalletAccount()` or `useContext(SelectedWalletAccountContext)`.
+
+#### Props
+
+The provider takes the following props:
+
+- `filterWallet`: a function used to filter supported wallets. For example you might use this to restrict your app to wallets that support `solana:mainnet`.
+- `stateSync`: an object to store the selected wallet, with these properties:
+    - `storeSelectedWallet`: a function used to store a selected wallet account identifier (as a string) into persistent storage. For example this might write to local storage in the browser. The string stored is `${walletName}:${accountAddress}`.
+    - `getSelectedWallet`: a function used to retrieve the persisted wallet account identifier from the persistent storage.
+    - `deleteSelectedWallet`: clears any persisted wallet account identifier from the persistent storage.
+
+#### Example
+
+```tsx
+import React from 'react';
+import { SelectedWalletAccountContextProvider } from '@solana/react';
+import type { UiWallet } from '@wallet-standard/react';
+
+const STORAGE_KEY = 'solana-wallet-account-id';
+
+export function App() {
+    return (
+        <SelectedWalletAccountContextProvider
+            filterWallet={(wallet: UiWallet) => wallet.accounts.length > 0}
+            stateSync={{
+                getSelectedWallet: () => localStorage.getItem(STORAGE_KEY),
+                storeSelectedWallet: accountKey => localStorage.setItem(STORAGE_KEY, accountKey),
+                deleteSelectedWallet: () => localStorage.removeItem(STORAGE_KEY),
+            }}
+        >
+            <WalletInfo />
+        </SelectedWalletAccountContextProvider>
+    );
+}
+```

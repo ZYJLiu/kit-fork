@@ -1,5 +1,39 @@
 # @solana/rpc-graphql
 
+## 5.4.0
+
+### Patch Changes
+
+- [#1187](https://github.com/anza-xyz/kit/pull/1187) [`f5f89eb`](https://github.com/anza-xyz/kit/commit/f5f89eb8e769d5b6056b2f686d51a7ef4a0d1d09) Thanks [@mcintyre94](https://github.com/mcintyre94)! - Make Typescript peer dependency optional + reduce required version to ^5
+
+- Updated dependencies [[`f5f89eb`](https://github.com/anza-xyz/kit/commit/f5f89eb8e769d5b6056b2f686d51a7ef4a0d1d09)]:
+    - @solana/fast-stable-stringify@5.4.0
+    - @solana/codecs-strings@5.4.0
+
+## 5.3.0
+
+### Patch Changes
+
+- Updated dependencies []:
+    - @solana/codecs-strings@5.3.0
+    - @solana/fast-stable-stringify@5.3.0
+
+## 5.2.0
+
+### Patch Changes
+
+- Updated dependencies [[`109c78e`](https://github.com/anza-xyz/kit/commit/109c78e8972857323558ca913706a95cdb70c549)]:
+    - @solana/codecs-strings@5.2.0
+    - @solana/fast-stable-stringify@5.2.0
+
+## 5.1.0
+
+### Patch Changes
+
+- Updated dependencies [[`d7f5a0c`](https://github.com/anza-xyz/kit/commit/d7f5a0c046f0a2f2836554fa671364de0b512e97)]:
+    - @solana/codecs-strings@5.1.0
+    - @solana/fast-stable-stringify@5.1.0
+
 ## 5.0.0
 
 ### Patch Changes

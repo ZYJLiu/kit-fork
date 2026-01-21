@@ -1,5 +1,5 @@
 import { Address, getAddressFromPublicKey } from '@solana/addresses';
-import { Decoder } from '@solana/codecs-core';
+import { bytesEqual, Decoder } from '@solana/codecs-core';
 import { getBase58Decoder } from '@solana/codecs-strings';
 import {
     SOLANA_ERROR__TRANSACTION__ADDRESSES_CANNOT_SIGN_TRANSACTION,
@@ -10,7 +10,6 @@ import {
 import { Signature, SignatureBytes, signBytes } from '@solana/keys';
 import { NominalType } from '@solana/nominal-types';
 
-import { TransactionWithLifetime } from './lifetime';
 import { Transaction } from './transaction';
 
 /**
@@ -47,10 +46,6 @@ export function getSignatureFromTransaction(transaction: Transaction): Signature
     return transactionSignature as Signature;
 }
 
-function uint8ArraysEqual(arr1: Uint8Array, arr2: Uint8Array) {
-    return arr1.length === arr2.length && arr1.every((value, index) => value === arr2[index]);
-}
-
 /**
  * Given an array of `CryptoKey` objects which are private keys pertaining to addresses that are
  * required to sign a transaction, this method will return a new signed transaction of type
@@ -71,7 +66,7 @@ function uint8ArraysEqual(arr1: Uint8Array, arr2: Uint8Array) {
  * @see {@link signTransaction} if you want to assert that the transaction has all of its required
  * signatures after signing.
  */
-export async function partiallySignTransaction<TTransaction extends Transaction & TransactionWithLifetime>(
+export async function partiallySignTransaction<TTransaction extends Transaction>(
     keyPairs: CryptoKeyPair[],
     transaction: TTransaction,
 ): Promise<TTransaction> {
@@ -98,7 +93,7 @@ export async function partiallySignTransaction<TTransaction extends Transaction 
 
             const newSignature = await signBytes(keyPair.privateKey, transaction.messageBytes);
 
-            if (existingSignature !== null && uint8ArraysEqual(newSignature, existingSignature)) {
+            if (existingSignature !== null && bytesEqual(newSignature, existingSignature)) {
                 // already have the same signature set
                 return;
             }
@@ -147,7 +142,7 @@ export async function partiallySignTransaction<TTransaction extends Transaction 
  * @see {@link partiallySignTransaction} if you want to sign the transaction without asserting that
  * the resulting transaction is fully signed.
  */
-export async function signTransaction<TTransaction extends Transaction & TransactionWithLifetime>(
+export async function signTransaction<TTransaction extends Transaction>(
     keyPairs: CryptoKeyPair[],
     transaction: TTransaction,
 ): Promise<FullySignedTransaction & TTransaction> {

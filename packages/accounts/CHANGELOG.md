@@ -1,5 +1,59 @@
 # @solana/accounts
 
+## 5.4.0
+
+### Minor Changes
+
+- [#1152](https://github.com/anza-xyz/kit/pull/1152) [`fb1c576`](https://github.com/anza-xyz/kit/commit/fb1c5761122bebc9955179a911a79a33a391e032) Thanks [@rajgoesout](https://github.com/rajgoesout)! - Include program + type when available in fetchJsonParsedAccount
+
+### Patch Changes
+
+- [#1187](https://github.com/anza-xyz/kit/pull/1187) [`f5f89eb`](https://github.com/anza-xyz/kit/commit/f5f89eb8e769d5b6056b2f686d51a7ef4a0d1d09) Thanks [@mcintyre94](https://github.com/mcintyre94)! - Make Typescript peer dependency optional + reduce required version to ^5
+
+- Updated dependencies [[`f5f89eb`](https://github.com/anza-xyz/kit/commit/f5f89eb8e769d5b6056b2f686d51a7ef4a0d1d09), [`189de37`](https://github.com/anza-xyz/kit/commit/189de37f76bcb273986d750fd6ed6541f711103b)]:
+    - @solana/codecs-strings@5.4.0
+    - @solana/codecs-core@5.4.0
+    - @solana/addresses@5.4.0
+    - @solana/rpc-types@5.4.0
+    - @solana/rpc-spec@5.4.0
+    - @solana/errors@5.4.0
+
+## 5.3.0
+
+### Patch Changes
+
+- Updated dependencies []:
+    - @solana/addresses@5.3.0
+    - @solana/codecs-core@5.3.0
+    - @solana/codecs-strings@5.3.0
+    - @solana/errors@5.3.0
+    - @solana/rpc-spec@5.3.0
+    - @solana/rpc-types@5.3.0
+
+## 5.2.0
+
+### Patch Changes
+
+- Updated dependencies [[`b80b092`](https://github.com/anza-xyz/kit/commit/b80b09239762262116cb70b43271ad98a2f716b5), [`c391a44`](https://github.com/anza-xyz/kit/commit/c391a44eebd26707165991f8837f4d40fa988288), [`109c78e`](https://github.com/anza-xyz/kit/commit/109c78e8972857323558ca913706a95cdb70c549)]:
+    - @solana/errors@5.2.0
+    - @solana/codecs-core@5.2.0
+    - @solana/codecs-strings@5.2.0
+    - @solana/addresses@5.2.0
+    - @solana/rpc-spec@5.2.0
+    - @solana/rpc-types@5.2.0
+
+## 5.1.0
+
+### Patch Changes
+
+- Updated dependencies [[`becf5f6`](https://github.com/anza-xyz/kit/commit/becf5f63f1b97d43109b2488c7cd0806ce6329f4), [`d7f5a0c`](https://github.com/anza-xyz/kit/commit/d7f5a0c046f0a2f2836554fa671364de0b512e97), [`32214f5`](https://github.com/anza-xyz/kit/commit/32214f57cfb79fb2566e773acec71635bac641df), [`32b13a8`](https://github.com/anza-xyz/kit/commit/32b13a8973fe0645af1f87f0068c289730b4062c)]:
+    - @solana/errors@5.1.0
+    - @solana/codecs-strings@5.1.0
+    - @solana/addresses@5.1.0
+    - @solana/codecs-core@5.1.0
+    - @solana/rpc-spec@5.1.0
+    - @solana/rpc-types@5.1.0
+
 ## 5.0.0
 
 ### Patch Changes

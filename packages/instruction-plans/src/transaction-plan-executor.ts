@@ -1,10 +1,12 @@
 import {
     SOLANA_ERROR__INSTRUCTION_PLANS__FAILED_TO_EXECUTE_TRANSACTION_PLAN,
+    SOLANA_ERROR__INSTRUCTION_PLANS__NON_DIVISIBLE_TRANSACTION_PLANS_NOT_SUPPORTED,
     SOLANA_ERROR__INVARIANT_VIOLATION__INVALID_TRANSACTION_PLAN_KIND,
     SolanaError,
 } from '@solana/errors';
+import { Signature } from '@solana/keys';
 import { getAbortablePromise } from '@solana/promises';
-import { BaseTransactionMessage, TransactionMessageWithFeePayer } from '@solana/transaction-messages';
+import { TransactionMessage, TransactionMessageWithFeePayer } from '@solana/transaction-messages';
 import { Transaction } from '@solana/transactions';
 
 import type {
@@ -16,10 +18,10 @@ import type {
 import {
     canceledSingleTransactionPlanResult,
     failedSingleTransactionPlanResult,
-    nonDivisibleSequentialTransactionPlanResult,
     parallelTransactionPlanResult,
     sequentialTransactionPlanResult,
     successfulSingleTransactionPlanResult,
+    successfulSingleTransactionPlanResultFromSignature,
     type TransactionPlanResult,
     type TransactionPlanResultContext,
 } from './transaction-plan-result';
@@ -29,10 +31,14 @@ export type TransactionPlanExecutor<TContext extends TransactionPlanResultContex
     config?: { abortSignal?: AbortSignal },
 ) => Promise<TransactionPlanResult<TContext>>;
 
+type ExecuteResult<TContext extends TransactionPlanResultContext> = {
+    context?: TContext;
+} & ({ signature: Signature } | { transaction: Transaction });
+
 type ExecuteTransactionMessage = <TContext extends TransactionPlanResultContext = TransactionPlanResultContext>(
-    transactionMessage: BaseTransactionMessage & TransactionMessageWithFeePayer,
+    transactionMessage: TransactionMessage & TransactionMessageWithFeePayer,
     config?: { abortSignal?: AbortSignal },
-) => Promise<{ context?: TContext; transaction: Transaction }>;
+) => Promise<ExecuteResult<TContext>>;
 
 /**
  * Configuration object for creating a new transaction plan executor.
@@ -79,6 +85,10 @@ export function createTransactionPlanExecutor(config: TransactionPlanExecutorCon
             abortSignal: abortSignal,
             canceled: abortSignal?.aborted ?? false,
         };
+
+        // Fail early if there are non-divisible sequential plans in the
+        // transaction plan as they are not supported by this executor.
+        assertDivisibleSequentialPlansOnly(plan);
 
         const cancelHandler = () => {
             context.canceled = true;
@@ -130,6 +140,10 @@ async function traverseSequential(
     transactionPlan: SequentialTransactionPlan,
     context: TraverseContext,
 ): Promise<TransactionPlanResult> {
+    if (!transactionPlan.divisible) {
+        throw new SolanaError(SOLANA_ERROR__INSTRUCTION_PLANS__NON_DIVISIBLE_TRANSACTION_PLANS_NOT_SUPPORTED);
+    }
+
     const results: TransactionPlanResult[] = [];
 
     for (const subPlan of transactionPlan.plans) {
@@ -137,9 +151,7 @@ async function traverseSequential(
         results.push(result);
     }
 
-    return transactionPlan.divisible
-        ? sequentialTransactionPlanResult(results)
-        : nonDivisibleSequentialTransactionPlanResult(results);
+    return sequentialTransactionPlanResult(results);
 }
 
 async function traverseParallel(
@@ -163,14 +175,22 @@ async function traverseSingle(
             context.executeTransactionMessage(transactionPlan.message, { abortSignal: context.abortSignal }),
             context.abortSignal,
         );
-        return successfulSingleTransactionPlanResult(transactionPlan.message, result.transaction, result.context);
+        if ('transaction' in result) {
+            return successfulSingleTransactionPlanResult(transactionPlan.message, result.transaction, result.context);
+        } else {
+            return successfulSingleTransactionPlanResultFromSignature(
+                transactionPlan.message,
+                result.signature,
+                result.context,
+            );
+        }
     } catch (error) {
         context.canceled = true;
-        return failedSingleTransactionPlanResult(transactionPlan.message, error as SolanaError);
+        return failedSingleTransactionPlanResult(transactionPlan.message, error as Error);
     }
 }
 
-function findErrorFromTransactionPlanResult(result: TransactionPlanResult): SolanaError | undefined {
+function findErrorFromTransactionPlanResult(result: TransactionPlanResult): Error | undefined {
     if (result.kind === 'single') {
         return result.status.kind === 'failed' ? result.status.error : undefined;
     }
@@ -179,5 +199,27 @@ function findErrorFromTransactionPlanResult(result: TransactionPlanResult): Sola
         if (error) {
             return error;
         }
+    }
+}
+
+function assertDivisibleSequentialPlansOnly(transactionPlan: TransactionPlan): void {
+    const kind = transactionPlan.kind;
+    switch (kind) {
+        case 'sequential':
+            if (!transactionPlan.divisible) {
+                throw new SolanaError(SOLANA_ERROR__INSTRUCTION_PLANS__NON_DIVISIBLE_TRANSACTION_PLANS_NOT_SUPPORTED);
+            }
+            for (const subPlan of transactionPlan.plans) {
+                assertDivisibleSequentialPlansOnly(subPlan);
+            }
+            return;
+        case 'parallel':
+            for (const subPlan of transactionPlan.plans) {
+                assertDivisibleSequentialPlansOnly(subPlan);
+            }
+            return;
+        case 'single':
+        default:
+            return;
     }
 }

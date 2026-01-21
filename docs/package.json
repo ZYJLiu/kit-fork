@@ -4,23 +4,23 @@
     "private": true,
     "scripts": {
         "build": "NODE_OPTIONS='--max-old-space-size=8192' next build",
-        "dev": "next dev --turbo",
+        "dev": "NODE_OPTIONS=\"--no-experimental-webstorage\" next dev --turbo",
         "start": "next start",
         "postinstall": "fumadocs-mdx",
         "prebuild": "./build-api-docs.sh",
         "predev": "./build-api-docs.sh"
     },
     "dependencies": {
-        "@inkeep/cxkit-react": "^0.5.96",
+        "@inkeep/cxkit-react": "^0.5.107",
         "fumadocs-core": "15.2.10",
         "fumadocs-docgen": "^2.0.0",
         "fumadocs-mdx": "11.6.1",
         "fumadocs-twoslash": "^3.1.1",
         "fumadocs-ui": "15.2.10",
         "lucide-react": "^0.484.0",
-        "next": "15.3.5",
-        "react": "^19.0.0",
-        "react-dom": "^19.0.0",
+        "next": "^16.0.10",
+        "react": "^19.2.1",
+        "react-dom": "^19.2.1",
         "twoslash": "^0.3.1"
     },
     "devDependencies": {
@@ -29,25 +29,26 @@
         "@solana-program/memo": "^0.7.0",
         "@solana-program/system": "^0.7.0",
         "@solana-program/token": "^0.5.1",
-        "@solana/compat": "3.0.0-canary-20250811123225",
-        "@solana/kit": "3.0.0-canary-20250811123225",
-        "@solana/react": "3.0.0-canary-20250811123225",
+        "@solana/compat": "5.1.1-canary-20251216194212",
+        "@solana/kit": "5.1.1-canary-20251216194212",
+        "@solana/react": "5.1.1-canary-20251216194212",
         "@solana/web3.js": "^1.98.2",
-        "@solana/webcrypto-ed25519-polyfill": "3.0.0-canary-20250811123225",
+        "@solana/webcrypto-ed25519-polyfill": "5.1.1-canary-20251216194212",
         "@tailwindcss/postcss": "^4.1.4",
         "@types/mdx": "^2.0.13",
         "@types/node": "22.13.8",
-        "@types/react": "^19.0.10",
-        "@types/react-dom": "^19.0.4",
+        "@types/react": "^19.2.7",
+        "@types/react-dom": "^19.2.3",
         "eslint": "^8",
-        "eslint-config-next": "15.3.5",
+        "eslint-config-next": "^16.0.10",
         "postcss": "^8.5.3",
         "tailwindcss": "^4.1.4",
         "typescript": "^5.8.3",
-        "vercel": "^48.5.0"
+        "vercel": "^50.1.0"
     },
     "pnpm": {
         "overrides": {
+            "js-yaml@<3.14.2": "^3.14.2",
             "@vercel/node>path-to-regexp": "^6.3.0",
             "@vercel/remix-builder>path-to-regexp": "^6.3.0"
         }

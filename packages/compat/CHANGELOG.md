@@ -1,5 +1,57 @@
 # @solana/compat
 
+## 5.4.0
+
+### Patch Changes
+
+- [#1187](https://github.com/anza-xyz/kit/pull/1187) [`f5f89eb`](https://github.com/anza-xyz/kit/commit/f5f89eb8e769d5b6056b2f686d51a7ef4a0d1d09) Thanks [@mcintyre94](https://github.com/mcintyre94)! - Make Typescript peer dependency optional + reduce required version to ^5
+
+- Updated dependencies [[`f5f89eb`](https://github.com/anza-xyz/kit/commit/f5f89eb8e769d5b6056b2f686d51a7ef4a0d1d09), [`189de37`](https://github.com/anza-xyz/kit/commit/189de37f76bcb273986d750fd6ed6541f711103b)]:
+    - @solana/instructions@5.4.0
+    - @solana/transactions@5.4.0
+    - @solana/codecs-core@5.4.0
+    - @solana/addresses@5.4.0
+    - @solana/errors@5.4.0
+    - @solana/keys@5.4.0
+
+## 5.3.0
+
+### Patch Changes
+
+- Updated dependencies []:
+    - @solana/addresses@5.3.0
+    - @solana/codecs-core@5.3.0
+    - @solana/errors@5.3.0
+    - @solana/instructions@5.3.0
+    - @solana/keys@5.3.0
+    - @solana/transactions@5.3.0
+
+## 5.2.0
+
+### Patch Changes
+
+- [#1116](https://github.com/anza-xyz/kit/pull/1116) [`109c78e`](https://github.com/anza-xyz/kit/commit/109c78e8972857323558ca913706a95cdb70c549) Thanks [@steveluscher](https://github.com/steveluscher)! - Any `SharedArrayBuffer` that gets passed to a crypto operation like `signBytes` or `verifySignature` will now be copied as non-shared. Crypto operations like `sign` and `verify` reject `SharedArrayBuffers` otherwise
+
+- Updated dependencies [[`b80b092`](https://github.com/anza-xyz/kit/commit/b80b09239762262116cb70b43271ad98a2f716b5), [`c391a44`](https://github.com/anza-xyz/kit/commit/c391a44eebd26707165991f8837f4d40fa988288), [`109c78e`](https://github.com/anza-xyz/kit/commit/109c78e8972857323558ca913706a95cdb70c549), [`6dbaf66`](https://github.com/anza-xyz/kit/commit/6dbaf66015198bd912ec0800c1db1fd63b68e7a2)]:
+    - @solana/errors@5.2.0
+    - @solana/codecs-core@5.2.0
+    - @solana/keys@5.2.0
+    - @solana/transactions@5.2.0
+    - @solana/addresses@5.2.0
+    - @solana/instructions@5.2.0
+
+## 5.1.0
+
+### Patch Changes
+
+- Updated dependencies [[`becf5f6`](https://github.com/anza-xyz/kit/commit/becf5f63f1b97d43109b2488c7cd0806ce6329f4), [`32214f5`](https://github.com/anza-xyz/kit/commit/32214f57cfb79fb2566e773acec71635bac641df), [`32b13a8`](https://github.com/anza-xyz/kit/commit/32b13a8973fe0645af1f87f0068c289730b4062c), [`2f7bda8`](https://github.com/anza-xyz/kit/commit/2f7bda81ca8248797957bdf693e812abc90b1951)]:
+    - @solana/errors@5.1.0
+    - @solana/addresses@5.1.0
+    - @solana/codecs-core@5.1.0
+    - @solana/transactions@5.1.0
+    - @solana/instructions@5.1.0
+    - @solana/keys@5.1.0
+
 ## 5.0.0
 
 ### Patch Changes

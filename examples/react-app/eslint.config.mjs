@@ -1,23 +1,17 @@
-import solanaReactConfig from '@solana/eslint-config-solana/react';
+import solanaReactConfig from '@solana/eslint-config/eslint.config.react.mjs';
 import reactRefreshPlugin from 'eslint-plugin-react-refresh';
 import globals from 'globals';
-
-import baseConfig from '../../eslint.config.mjs';
 
 export default [
     {
         ignores: ['**/dist', '**/*.css'],
     },
-    ...baseConfig,
     ...solanaReactConfig,
     {
         languageOptions: {
             globals: {
                 ...globals.browser,
                 ...globals.es2020,
-            },
-            parserOptions: {
-                project: './tsconfig.app.json',
             },
         },
         plugins: {

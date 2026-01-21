@@ -2,7 +2,7 @@ import { SOLANA_ERROR__TRANSACTION__EXPECTED_BLOCKHASH_LIFETIME, SolanaError } f
 import { type Blockhash, isBlockhash } from '@solana/rpc-types';
 
 import { ExcludeTransactionMessageLifetime, TransactionMessageWithLifetime } from './lifetime';
-import { BaseTransactionMessage } from './transaction-message';
+import { TransactionMessage } from './transaction-message';
 
 /**
  * A constraint which, when applied to a transaction message, makes that transaction message
@@ -12,7 +12,7 @@ import { BaseTransactionMessage } from './transaction-message';
  * This can happen when the network proceeds past the `lastValidBlockHeight` for which the blockhash
  * is considered valid, or when the network switches to a fork where that blockhash is not present.
  */
-type BlockhashLifetimeConstraint = Readonly<{
+export type BlockhashLifetimeConstraint = Readonly<{
     /**
      * A recent blockhash observed by the transaction proposer.
      *
@@ -61,8 +61,8 @@ export interface TransactionMessageWithBlockhashLifetime {
  * ```
  */
 export function isTransactionMessageWithBlockhashLifetime(
-    transactionMessage: BaseTransactionMessage | (BaseTransactionMessage & TransactionMessageWithBlockhashLifetime),
-): transactionMessage is BaseTransactionMessage & TransactionMessageWithBlockhashLifetime {
+    transactionMessage: TransactionMessage | (TransactionMessage & TransactionMessageWithBlockhashLifetime),
+): transactionMessage is TransactionMessage & TransactionMessageWithBlockhashLifetime {
     return (
         'lifetimeConstraint' in transactionMessage &&
         typeof transactionMessage.lifetimeConstraint.blockhash === 'string' &&
@@ -94,8 +94,8 @@ export function isTransactionMessageWithBlockhashLifetime(
  * ```
  */
 export function assertIsTransactionMessageWithBlockhashLifetime(
-    transactionMessage: BaseTransactionMessage | (BaseTransactionMessage & TransactionMessageWithBlockhashLifetime),
-): asserts transactionMessage is BaseTransactionMessage & TransactionMessageWithBlockhashLifetime {
+    transactionMessage: TransactionMessage | (TransactionMessage & TransactionMessageWithBlockhashLifetime),
+): asserts transactionMessage is TransactionMessage & TransactionMessageWithBlockhashLifetime {
     if (!isTransactionMessageWithBlockhashLifetime(transactionMessage)) {
         throw new SolanaError(SOLANA_ERROR__TRANSACTION__EXPECTED_BLOCKHASH_LIFETIME);
     }
@@ -115,7 +115,7 @@ export function assertIsTransactionMessageWithBlockhashLifetime(
  * ```
  */
 export function setTransactionMessageLifetimeUsingBlockhash<
-    TTransactionMessage extends BaseTransactionMessage & Partial<TransactionMessageWithLifetime>,
+    TTransactionMessage extends Partial<TransactionMessageWithLifetime> & TransactionMessage,
 >(
     blockhashLifetimeConstraint: BlockhashLifetimeConstraint,
     transactionMessage: TTransactionMessage,
