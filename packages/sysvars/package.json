@@ -1,6 +1,6 @@
 {
     "name": "@solana/sysvars",
-    "version": "5.4.0",
+    "version": "6.3.1",
     "description": "An abstraction layer over signing messages and transactions in Solana",
     "homepage": "https://www.solanakit.com/api#solanasysvars",
     "exports": {
@@ -33,7 +33,8 @@
     "types": "./dist/types/index.d.ts",
     "type": "commonjs",
     "files": [
-        "./dist/"
+        "./dist/",
+        "./src/"
     ],
     "sideEffects": false,
     "keywords": [
@@ -74,7 +75,9 @@
     ],
     "dependencies": {
         "@solana/accounts": "workspace:*",
-        "@solana/codecs": "workspace:*",
+        "@solana/codecs-core": "workspace:*",
+        "@solana/codecs-data-structures": "workspace:*",
+        "@solana/codecs-numbers": "workspace:*",
         "@solana/errors": "workspace:*",
         "@solana/rpc-types": "workspace:*"
     },

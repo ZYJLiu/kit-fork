@@ -9,22 +9,39 @@ import {
 import { pipe } from '@solana/functional';
 import { Instruction } from '@solana/instructions';
 import {
-    BaseTransactionMessage,
+    appendTransactionMessageInstruction,
     createTransactionMessage,
     setTransactionMessageFeePayer,
+    TransactionMessage,
     TransactionMessageWithFeePayer,
 } from '@solana/transaction-messages';
 import { getTransactionMessageSize, TRANSACTION_SIZE_LIMIT } from '@solana/transactions';
 
 import {
+    assertIsMessagePackerInstructionPlan,
+    assertIsNonDivisibleSequentialInstructionPlan,
+    assertIsParallelInstructionPlan,
+    assertIsSequentialInstructionPlan,
+    assertIsSingleInstructionPlan,
+    everyInstructionPlan,
+    findInstructionPlan,
+    flattenInstructionPlan,
     getLinearMessagePackerInstructionPlan,
     getMessagePackerInstructionPlanFromInstructions,
     getReallocMessagePackerInstructionPlan,
+    isInstructionPlan,
+    isMessagePackerInstructionPlan,
+    isNonDivisibleSequentialInstructionPlan,
+    isParallelInstructionPlan,
+    isSequentialInstructionPlan,
+    isSingleInstructionPlan,
+    MessagePackerInstructionPlan,
     nonDivisibleSequentialInstructionPlan,
     parallelInstructionPlan,
     sequentialInstructionPlan,
     singleInstructionPlan,
-} from '../instruction-plan';
+    transformInstructionPlan,
+} from '../index';
 
 jest.mock('@solana/transactions', () => ({
     ...jest.requireActual('@solana/transactions'),
@@ -39,7 +56,7 @@ describe('singleInstructionPlan', () => {
     it('creates SingleInstructionPlan objects', () => {
         const instruction = createInstruction('A');
         const plan = singleInstructionPlan(instruction);
-        expect(plan).toStrictEqual({ instruction, kind: 'single' });
+        expect(plan).toStrictEqual({ instruction, kind: 'single', planType: 'instructionPlan' });
     });
     it('freezes created SingleInstructionPlan objects', () => {
         const instruction = createInstruction('A');
@@ -58,6 +75,7 @@ describe('parallelInstructionPlan', () => {
         ]);
         expect(plan).toStrictEqual({
             kind: 'parallel',
+            planType: 'instructionPlan',
             plans: [singleInstructionPlan(instructionA), singleInstructionPlan(instructionB)],
         });
     });
@@ -67,6 +85,7 @@ describe('parallelInstructionPlan', () => {
         const plan = parallelInstructionPlan([instructionA, instructionB]);
         expect(plan).toStrictEqual({
             kind: 'parallel',
+            planType: 'instructionPlan',
             plans: [singleInstructionPlan(instructionA), singleInstructionPlan(instructionB)],
         });
     });
@@ -77,9 +96,14 @@ describe('parallelInstructionPlan', () => {
         const plan = parallelInstructionPlan([instructionA, parallelInstructionPlan([instructionB, instructionC])]);
         expect(plan).toStrictEqual({
             kind: 'parallel',
+            planType: 'instructionPlan',
             plans: [
                 singleInstructionPlan(instructionA),
-                { kind: 'parallel', plans: [singleInstructionPlan(instructionB), singleInstructionPlan(instructionC)] },
+                {
+                    kind: 'parallel',
+                    planType: 'instructionPlan',
+                    plans: [singleInstructionPlan(instructionB), singleInstructionPlan(instructionC)],
+                },
             ],
         });
     });
@@ -102,6 +126,7 @@ describe('sequentialInstructionPlan', () => {
         expect(plan).toStrictEqual({
             divisible: true,
             kind: 'sequential',
+            planType: 'instructionPlan',
             plans: [singleInstructionPlan(instructionA), singleInstructionPlan(instructionB)],
         });
     });
@@ -112,6 +137,7 @@ describe('sequentialInstructionPlan', () => {
         expect(plan).toStrictEqual({
             divisible: true,
             kind: 'sequential',
+            planType: 'instructionPlan',
             plans: [singleInstructionPlan(instructionA), singleInstructionPlan(instructionB)],
         });
     });
@@ -123,11 +149,13 @@ describe('sequentialInstructionPlan', () => {
         expect(plan).toStrictEqual({
             divisible: true,
             kind: 'sequential',
+            planType: 'instructionPlan',
             plans: [
                 singleInstructionPlan(instructionA),
                 {
                     divisible: true,
                     kind: 'sequential',
+                    planType: 'instructionPlan',
                     plans: [singleInstructionPlan(instructionB), singleInstructionPlan(instructionC)],
                 },
             ],
@@ -152,6 +180,7 @@ describe('nonDivisibleSequentialInstructionPlan', () => {
         expect(plan).toStrictEqual({
             divisible: false,
             kind: 'sequential',
+            planType: 'instructionPlan',
             plans: [singleInstructionPlan(instructionA), singleInstructionPlan(instructionB)],
         });
     });
@@ -162,6 +191,7 @@ describe('nonDivisibleSequentialInstructionPlan', () => {
         expect(plan).toStrictEqual({
             divisible: false,
             kind: 'sequential',
+            planType: 'instructionPlan',
             plans: [singleInstructionPlan(instructionA), singleInstructionPlan(instructionB)],
         });
     });
@@ -176,11 +206,13 @@ describe('nonDivisibleSequentialInstructionPlan', () => {
         expect(plan).toStrictEqual({
             divisible: false,
             kind: 'sequential',
+            planType: 'instructionPlan',
             plans: [
                 singleInstructionPlan(instructionA),
                 {
                     divisible: false,
                     kind: 'sequential',
+                    planType: 'instructionPlan',
                     plans: [singleInstructionPlan(instructionB), singleInstructionPlan(instructionC)],
                 },
             ],
@@ -195,7 +227,7 @@ describe('nonDivisibleSequentialInstructionPlan', () => {
 });
 
 describe('getLinearMessagePackerInstructionPlan', () => {
-    let message: BaseTransactionMessage & TransactionMessageWithFeePayer;
+    let message: TransactionMessage & TransactionMessageWithFeePayer;
     beforeEach(() => {
         message = pipe(createTransactionMessage({ version: 0 }), m =>
             setTransactionMessageFeePayer('E9Nykp3rSdza2moQutaJ3K3RSC8E5iFERX2SqLTsQfjJ' as Address, m),
@@ -257,7 +289,7 @@ describe('getLinearMessagePackerInstructionPlan', () => {
 });
 
 describe('getMessagePackerInstructionPlanFromInstructions', () => {
-    let message: BaseTransactionMessage & TransactionMessageWithFeePayer;
+    let message: TransactionMessage & TransactionMessageWithFeePayer;
     beforeEach(() => {
         message = pipe(createTransactionMessage({ version: 0 }), m =>
             setTransactionMessageFeePayer('E9Nykp3rSdza2moQutaJ3K3RSC8E5iFERX2SqLTsQfjJ' as Address, m),
@@ -301,7 +333,7 @@ describe('getMessagePackerInstructionPlanFromInstructions', () => {
 });
 
 describe('getReallocMessagePackerInstructionPlan', () => {
-    let message: BaseTransactionMessage & TransactionMessageWithFeePayer;
+    let message: TransactionMessage & TransactionMessageWithFeePayer;
     beforeEach(() => {
         message = pipe(createTransactionMessage({ version: 0 }), m =>
             setTransactionMessageFeePayer('E9Nykp3rSdza2moQutaJ3K3RSC8E5iFERX2SqLTsQfjJ' as Address, m),
@@ -353,5 +385,593 @@ describe('getReallocMessagePackerInstructionPlan', () => {
             totalSize: 15_000,
         });
         expect(plan.getMessagePacker()).toBeFrozenObject();
+    });
+});
+
+describe('isSingleInstructionPlan', () => {
+    it('returns true for SingleInstructionPlan', () => {
+        expect(isSingleInstructionPlan(singleInstructionPlan(createInstruction('A')))).toBe(true);
+    });
+    it('returns false for other plans', () => {
+        expect(isSingleInstructionPlan(getMessagePackerInstructionPlanFromInstructions([]))).toBe(false);
+        expect(isSingleInstructionPlan(sequentialInstructionPlan([]))).toBe(false);
+        expect(isSingleInstructionPlan(nonDivisibleSequentialInstructionPlan([]))).toBe(false);
+        expect(isSingleInstructionPlan(parallelInstructionPlan([]))).toBe(false);
+    });
+});
+
+describe('assertIsSingleInstructionPlan', () => {
+    it('does nothing for SingleInstructionPlan', () => {
+        expect(() => assertIsSingleInstructionPlan(singleInstructionPlan(createInstruction('A')))).not.toThrow();
+    });
+    it('throws for other plans', () => {
+        expect(() => assertIsSingleInstructionPlan(getMessagePackerInstructionPlanFromInstructions([]))).toThrow(
+            'Unexpected instruction plan. Expected single plan, got messagePacker plan.',
+        );
+        expect(() => assertIsSingleInstructionPlan(sequentialInstructionPlan([]))).toThrow(
+            'Unexpected instruction plan. Expected single plan, got sequential plan.',
+        );
+        expect(() => assertIsSingleInstructionPlan(nonDivisibleSequentialInstructionPlan([]))).toThrow(
+            'Unexpected instruction plan. Expected single plan, got sequential plan.',
+        );
+        expect(() => assertIsSingleInstructionPlan(parallelInstructionPlan([]))).toThrow(
+            'Unexpected instruction plan. Expected single plan, got parallel plan.',
+        );
+    });
+});
+
+describe('isMessagePackerInstructionPlan', () => {
+    it('returns true for MessagePackerInstructionPlan', () => {
+        expect(
+            isMessagePackerInstructionPlan(getMessagePackerInstructionPlanFromInstructions([createInstruction('A')])),
+        ).toBe(true);
+    });
+    it('returns false for other plans', () => {
+        expect(isMessagePackerInstructionPlan(singleInstructionPlan(createInstruction('A')))).toBe(false);
+        expect(isMessagePackerInstructionPlan(sequentialInstructionPlan([]))).toBe(false);
+        expect(isMessagePackerInstructionPlan(nonDivisibleSequentialInstructionPlan([]))).toBe(false);
+        expect(isMessagePackerInstructionPlan(parallelInstructionPlan([]))).toBe(false);
+    });
+});
+
+describe('assertIsMessagePackerInstructionPlan', () => {
+    it('does nothing for MessagePackerInstructionPlan', () => {
+        expect(() =>
+            assertIsMessagePackerInstructionPlan(
+                getMessagePackerInstructionPlanFromInstructions([createInstruction('A')]),
+            ),
+        ).not.toThrow();
+    });
+    it('throws for other plans', () => {
+        expect(() => assertIsMessagePackerInstructionPlan(singleInstructionPlan(createInstruction('A')))).toThrow(
+            'Unexpected instruction plan. Expected messagePacker plan, got single plan.',
+        );
+        expect(() => assertIsMessagePackerInstructionPlan(sequentialInstructionPlan([]))).toThrow(
+            'Unexpected instruction plan. Expected messagePacker plan, got sequential plan.',
+        );
+        expect(() => assertIsMessagePackerInstructionPlan(nonDivisibleSequentialInstructionPlan([]))).toThrow(
+            'Unexpected instruction plan. Expected messagePacker plan, got sequential plan.',
+        );
+        expect(() => assertIsMessagePackerInstructionPlan(parallelInstructionPlan([]))).toThrow(
+            'Unexpected instruction plan. Expected messagePacker plan, got parallel plan.',
+        );
+    });
+});
+
+describe('isSequentialInstructionPlan', () => {
+    it('returns true for SequentialInstructionPlan (divisible or not)', () => {
+        expect(isSequentialInstructionPlan(sequentialInstructionPlan([]))).toBe(true);
+        expect(isSequentialInstructionPlan(nonDivisibleSequentialInstructionPlan([]))).toBe(true);
+    });
+    it('returns false for other plans', () => {
+        expect(isSequentialInstructionPlan(singleInstructionPlan(createInstruction('A')))).toBe(false);
+        expect(isSequentialInstructionPlan(getMessagePackerInstructionPlanFromInstructions([]))).toBe(false);
+        expect(isSequentialInstructionPlan(parallelInstructionPlan([]))).toBe(false);
+    });
+});
+
+describe('assertIsSequentialInstructionPlan', () => {
+    it('does nothing for SequentialInstructionPlan', () => {
+        expect(() => assertIsSequentialInstructionPlan(sequentialInstructionPlan([]))).not.toThrow();
+        expect(() => assertIsSequentialInstructionPlan(nonDivisibleSequentialInstructionPlan([]))).not.toThrow();
+    });
+    it('throws for other plans', () => {
+        expect(() => assertIsSequentialInstructionPlan(singleInstructionPlan(createInstruction('A')))).toThrow(
+            'Unexpected instruction plan. Expected sequential plan, got single plan.',
+        );
+        expect(() => assertIsSequentialInstructionPlan(getMessagePackerInstructionPlanFromInstructions([]))).toThrow(
+            'Unexpected instruction plan. Expected sequential plan, got messagePacker plan.',
+        );
+        expect(() => assertIsSequentialInstructionPlan(parallelInstructionPlan([]))).toThrow(
+            'Unexpected instruction plan. Expected sequential plan, got parallel plan.',
+        );
+    });
+});
+
+describe('isNonDivisibleSequentialInstructionPlan', () => {
+    it('returns true for non-divisible SequentialInstructionPlan', () => {
+        expect(isNonDivisibleSequentialInstructionPlan(nonDivisibleSequentialInstructionPlan([]))).toBe(true);
+    });
+    it('returns false for other plans', () => {
+        expect(isNonDivisibleSequentialInstructionPlan(singleInstructionPlan(createInstruction('A')))).toBe(false);
+        expect(isNonDivisibleSequentialInstructionPlan(getMessagePackerInstructionPlanFromInstructions([]))).toBe(
+            false,
+        );
+        expect(isNonDivisibleSequentialInstructionPlan(sequentialInstructionPlan([]))).toBe(false);
+        expect(isNonDivisibleSequentialInstructionPlan(parallelInstructionPlan([]))).toBe(false);
+    });
+});
+
+describe('assertIsNonDivisibleSequentialInstructionPlan', () => {
+    it('does nothing for non-divisible SequentialInstructionPlan', () => {
+        expect(() =>
+            assertIsNonDivisibleSequentialInstructionPlan(nonDivisibleSequentialInstructionPlan([])),
+        ).not.toThrow();
+    });
+    it('throws for other plans', () => {
+        expect(() =>
+            assertIsNonDivisibleSequentialInstructionPlan(singleInstructionPlan(createInstruction('A'))),
+        ).toThrow('Unexpected instruction plan. Expected non-divisible sequential plan, got single plan.');
+        expect(() =>
+            assertIsNonDivisibleSequentialInstructionPlan(getMessagePackerInstructionPlanFromInstructions([])),
+        ).toThrow('Unexpected instruction plan. Expected non-divisible sequential plan, got messagePacker plan.');
+        expect(() => assertIsNonDivisibleSequentialInstructionPlan(sequentialInstructionPlan([]))).toThrow(
+            'Unexpected instruction plan. Expected non-divisible sequential plan, got divisible sequential plan.',
+        );
+        expect(() => assertIsNonDivisibleSequentialInstructionPlan(parallelInstructionPlan([]))).toThrow(
+            'Unexpected instruction plan. Expected non-divisible sequential plan, got parallel plan.',
+        );
+    });
+});
+
+describe('isParallelInstructionPlan', () => {
+    it('returns true for ParallelInstructionPlan', () => {
+        expect(isParallelInstructionPlan(parallelInstructionPlan([]))).toBe(true);
+    });
+    it('returns false for other plans', () => {
+        expect(isParallelInstructionPlan(singleInstructionPlan(createInstruction('A')))).toBe(false);
+        expect(isParallelInstructionPlan(getMessagePackerInstructionPlanFromInstructions([]))).toBe(false);
+        expect(isParallelInstructionPlan(sequentialInstructionPlan([]))).toBe(false);
+        expect(isParallelInstructionPlan(nonDivisibleSequentialInstructionPlan([]))).toBe(false);
+    });
+});
+
+describe('assertIsParallelInstructionPlan', () => {
+    it('does nothing for ParallelInstructionPlan', () => {
+        expect(() => assertIsParallelInstructionPlan(parallelInstructionPlan([]))).not.toThrow();
+    });
+    it('throws for other plans', () => {
+        expect(() => assertIsParallelInstructionPlan(singleInstructionPlan(createInstruction('A')))).toThrow(
+            'Unexpected instruction plan. Expected parallel plan, got single plan.',
+        );
+        expect(() => assertIsParallelInstructionPlan(getMessagePackerInstructionPlanFromInstructions([]))).toThrow(
+            'Unexpected instruction plan. Expected parallel plan, got messagePacker plan.',
+        );
+        expect(() => assertIsParallelInstructionPlan(sequentialInstructionPlan([]))).toThrow(
+            'Unexpected instruction plan. Expected parallel plan, got sequential plan.',
+        );
+        expect(() => assertIsParallelInstructionPlan(nonDivisibleSequentialInstructionPlan([]))).toThrow(
+            'Unexpected instruction plan. Expected parallel plan, got sequential plan.',
+        );
+    });
+});
+
+describe('findInstructionPlan', () => {
+    it('returns the plan itself when it matches the predicate', () => {
+        const instructionA = createInstruction('A');
+        const plan = singleInstructionPlan(instructionA);
+        const result = findInstructionPlan(plan, p => p.kind === 'single');
+        expect(result).toBe(plan);
+    });
+    it('returns undefined when no plan matches the predicate', () => {
+        const instructionA = createInstruction('A');
+        const plan = singleInstructionPlan(instructionA);
+        const result = findInstructionPlan(plan, p => p.kind === 'parallel');
+        expect(result).toBeUndefined();
+    });
+    it('finds a nested plan in a parallel structure', () => {
+        const instructionA = createInstruction('A');
+        const instructionB = createInstruction('B');
+        const nestedSequential = sequentialInstructionPlan([instructionA, instructionB]);
+        const plan = parallelInstructionPlan([nestedSequential]);
+        const result = findInstructionPlan(plan, p => p.kind === 'sequential');
+        expect(result).toBe(nestedSequential);
+    });
+    it('finds a nested plan in a sequential structure', () => {
+        const instructionA = createInstruction('A');
+        const instructionB = createInstruction('B');
+        const nestedParallel = parallelInstructionPlan([instructionA, instructionB]);
+        const plan = sequentialInstructionPlan([nestedParallel]);
+        const result = findInstructionPlan(plan, p => p.kind === 'parallel');
+        expect(result).toBe(nestedParallel);
+    });
+    it('returns the first matching plan in top-down order', () => {
+        const instructionA = createInstruction('A');
+        const instructionB = createInstruction('B');
+        const innerSequential = sequentialInstructionPlan([instructionA]);
+        const outerSequential = sequentialInstructionPlan([innerSequential, instructionB]);
+        const result = findInstructionPlan(outerSequential, p => p.kind === 'sequential');
+        expect(result).toBe(outerSequential);
+    });
+    it('finds a deeply nested plan', () => {
+        const instructionA = createInstruction('A');
+        const deepSingle = singleInstructionPlan(instructionA);
+        const plan = parallelInstructionPlan([sequentialInstructionPlan([parallelInstructionPlan([deepSingle])])]);
+        const result = findInstructionPlan(plan, p => p.kind === 'single');
+        expect(result).toBe(deepSingle);
+    });
+    it('supports complex predicates that inspect nested properties', () => {
+        const instructionA = createInstruction('A');
+        const instructionB = createInstruction('B');
+        const instructionC = createInstruction('C');
+        const targetPlan = sequentialInstructionPlan([instructionA, instructionB]);
+        const plan = parallelInstructionPlan([singleInstructionPlan(instructionC), targetPlan]);
+        const result = findInstructionPlan(
+            plan,
+            // eslint-disable-next-line jest/no-conditional-in-test
+            p => p.kind === 'sequential' && p.plans.length === 2,
+        );
+        expect(result).toBe(targetPlan);
+    });
+    it('returns undefined when searching an empty parallel plan', () => {
+        const plan = parallelInstructionPlan([]);
+        const result = findInstructionPlan(plan, p => p.kind === 'single');
+        expect(result).toBeUndefined();
+    });
+    it('finds non-divisible sequential plans', () => {
+        const instructionA = createInstruction('A');
+        const instructionB = createInstruction('B');
+        const nonDivisible = nonDivisibleSequentialInstructionPlan([instructionA, instructionB]);
+        const plan = parallelInstructionPlan([sequentialInstructionPlan([createInstruction('C')]), nonDivisible]);
+        const result = findInstructionPlan(
+            plan,
+            // eslint-disable-next-line jest/no-conditional-in-test
+            p => p.kind === 'sequential' && !p.divisible,
+        );
+        expect(result).toBe(nonDivisible);
+    });
+    it('returns undefined when searching a messagePacker plan that does not match', () => {
+        const messagePackerPlan = getMessagePackerInstructionPlanFromInstructions([createInstruction('A')]);
+        const result = findInstructionPlan(messagePackerPlan, p => p.kind === 'single');
+        expect(result).toBeUndefined();
+    });
+    it('finds a messagePacker plan when it matches the predicate', () => {
+        const messagePackerPlan = getMessagePackerInstructionPlanFromInstructions([createInstruction('A')]);
+        const plan = parallelInstructionPlan([singleInstructionPlan(createInstruction('B')), messagePackerPlan]);
+        const result = findInstructionPlan(plan, p => p.kind === 'messagePacker');
+        expect(result).toBe(messagePackerPlan);
+    });
+});
+
+describe('everyInstructionPlan', () => {
+    it('returns true when all plans match the predicate', () => {
+        const plan = sequentialInstructionPlan([sequentialInstructionPlan([]), sequentialInstructionPlan([])]);
+        const result = everyInstructionPlan(plan, p => p.kind === 'sequential');
+        expect(result).toBe(true);
+    });
+    it('returns false when at least one plan does not match the predicate', () => {
+        const plan = sequentialInstructionPlan([parallelInstructionPlan([]), sequentialInstructionPlan([])]);
+        const result = everyInstructionPlan(plan, p => p.kind === 'sequential');
+        expect(result).toBe(false);
+    });
+    it('matches single instruction plans', () => {
+        const plan = singleInstructionPlan(createInstruction('A'));
+        const result = everyInstructionPlan(plan, p => p.kind === 'single');
+        expect(result).toBe(true);
+    });
+    it('matches sequential instruction plans', () => {
+        const plan = sequentialInstructionPlan([]);
+        const result = everyInstructionPlan(plan, p => p.kind === 'sequential');
+        expect(result).toBe(true);
+    });
+    it('matches non-divisible sequential instruction plans', () => {
+        const plan = nonDivisibleSequentialInstructionPlan([]);
+        // eslint-disable-next-line jest/no-conditional-in-test
+        const result = everyInstructionPlan(plan, p => p.kind === 'sequential' && !p.divisible);
+        expect(result).toBe(true);
+    });
+    it('matches parallel instruction plans', () => {
+        const plan = parallelInstructionPlan([]);
+        const result = everyInstructionPlan(plan, p => p.kind === 'parallel');
+        expect(result).toBe(true);
+    });
+    it('matches message packer instruction plans', () => {
+        const plan = getMessagePackerInstructionPlanFromInstructions([createInstruction('A')]);
+        const result = everyInstructionPlan(plan, p => p.kind === 'messagePacker');
+        expect(result).toBe(true);
+    });
+    it('matches complex instruction plans', () => {
+        const plan = sequentialInstructionPlan([
+            parallelInstructionPlan([createInstruction('A'), createInstruction('B')]),
+            nonDivisibleSequentialInstructionPlan([createInstruction('A'), createInstruction('C')]),
+        ]);
+        const result = everyInstructionPlan(plan, p => {
+            // eslint-disable-next-line jest/no-conditional-in-test
+            if (p.kind !== 'single') return true;
+            const instruction = p.instruction as ReturnType<typeof createInstruction>;
+            return ['A', 'B', 'C'].includes(instruction.id);
+        });
+        expect(result).toBe(true);
+    });
+    it('returns false on complex instruction plans', () => {
+        const plan = sequentialInstructionPlan([
+            parallelInstructionPlan([createInstruction('A'), createInstruction('B')]),
+            nonDivisibleSequentialInstructionPlan([createInstruction('A'), createInstruction('C')]),
+        ]);
+        const result = everyInstructionPlan(plan, p => {
+            // eslint-disable-next-line jest/no-conditional-in-test
+            if (p.kind !== 'single') return true;
+            const instruction = p.instruction as ReturnType<typeof createInstruction>;
+            return instruction.id === 'A';
+        });
+        expect(result).toBe(false);
+    });
+    it('fails fast before evaluating children', () => {
+        const predicate = jest.fn().mockReturnValueOnce(false);
+        const instructionA = singleInstructionPlan(createInstruction('A'));
+        const instructionB = singleInstructionPlan(createInstruction('B'));
+        const plan = sequentialInstructionPlan([instructionA, instructionB]);
+        const result = everyInstructionPlan(plan, predicate);
+        expect(result).toBe(false);
+        expect(predicate).toHaveBeenCalledTimes(1);
+        expect(predicate).toHaveBeenNthCalledWith(1, plan);
+        expect(predicate).not.toHaveBeenCalledWith(instructionA);
+        expect(predicate).not.toHaveBeenCalledWith(instructionB);
+    });
+    it('fails fast before evaluating siblings', () => {
+        const predicate = jest.fn().mockReturnValueOnce(true).mockReturnValueOnce(false);
+        const instructionA = singleInstructionPlan(createInstruction('A'));
+        const instructionB = singleInstructionPlan(createInstruction('B'));
+        const plan = sequentialInstructionPlan([instructionA, instructionB]);
+        const result = everyInstructionPlan(plan, predicate);
+        expect(result).toBe(false);
+        expect(predicate).toHaveBeenCalledTimes(2);
+        expect(predicate).toHaveBeenNthCalledWith(1, plan);
+        expect(predicate).toHaveBeenNthCalledWith(2, instructionA);
+        expect(predicate).not.toHaveBeenCalledWith(instructionB);
+    });
+});
+
+describe('transformInstructionPlan', () => {
+    it('transforms single instruction plans', () => {
+        const plan = singleInstructionPlan(createInstruction('A'));
+        const transformedPlan = transformInstructionPlan(plan, p =>
+            // eslint-disable-next-line jest/no-conditional-in-test
+            p.kind === 'single' ? { ...p, instruction: { ...p.instruction, id: 'New A' } } : p,
+        );
+        expect(transformedPlan).toStrictEqual(singleInstructionPlan(createInstruction('New A')));
+    });
+    it('transforms message packer instruction plans', () => {
+        const plan = getMessagePackerInstructionPlanFromInstructions([createInstruction('A')]);
+        const transformedPlan = transformInstructionPlan(plan, p =>
+            // eslint-disable-next-line jest/no-conditional-in-test
+            p.kind === 'messagePacker'
+                ? getMessagePackerInstructionPlanFromInstructions([createInstruction('New A')])
+                : p,
+        );
+        const messagePacker = (transformedPlan as MessagePackerInstructionPlan).getMessagePacker();
+        const message = pipe(createTransactionMessage({ version: 0 }), m =>
+            setTransactionMessageFeePayer('4BpnH9U3n8S4miGz4HYT8LPHrQfa9m3zTDeMaka1g6as' as Address, m),
+        );
+        const packedMessage = messagePacker.packMessageToCapacity(message);
+        expect(messagePacker.done()).toBe(true);
+        expect(packedMessage).toStrictEqual(appendTransactionMessageInstruction(createInstruction('New A'), message));
+    });
+    it('transforms sequential instruction plans', () => {
+        const plan = sequentialInstructionPlan([createInstruction('A'), createInstruction('B')]);
+        const transformedPlan = transformInstructionPlan(plan, p =>
+            // eslint-disable-next-line jest/no-conditional-in-test
+            p.kind === 'sequential' ? { ...p, plans: p.plans.reverse() } : p,
+        );
+        expect(transformedPlan).toStrictEqual(
+            sequentialInstructionPlan([createInstruction('B'), createInstruction('A')]),
+        );
+    });
+    it('transforms non-divisible sequential instruction plans', () => {
+        const plan = nonDivisibleSequentialInstructionPlan([createInstruction('A'), createInstruction('B')]);
+        const transformedPlan = transformInstructionPlan(plan, p =>
+            // eslint-disable-next-line jest/no-conditional-in-test
+            p.kind === 'sequential' ? { ...p, plans: p.plans.reverse() } : p,
+        );
+        expect(transformedPlan).toStrictEqual(
+            nonDivisibleSequentialInstructionPlan([createInstruction('B'), createInstruction('A')]),
+        );
+    });
+    it('transforms parallel instruction plans', () => {
+        const plan = parallelInstructionPlan([createInstruction('A'), createInstruction('B')]);
+        const transformedPlan = transformInstructionPlan(plan, p =>
+            // eslint-disable-next-line jest/no-conditional-in-test
+            p.kind === 'parallel' ? { ...p, plans: p.plans.reverse() } : p,
+        );
+        expect(transformedPlan).toStrictEqual(
+            parallelInstructionPlan([createInstruction('B'), createInstruction('A')]),
+        );
+    });
+    it('transforms using a bottom-up approach', () => {
+        // Given the following nested plans.
+        const plan = sequentialInstructionPlan([
+            createInstruction('A'),
+            sequentialInstructionPlan([createInstruction('B'), createInstruction('C')]),
+        ]);
+
+        // And given an array of instruction IDs that were seen by sequential plans during transformation.
+        const seenInstructionIds: string[] = [];
+
+        // When transforming by prepending "New " to single instruction plan IDs
+        // And recording the seen instruction IDs in sequential plans.
+        transformInstructionPlan(plan, p => {
+            // eslint-disable-next-line jest/no-conditional-in-test
+            if (p.kind === 'single') {
+                const instruction = p.instruction as ReturnType<typeof createInstruction>;
+                return { ...p, instruction: { ...instruction, id: `New ${instruction.id}` } };
+            }
+            // eslint-disable-next-line jest/no-conditional-in-test
+            if (p.kind === 'sequential') {
+                const seenInstructions = p.plans
+                    .filter(subPlan => subPlan.kind === 'single')
+                    .map(subPlan => subPlan.instruction as ReturnType<typeof createInstruction>);
+                seenInstructionIds.push(...seenInstructions.map(instruction => instruction.id));
+            }
+            return p;
+        });
+
+        // Then we expect the seen instruction IDs to have already been transformed
+        // using a bottom-up approach.
+        expect(seenInstructionIds).toStrictEqual(['New B', 'New C', 'New A']);
+    });
+    it('can be used to duplicate instructions', () => {
+        const plan = sequentialInstructionPlan([createInstruction('A'), createInstruction('B')]);
+        const transformedPlan = transformInstructionPlan(plan, p =>
+            // eslint-disable-next-line jest/no-conditional-in-test
+            p.kind === 'single' ? sequentialInstructionPlan([p.instruction, p.instruction]) : p,
+        );
+        expect(transformedPlan).toStrictEqual(
+            sequentialInstructionPlan([
+                sequentialInstructionPlan([createInstruction('A'), createInstruction('A')]),
+                sequentialInstructionPlan([createInstruction('B'), createInstruction('B')]),
+            ]),
+        );
+    });
+    it('can be used to remove parallelism', () => {
+        const plan = parallelInstructionPlan([createInstruction('A'), createInstruction('B')]);
+        const transformedPlan = transformInstructionPlan(plan, p =>
+            // eslint-disable-next-line jest/no-conditional-in-test
+            p.kind === 'parallel' ? sequentialInstructionPlan(p.plans) : p,
+        );
+        expect(transformedPlan).toStrictEqual(
+            sequentialInstructionPlan([createInstruction('A'), createInstruction('B')]),
+        );
+    });
+    it('can be used to flatten nested instruction plans', () => {
+        const plan = sequentialInstructionPlan([
+            sequentialInstructionPlan([createInstruction('A'), createInstruction('B')]),
+            sequentialInstructionPlan([
+                createInstruction('C'),
+                sequentialInstructionPlan([createInstruction('D'), createInstruction('E')]),
+            ]),
+        ]);
+        const transformedPlan = transformInstructionPlan(plan, p => {
+            // eslint-disable-next-line jest/no-conditional-in-test
+            if (p.kind !== 'sequential') return p;
+            const subPlans = p.plans.flatMap(subPlan =>
+                // eslint-disable-next-line jest/no-conditional-in-test
+                subPlan.kind === 'sequential' && p.divisible === subPlan.divisible ? subPlan.plans : [subPlan],
+            );
+            return { ...p, plans: subPlans };
+        });
+        expect(transformedPlan).toStrictEqual(
+            sequentialInstructionPlan([
+                createInstruction('A'),
+                createInstruction('B'),
+                createInstruction('C'),
+                createInstruction('D'),
+                createInstruction('E'),
+            ]),
+        );
+    });
+    it('keeps transformed single instruction plans frozen', () => {
+        const plan = singleInstructionPlan(createInstruction('A'));
+        const transformedPlan = transformInstructionPlan(plan, p => ({ ...p }));
+        expect(transformedPlan).toBeFrozenObject();
+    });
+    it('keeps transformed message packer instruction plans frozen', () => {
+        const plan = getMessagePackerInstructionPlanFromInstructions([createInstruction('A')]);
+        const transformedPlan = transformInstructionPlan(plan, p => ({ ...p }));
+        expect(transformedPlan).toBeFrozenObject();
+    });
+    it('keeps transformed sequential instruction plans frozen', () => {
+        const plan = sequentialInstructionPlan([createInstruction('A')]);
+        const transformedPlan = transformInstructionPlan(plan, p => ({ ...p }));
+        expect(transformedPlan).toBeFrozenObject();
+    });
+    it('keeps transformed parallel instruction plans frozen', () => {
+        const plan = parallelInstructionPlan([createInstruction('A')]);
+        const transformedPlan = transformInstructionPlan(plan, p => ({ ...p }));
+        expect(transformedPlan).toBeFrozenObject();
+    });
+});
+
+describe('flattenInstructionPlan', () => {
+    it('returns the single instruction plan when given a SingleInstructionPlan', () => {
+        const instructionA = createInstruction('A');
+        const plan = singleInstructionPlan(instructionA);
+        const result = flattenInstructionPlan(plan);
+        expect(result).toStrictEqual([plan]);
+    });
+    it('returns the message packer plan when given a MessagePackerInstructionPlan', () => {
+        const plan = getMessagePackerInstructionPlanFromInstructions([createInstruction('A')]);
+        const result = flattenInstructionPlan(plan);
+        expect(result).toStrictEqual([plan]);
+    });
+    it('returns all leaf plans from a ParallelInstructionPlan', () => {
+        const instructionA = createInstruction('A');
+        const instructionB = createInstruction('B');
+        const plan = parallelInstructionPlan([instructionA, instructionB]);
+        const result = flattenInstructionPlan(plan);
+        expect(result).toStrictEqual([singleInstructionPlan(instructionA), singleInstructionPlan(instructionB)]);
+    });
+    it('returns all leaf plans from a SequentialInstructionPlan', () => {
+        const instructionA = createInstruction('A');
+        const instructionB = createInstruction('B');
+        const plan = sequentialInstructionPlan([instructionA, instructionB]);
+        const result = flattenInstructionPlan(plan);
+        expect(result).toStrictEqual([singleInstructionPlan(instructionA), singleInstructionPlan(instructionB)]);
+    });
+    it('returns all leaf plans from a complex nested structure', () => {
+        const instructionA = createInstruction('A');
+        const instructionB = createInstruction('B');
+        const instructionC = createInstruction('C');
+        const instructionD = createInstruction('D');
+        const instructionE = createInstruction('E');
+        const messagePackerPlan = getMessagePackerInstructionPlanFromInstructions([createInstruction('F')]);
+        const plan = parallelInstructionPlan([
+            sequentialInstructionPlan([instructionA, instructionB]),
+            nonDivisibleSequentialInstructionPlan([instructionC, instructionD]),
+            instructionE,
+            messagePackerPlan,
+        ]);
+        const result = flattenInstructionPlan(plan);
+        expect(result).toStrictEqual([
+            singleInstructionPlan(instructionA),
+            singleInstructionPlan(instructionB),
+            singleInstructionPlan(instructionC),
+            singleInstructionPlan(instructionD),
+            singleInstructionPlan(instructionE),
+            messagePackerPlan,
+        ]);
+    });
+});
+
+describe('isInstructionPlan', () => {
+    it('returns true for SingleInstructionPlan', () => {
+        expect(isInstructionPlan(singleInstructionPlan(createInstruction('A')))).toBe(true);
+    });
+    it('returns true for ParallelInstructionPlan', () => {
+        expect(isInstructionPlan(parallelInstructionPlan([]))).toBe(true);
+    });
+    it('returns true for SequentialInstructionPlan', () => {
+        expect(isInstructionPlan(sequentialInstructionPlan([]))).toBe(true);
+    });
+    it('returns true for non-divisible SequentialInstructionPlan', () => {
+        expect(isInstructionPlan(nonDivisibleSequentialInstructionPlan([]))).toBe(true);
+    });
+    it('returns true for MessagePackerInstructionPlan', () => {
+        expect(isInstructionPlan(getMessagePackerInstructionPlanFromInstructions([]))).toBe(true);
+    });
+    it('returns false for non-objects', () => {
+        expect(isInstructionPlan(null)).toBe(false);
+        expect(isInstructionPlan(undefined)).toBe(false);
+        expect(isInstructionPlan('string')).toBe(false);
+        expect(isInstructionPlan(123)).toBe(false);
+        expect(isInstructionPlan(true)).toBe(false);
+    });
+    it('returns false for objects without planType', () => {
+        expect(isInstructionPlan({ kind: 'single' })).toBe(false);
+    });
+    it('returns false for objects with wrong planType', () => {
+        expect(isInstructionPlan({ planType: 123 })).toBe(false);
+        expect(isInstructionPlan({ planType: null })).toBe(false);
+        expect(isInstructionPlan({ planType: 'transactionPlan' })).toBe(false);
+        expect(isInstructionPlan({ planType: 'transactionPlanResult' })).toBe(false);
     });
 });

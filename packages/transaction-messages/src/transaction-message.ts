@@ -1,10 +1,8 @@
 import { AccountMeta, Instruction } from '@solana/instructions';
 
-/**
- * @deprecated Use `TransactionMessage` instead.
- */
-// TODO(#1147) Stop exporting this in a future major version.
-export type BaseTransactionMessage<
+import { V1TransactionConfig } from './v1-transaction-config';
+
+type BaseTransactionMessage<
     TVersion extends TransactionVersion = TransactionVersion,
     TInstruction extends Instruction = Instruction,
 > = Readonly<{
@@ -12,11 +10,18 @@ export type BaseTransactionMessage<
     version: TVersion;
 }>;
 
-export const MAX_SUPPORTED_TRANSACTION_VERSION = 0;
+export const MAX_SUPPORTED_TRANSACTION_VERSION = 1;
 
-type LegacyInstruction<TProgramAddress extends string = string> = Instruction<TProgramAddress, readonly AccountMeta[]>;
-type LegacyTransactionMessage = BaseTransactionMessage<'legacy', LegacyInstruction>;
+type InstructionWithoutLookupTables<TProgramAddress extends string = string> = Instruction<
+    TProgramAddress,
+    readonly AccountMeta[]
+>;
+type LegacyTransactionMessage = BaseTransactionMessage<'legacy', InstructionWithoutLookupTables>;
 type V0TransactionMessage = BaseTransactionMessage<0, Instruction>;
-
-export type TransactionMessage = LegacyTransactionMessage | V0TransactionMessage;
-export type TransactionVersion = 'legacy' | 0;
+type V1TransactionMessage = BaseTransactionMessage<1, InstructionWithoutLookupTables> &
+    Readonly<{
+        /** A set of optional configuration values for the transaction */
+        config?: V1TransactionConfig;
+    }>;
+export type TransactionMessage = LegacyTransactionMessage | V0TransactionMessage | V1TransactionMessage;
+export type TransactionVersion = 'legacy' | 0 | 1;

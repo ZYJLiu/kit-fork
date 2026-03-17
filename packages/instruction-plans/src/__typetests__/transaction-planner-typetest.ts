@@ -3,13 +3,16 @@
 import { Instruction } from '@solana/instructions';
 import {
     appendTransactionMessageInstruction,
-    BaseTransactionMessage,
+    TransactionMessage,
     TransactionMessageWithFeePayer,
 } from '@solana/transaction-messages';
 
-import type { InstructionPlan } from '../instruction-plan';
-import type { TransactionPlan } from '../transaction-plan';
-import { createTransactionPlanner, type TransactionPlanner } from '../transaction-planner';
+import {
+    createTransactionPlanner,
+    type InstructionPlan,
+    type TransactionPlan,
+    type TransactionPlanner,
+} from '../index';
 
 // [DESCRIBE] TransactionPlanner
 {
@@ -31,7 +34,7 @@ import { createTransactionPlanner, type TransactionPlanner } from '../transactio
                 typeof createTransactionPlanner
             >[0]['createTransactionMessage'],
             onTransactionMessageUpdated: message => {
-                message satisfies BaseTransactionMessage & TransactionMessageWithFeePayer;
+                message satisfies TransactionMessage & TransactionMessageWithFeePayer;
                 return message;
             },
         });

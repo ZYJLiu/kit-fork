@@ -1,102 +1,23 @@
-import { getAddressDecoder, getAddressEncoder } from '@solana/addresses';
 import {
     combineCodec,
-    createEncoder,
-    Decoder,
-    fixDecoderSize,
-    fixEncoderSize,
-    transformDecoder,
+    createDecoder,
     transformEncoder,
     VariableSizeCodec,
     VariableSizeDecoder,
     VariableSizeEncoder,
 } from '@solana/codecs-core';
-import {
-    getArrayDecoder,
-    getArrayEncoder,
-    getConstantEncoder,
-    getStructDecoder,
-    getStructEncoder,
-    getUnionEncoder,
-} from '@solana/codecs-data-structures';
-import { getShortU16Decoder, getShortU16Encoder } from '@solana/codecs-numbers';
-import { getBase58Decoder, getBase58Encoder } from '@solana/codecs-strings';
+import { getPatternMatchDecoder, getPatternMatchEncoder } from '@solana/codecs-data-structures';
+import { SOLANA_ERROR__TRANSACTION__VERSION_NUMBER_NOT_SUPPORTED, SolanaError } from '@solana/errors';
 
-import { getCompiledAddressTableLookups } from '../compile/address-table-lookups';
 import { CompiledTransactionMessage, CompiledTransactionMessageWithLifetime } from '../compile/message';
-import { getAddressTableLookupDecoder, getAddressTableLookupEncoder } from './address-table-lookup';
-import { getMessageHeaderDecoder, getMessageHeaderEncoder } from './header';
-import { getInstructionDecoder, getInstructionEncoder } from './instruction';
-import { getTransactionVersionDecoder, getTransactionVersionEncoder } from './transaction-version';
-
-function getCompiledMessageLegacyEncoder(): VariableSizeEncoder<
-    CompiledTransactionMessage | (CompiledTransactionMessage & CompiledTransactionMessageWithLifetime)
-> {
-    return getStructEncoder(getPreludeStructEncoderTuple()) as VariableSizeEncoder<
-        CompiledTransactionMessage | (CompiledTransactionMessage & CompiledTransactionMessageWithLifetime)
-    >;
-}
-
-function getCompiledMessageVersionedEncoder(): VariableSizeEncoder<
-    CompiledTransactionMessage | (CompiledTransactionMessage & CompiledTransactionMessageWithLifetime)
-> {
-    return transformEncoder(
-        getStructEncoder([
-            ...getPreludeStructEncoderTuple(),
-            ['addressTableLookups', getAddressTableLookupArrayEncoder()],
-        ]) as VariableSizeEncoder<
-            CompiledTransactionMessage | (CompiledTransactionMessage & CompiledTransactionMessageWithLifetime)
-        >,
-        value => {
-            if (value.version === 'legacy') {
-                return value;
-            }
-            return {
-                ...value,
-                addressTableLookups: value.addressTableLookups ?? [],
-            };
-        },
-    );
-}
-
-function getPreludeStructEncoderTuple() {
-    const lifetimeTokenEncoder = getUnionEncoder(
-        [
-            // Use a 32-byte constant encoder for a missing lifetime token (index 0).
-            getConstantEncoder(new Uint8Array(32)),
-            // Use a 32-byte base58 encoder for a valid lifetime token (index 1).
-            fixEncoderSize(getBase58Encoder(), 32),
-        ],
-        value => (value === undefined ? 0 : 1),
-    );
-
-    return [
-        ['version', getTransactionVersionEncoder()],
-        ['header', getMessageHeaderEncoder()],
-        ['staticAccounts', getArrayEncoder(getAddressEncoder(), { size: getShortU16Encoder() })],
-        ['lifetimeToken', lifetimeTokenEncoder],
-        ['instructions', getArrayEncoder(getInstructionEncoder(), { size: getShortU16Encoder() })],
-    ] as const;
-}
-
-function getPreludeStructDecoderTuple() {
-    return [
-        ['version', getTransactionVersionDecoder() as Decoder<number>],
-        ['header', getMessageHeaderDecoder()],
-        ['staticAccounts', getArrayDecoder(getAddressDecoder(), { size: getShortU16Decoder() })],
-        ['lifetimeToken', fixDecoderSize(getBase58Decoder(), 32)],
-        ['instructions', getArrayDecoder(getInstructionDecoder(), { size: getShortU16Decoder() })],
-        ['addressTableLookups', getAddressTableLookupArrayDecoder()],
-    ] as const;
-}
-
-function getAddressTableLookupArrayEncoder() {
-    return getArrayEncoder(getAddressTableLookupEncoder(), { size: getShortU16Encoder() });
-}
-
-function getAddressTableLookupArrayDecoder() {
-    return getArrayDecoder(getAddressTableLookupDecoder(), { size: getShortU16Decoder() });
-}
+import { MAX_SUPPORTED_TRANSACTION_VERSION } from '../transaction-message';
+import {
+    getMessageDecoder as getLegacyMessageDecoder,
+    getMessageEncoder as getLegacyMessageEncoder,
+} from './legacy/message';
+import { getTransactionVersionDecoder } from './transaction-version';
+import { getMessageDecoder as getV0MessageDecoder, getMessageEncoder as getV0MessageEncoder } from './v0/message';
+import { getMessageDecoder as getV1MessageDecoder, getMessageEncoder as getV1MessageEncoder } from './v1/message';
 
 /**
  * Returns an encoder that you can use to encode a {@link CompiledTransactionMessage} to a byte
@@ -108,22 +29,24 @@ function getAddressTableLookupArrayDecoder() {
 export function getCompiledTransactionMessageEncoder(): VariableSizeEncoder<
     CompiledTransactionMessage | (CompiledTransactionMessage & CompiledTransactionMessageWithLifetime)
 > {
-    return createEncoder({
-        getSizeFromValue: compiledMessage => {
-            if (compiledMessage.version === 'legacy') {
-                return getCompiledMessageLegacyEncoder().getSizeFromValue(compiledMessage);
-            } else {
-                return getCompiledMessageVersionedEncoder().getSizeFromValue(compiledMessage);
+    return transformEncoder(
+        getPatternMatchEncoder<
+            CompiledTransactionMessage | (CompiledTransactionMessage & CompiledTransactionMessageWithLifetime)
+        >([
+            [m => m.version === 'legacy', getLegacyMessageEncoder()],
+            [m => m.version === 0, getV0MessageEncoder()],
+            [m => m.version === 1, getV1MessageEncoder()],
+        ]),
+        value => {
+            // check version is valid before encoding, so we don't get the generic pattern match error
+            if (value.version !== 'legacy' && value.version > MAX_SUPPORTED_TRANSACTION_VERSION) {
+                throw new SolanaError(SOLANA_ERROR__TRANSACTION__VERSION_NUMBER_NOT_SUPPORTED, {
+                    unsupportedVersion: value.version,
+                });
             }
+            return value;
         },
-        write: (compiledMessage, bytes, offset) => {
-            if (compiledMessage.version === 'legacy') {
-                return getCompiledMessageLegacyEncoder().write(compiledMessage, bytes, offset);
-            } else {
-                return getCompiledMessageVersionedEncoder().write(compiledMessage, bytes, offset);
-            }
-        },
-    });
+    );
 }
 
 /**
@@ -136,20 +59,19 @@ export function getCompiledTransactionMessageEncoder(): VariableSizeEncoder<
 export function getCompiledTransactionMessageDecoder(): VariableSizeDecoder<
     CompiledTransactionMessage & CompiledTransactionMessageWithLifetime
 > {
-    return transformDecoder(
-        getStructDecoder(getPreludeStructDecoderTuple()) as VariableSizeDecoder<
-            CompiledTransactionMessage &
-                CompiledTransactionMessageWithLifetime & {
-                    addressTableLookups?: ReturnType<typeof getCompiledAddressTableLookups>;
-                }
-        >,
-        ({ addressTableLookups, ...restOfMessage }) => {
-            if (restOfMessage.version === 'legacy' || !addressTableLookups?.length) {
-                return restOfMessage;
-            }
-            return { ...restOfMessage, addressTableLookups };
+    type ReturnType = VariableSizeDecoder<CompiledTransactionMessage & CompiledTransactionMessageWithLifetime>;
+
+    return createDecoder({
+        read(bytes, offset) {
+            const [version] = getTransactionVersionDecoder().read(bytes, offset);
+
+            return getPatternMatchDecoder([
+                [() => version === 'legacy', getLegacyMessageDecoder() as ReturnType],
+                [() => version === 0, getV0MessageDecoder() as ReturnType],
+                [() => version === 1, getV1MessageDecoder() as ReturnType],
+            ]).read(bytes, offset);
         },
-    );
+    });
 }
 
 /**

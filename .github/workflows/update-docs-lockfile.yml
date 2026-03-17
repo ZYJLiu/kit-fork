@@ -1,0 +1,54 @@
+name: Update Docs Lockfile
+
+on:
+  pull_request_target:
+    paths:
+      - 'docs/package.json'
+
+permissions:
+  contents: write
+
+jobs:
+  update-lockfile:
+    runs-on: ubuntu-latest
+    permissions:
+      id-token: write
+    if: github.event.pull_request.user.login == 'dependabot[bot]'
+    steps:
+      - uses: actions/create-github-app-token@v2
+        id: app-token
+        with:
+          app-id: ${{ vars.APP_ID }}
+          private-key: ${{ secrets.PRIVATE_KEY }}
+
+      - name: Set git config
+        run: |
+          git config --global user.email "github-actions@github.com"
+          git config --global user.name "github-actions"
+          git config --global url."https://x-access-token:${GITHUB_TOKEN}@github.com/".insteadOf https://github.com/
+        env:
+          GITHUB_TOKEN: ${{ steps.app-token.outputs.token }}
+
+      - name: Checkout PR branch
+        uses: actions/checkout@v6
+        with:
+          token: ${{ steps.app-token.outputs.token }}
+          ref: ${{ github.event.pull_request.head.ref }}
+          persist-credentials: false
+
+      - name: Install Dependencies
+        uses: ./.github/workflows/actions/install-dependencies
+
+      - name: Update Docs Lockfile
+        working-directory: ./docs/
+        run: pnpm install --ignore-workspace --no-frozen-lockfile --ignore-scripts
+
+      - name: Commit and Push
+        run: |
+          git add docs/pnpm-lock.yaml
+          if git diff --cached --quiet; then
+            echo "No lockfile changes to commit"
+          else
+            git commit -m "Update docs lockfile"
+            git push
+          fi

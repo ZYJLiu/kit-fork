@@ -1,7 +1,7 @@
 import * as SolanaErrorCodeModule from '../codes';
 import { SolanaErrorCode, SolanaErrorCodeWithCause } from '../codes';
 import { SolanaErrorContext } from '../context';
-import { isSolanaError, SolanaError } from '../error';
+import { isSolanaError, SolanaError, SolanaErrorWithDeprecatedCause } from '../error';
 
 const { SOLANA_ERROR__TRANSACTION__FEE_PAYER_SIGNATURE_MISSING, SOLANA_ERROR__TRANSACTION__SIGNATURES_MISSING } =
     SolanaErrorCodeModule;
@@ -66,3 +66,19 @@ null as unknown as SolanaErrorContext satisfies {
 // Special errors have a nested `cause` property that is an optional `SolanaError`
 const errorWithCause = null as unknown as SolanaError<SolanaErrorCodeWithCause>;
 errorWithCause.cause satisfies SolanaError | undefined;
+
+// Errors that have a deprecated `cause` property should satisfy `SolanaErrorWithDeprecatedCause`
+// when narrowed with `isSolanaError`
+{
+    const e = null as unknown;
+    if (isSolanaError(e)) {
+        // @ts-expect-error Not all SolanaErrors have deprecated cause
+        e satisfies SolanaErrorWithDeprecatedCause;
+    }
+    // This one does
+    if (isSolanaError(e, SolanaErrorCodeModule.SOLANA_ERROR__INSTRUCTION_PLANS__FAILED_TO_EXECUTE_TRANSACTION_PLAN)) {
+        e satisfies SolanaErrorWithDeprecatedCause;
+        // context still works
+        e.context.transactionPlanResult satisfies unknown;
+    }
+}

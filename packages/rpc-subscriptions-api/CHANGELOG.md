@@ -1,5 +1,109 @@
 # @solana/rpc-subscriptions-api
 
+## 6.3.1
+
+### Patch Changes
+
+- Updated dependencies []:
+    - @solana/addresses@6.3.1
+    - @solana/keys@6.3.1
+    - @solana/rpc-subscriptions-spec@6.3.1
+    - @solana/rpc-transformers@6.3.1
+    - @solana/rpc-types@6.3.1
+    - @solana/transaction-messages@6.3.1
+    - @solana/transactions@6.3.1
+
+## 6.3.0
+
+### Patch Changes
+
+- Updated dependencies []:
+    - @solana/addresses@6.3.0
+    - @solana/keys@6.3.0
+    - @solana/rpc-subscriptions-spec@6.3.0
+    - @solana/rpc-transformers@6.3.0
+    - @solana/rpc-types@6.3.0
+    - @solana/transaction-messages@6.3.0
+    - @solana/transactions@6.3.0
+
+## 6.2.0
+
+### Patch Changes
+
+- Updated dependencies []:
+    - @solana/addresses@6.2.0
+    - @solana/keys@6.2.0
+    - @solana/rpc-subscriptions-spec@6.2.0
+    - @solana/rpc-transformers@6.2.0
+    - @solana/rpc-types@6.2.0
+    - @solana/transaction-messages@6.2.0
+    - @solana/transactions@6.2.0
+
+## 6.1.0
+
+### Patch Changes
+
+- Updated dependencies []:
+    - @solana/transaction-messages@6.1.0
+    - @solana/transactions@6.1.0
+    - @solana/addresses@6.1.0
+    - @solana/keys@6.1.0
+    - @solana/rpc-subscriptions-spec@6.1.0
+    - @solana/rpc-transformers@6.1.0
+    - @solana/rpc-types@6.1.0
+
+## 6.0.1
+
+### Patch Changes
+
+- Updated dependencies [[`2d3296f`](https://github.com/anza-xyz/kit/commit/2d3296f1ea03184455197d0284be73ada999b492), [`a8a57ce`](https://github.com/anza-xyz/kit/commit/a8a57cebc47caa24f6d105c346427baa244fa462)]:
+    - @solana/transaction-messages@6.0.1
+    - @solana/transactions@6.0.1
+    - @solana/addresses@6.0.1
+    - @solana/keys@6.0.1
+    - @solana/rpc-subscriptions-spec@6.0.1
+    - @solana/rpc-transformers@6.0.1
+    - @solana/rpc-types@6.0.1
+
+## 6.0.0
+
+### Patch Changes
+
+- Updated dependencies [[`f80b6de`](https://github.com/anza-xyz/kit/commit/f80b6de0649ed2df3aa64fdd01215322bb8cc926), [`b82df4c`](https://github.com/anza-xyz/kit/commit/b82df4c98a9f157c030f62735f4427ba095bee6a), [`986a09c`](https://github.com/anza-xyz/kit/commit/986a09c56c38c2a91752972ec258fe790f8620db)]:
+    - @solana/transaction-messages@6.0.0
+    - @solana/transactions@6.0.0
+    - @solana/addresses@6.0.0
+    - @solana/keys@6.0.0
+    - @solana/rpc-subscriptions-spec@6.0.0
+    - @solana/rpc-transformers@6.0.0
+    - @solana/rpc-types@6.0.0
+
+## 5.5.1
+
+### Patch Changes
+
+- Updated dependencies []:
+    - @solana/addresses@5.5.1
+    - @solana/keys@5.5.1
+    - @solana/rpc-subscriptions-spec@5.5.1
+    - @solana/rpc-transformers@5.5.1
+    - @solana/rpc-types@5.5.1
+    - @solana/transaction-messages@5.5.1
+    - @solana/transactions@5.5.1
+
+## 5.5.0
+
+### Patch Changes
+
+- Updated dependencies []:
+    - @solana/addresses@5.5.0
+    - @solana/keys@5.5.0
+    - @solana/rpc-subscriptions-spec@5.5.0
+    - @solana/rpc-transformers@5.5.0
+    - @solana/rpc-types@5.5.0
+    - @solana/transaction-messages@5.5.0
+    - @solana/transactions@5.5.0
+
 ## 5.4.0
 
 ### Patch Changes

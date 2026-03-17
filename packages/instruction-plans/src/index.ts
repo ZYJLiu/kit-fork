@@ -50,8 +50,11 @@
  *
  * @packageDocumentation
  */
+export * from './append-instruction-plan';
 export * from './instruction-plan';
+export * from './instruction-plan-input';
+export * from './transaction-plan';
+export * from './transaction-plan-errors';
 export * from './transaction-plan-executor';
 export * from './transaction-plan-result';
-export * from './transaction-plan';
 export * from './transaction-planner';

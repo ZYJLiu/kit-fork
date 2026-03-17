@@ -1,6 +1,23 @@
-import { SolanaErrorCode, SolanaErrorCodeWithCause } from './codes';
+import { SolanaErrorCode, SolanaErrorCodeWithCause, SolanaErrorCodeWithDeprecatedCause } from './codes';
 import { SolanaErrorContext } from './context';
 import { getErrorMessage } from './message-formatter';
+
+/**
+ * A variant of {@link SolanaError} where the `cause` property is deprecated.
+ *
+ * This type is returned by {@link isSolanaError} when checking for error codes in
+ * {@link SolanaErrorCodeWithDeprecatedCause}. Accessing `cause` on these errors will show
+ * a deprecation warning in IDEs that support JSDoc `@deprecated` tags.
+ */
+export interface SolanaErrorWithDeprecatedCause<
+    TErrorCode extends SolanaErrorCodeWithDeprecatedCause = SolanaErrorCodeWithDeprecatedCause,
+> extends Omit<SolanaError<TErrorCode>, 'cause'> {
+    /**
+     * @deprecated The `cause` property is deprecated for this error code.
+     * Use the error's `context` property instead to access relevant error information.
+     */
+    readonly cause?: unknown;
+}
 
 /**
  * A type guard that returns `true` if the input is a {@link SolanaError}, optionally with a
@@ -44,6 +61,14 @@ import { getErrorMessage } from './message-formatter';
  * }
  * ```
  */
+export function isSolanaError<TErrorCode extends SolanaErrorCodeWithDeprecatedCause>(
+    e: unknown,
+    code: TErrorCode,
+): e is SolanaErrorWithDeprecatedCause<TErrorCode>;
+export function isSolanaError<TErrorCode extends SolanaErrorCode>(
+    e: unknown,
+    code?: TErrorCode,
+): e is SolanaError<TErrorCode>;
 export function isSolanaError<TErrorCode extends SolanaErrorCode>(
     e: unknown,
     /**

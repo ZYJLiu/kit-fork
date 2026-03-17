@@ -35,12 +35,15 @@ import {
     SOLANA_ERROR__CODECS__INVALID_ENUM_VARIANT,
     SOLANA_ERROR__CODECS__INVALID_LITERAL_UNION_VARIANT,
     SOLANA_ERROR__CODECS__INVALID_NUMBER_OF_ITEMS,
+    SOLANA_ERROR__CODECS__INVALID_PATTERN_MATCH_BYTES,
     SOLANA_ERROR__CODECS__INVALID_STRING_FOR_BASE,
     SOLANA_ERROR__CODECS__LITERAL_UNION_DISCRIMINATOR_OUT_OF_RANGE,
     SOLANA_ERROR__CODECS__NUMBER_OUT_OF_RANGE,
     SOLANA_ERROR__CODECS__OFFSET_OUT_OF_RANGE,
     SOLANA_ERROR__CODECS__SENTINEL_MISSING_IN_DECODED_BYTES,
     SOLANA_ERROR__CODECS__UNION_VARIANT_OUT_OF_RANGE,
+    SOLANA_ERROR__FAILED_TO_SEND_TRANSACTION,
+    SOLANA_ERROR__FAILED_TO_SEND_TRANSACTIONS,
     SOLANA_ERROR__INSTRUCTION__EXPECTED_TO_HAVE_ACCOUNTS,
     SOLANA_ERROR__INSTRUCTION__EXPECTED_TO_HAVE_DATA,
     SOLANA_ERROR__INSTRUCTION__PROGRAM_ID_MISMATCH,
@@ -99,8 +102,13 @@ import {
     SOLANA_ERROR__INSTRUCTION_ERROR__UNKNOWN,
     SOLANA_ERROR__INSTRUCTION_ERROR__UNSUPPORTED_PROGRAM_ID,
     SOLANA_ERROR__INSTRUCTION_ERROR__UNSUPPORTED_SYSVAR,
+    SOLANA_ERROR__INSTRUCTION_PLANS__EXPECTED_SUCCESSFUL_TRANSACTION_PLAN_RESULT,
+    SOLANA_ERROR__INSTRUCTION_PLANS__FAILED_SINGLE_TRANSACTION_PLAN_RESULT_NOT_FOUND,
     SOLANA_ERROR__INSTRUCTION_PLANS__FAILED_TO_EXECUTE_TRANSACTION_PLAN,
     SOLANA_ERROR__INSTRUCTION_PLANS__MESSAGE_CANNOT_ACCOMMODATE_PLAN,
+    SOLANA_ERROR__INSTRUCTION_PLANS__UNEXPECTED_INSTRUCTION_PLAN,
+    SOLANA_ERROR__INSTRUCTION_PLANS__UNEXPECTED_TRANSACTION_PLAN,
+    SOLANA_ERROR__INSTRUCTION_PLANS__UNEXPECTED_TRANSACTION_PLAN_RESULT,
     SOLANA_ERROR__INVALID_BLOCKHASH_BYTE_LENGTH,
     SOLANA_ERROR__INVALID_NONCE,
     SOLANA_ERROR__INVARIANT_VIOLATION__CACHED_ABORTABLE_ITERABLE_CACHE_ENTRY_MISSING,
@@ -147,6 +155,13 @@ import {
     SOLANA_ERROR__OFFCHAIN_MESSAGE__SIGNATURES_MISSING,
     SOLANA_ERROR__OFFCHAIN_MESSAGE__UNEXPECTED_VERSION,
     SOLANA_ERROR__OFFCHAIN_MESSAGE__VERSION_NUMBER_NOT_SUPPORTED,
+    SOLANA_ERROR__PROGRAM_CLIENTS__FAILED_TO_IDENTIFY_ACCOUNT,
+    SOLANA_ERROR__PROGRAM_CLIENTS__FAILED_TO_IDENTIFY_INSTRUCTION,
+    SOLANA_ERROR__PROGRAM_CLIENTS__INSUFFICIENT_ACCOUNT_METAS,
+    SOLANA_ERROR__PROGRAM_CLIENTS__RESOLVED_INSTRUCTION_INPUT_MUST_BE_NON_NULL,
+    SOLANA_ERROR__PROGRAM_CLIENTS__UNEXPECTED_RESOLVED_INSTRUCTION_INPUT_TYPE,
+    SOLANA_ERROR__PROGRAM_CLIENTS__UNRECOGNIZED_ACCOUNT_TYPE,
+    SOLANA_ERROR__PROGRAM_CLIENTS__UNRECOGNIZED_INSTRUCTION_TYPE,
     SOLANA_ERROR__RPC__API_PLAN_MISSING_FOR_RPC_METHOD,
     SOLANA_ERROR__RPC__INTEGER_OVERFLOW,
     SOLANA_ERROR__RPC__TRANSPORT_HTTP_ERROR,
@@ -162,6 +177,7 @@ import {
     SOLANA_ERROR__SIGNER__EXPECTED_TRANSACTION_PARTIAL_SIGNER,
     SOLANA_ERROR__SIGNER__EXPECTED_TRANSACTION_SENDING_SIGNER,
     SOLANA_ERROR__SIGNER__EXPECTED_TRANSACTION_SIGNER,
+    SOLANA_ERROR__SIGNER__WALLET_ACCOUNT_CANNOT_SIGN_TRANSACTION,
     SOLANA_ERROR__SUBTLE_CRYPTO__CANNOT_EXPORT_NON_EXTRACTABLE_KEY,
     SOLANA_ERROR__TIMESTAMP_OUT_OF_RANGE,
     SOLANA_ERROR__TRANSACTION__ADDRESS_MISSING,
@@ -171,13 +187,20 @@ import {
     SOLANA_ERROR__TRANSACTION__FAILED_TO_DECOMPILE_ADDRESS_LOOKUP_TABLE_INDEX_OUT_OF_RANGE,
     SOLANA_ERROR__TRANSACTION__FAILED_TO_DECOMPILE_INSTRUCTION_PROGRAM_ADDRESS_NOT_FOUND,
     SOLANA_ERROR__TRANSACTION__FAILED_WHEN_SIMULATING_TO_ESTIMATE_COMPUTE_LIMIT,
+    SOLANA_ERROR__TRANSACTION__INSTRUCTION_HEADERS_PAYLOADS_MISMATCH,
+    SOLANA_ERROR__TRANSACTION__INVALID_CONFIG_MASK_PRIORITY_FEE_BITS,
+    SOLANA_ERROR__TRANSACTION__INVALID_CONFIG_VALUE_KIND,
+    SOLANA_ERROR__TRANSACTION__INVALID_NONCE_ACCOUNT_INDEX,
     SOLANA_ERROR__TRANSACTION__INVOKED_PROGRAMS_CANNOT_PAY_FEES,
     SOLANA_ERROR__TRANSACTION__INVOKED_PROGRAMS_MUST_NOT_BE_WRITABLE,
+    SOLANA_ERROR__TRANSACTION__MALFORMED_MESSAGE_BYTES,
     SOLANA_ERROR__TRANSACTION__MESSAGE_SIGNATURES_MISMATCH,
     SOLANA_ERROR__TRANSACTION__NONCE_ACCOUNT_CANNOT_BE_IN_LOOKUP_TABLE,
+    SOLANA_ERROR__TRANSACTION__SIGNATURE_COUNT_TOO_HIGH_FOR_TRANSACTION_BYTES,
     SOLANA_ERROR__TRANSACTION__SIGNATURES_MISSING,
     SOLANA_ERROR__TRANSACTION__VERSION_NUMBER_NOT_SUPPORTED,
     SOLANA_ERROR__TRANSACTION__VERSION_NUMBER_OUT_OF_RANGE,
+    SOLANA_ERROR__TRANSACTION__VERSION_ZERO_MUST_BE_ENCODED_WITH_SIGNATURES_FIRST,
     SOLANA_ERROR__TRANSACTION_ERROR__DUPLICATE_INSTRUCTION,
     SOLANA_ERROR__TRANSACTION_ERROR__INSUFFICIENT_FUNDS_FOR_RENT,
     SOLANA_ERROR__TRANSACTION_ERROR__PROGRAM_EXECUTION_TEMPORARILY_RESTRICTED,
@@ -379,6 +402,9 @@ export type SolanaErrorContext = ReadonlyContextValue<
                 codecDescription: string;
                 expected: bigint | number;
             };
+            [SOLANA_ERROR__CODECS__INVALID_PATTERN_MATCH_BYTES]: {
+                bytes: ReadonlyUint8Array;
+            };
             [SOLANA_ERROR__CODECS__INVALID_STRING_FOR_BASE]: {
                 alphabet: string;
                 base: number;
@@ -411,6 +437,22 @@ export type SolanaErrorContext = ReadonlyContextValue<
                 minRange: number;
                 variant: number;
             };
+            [SOLANA_ERROR__FAILED_TO_SEND_TRANSACTION]: {
+                causeMessage: string;
+                logs?: readonly string[];
+                preflightData?: Omit<RpcSimulateTransactionResult, 'err'>;
+                transactionPlanResult: unknown;
+            };
+            [SOLANA_ERROR__FAILED_TO_SEND_TRANSACTIONS]: {
+                causeMessages: string;
+                failedTransactions: ReadonlyArray<{
+                    error: Error;
+                    index: number;
+                    logs?: readonly string[];
+                    preflightData?: Omit<RpcSimulateTransactionResult, 'err'>;
+                }>;
+                transactionPlanResult: unknown;
+            };
             [SOLANA_ERROR__INSTRUCTION_ERROR__BORSH_IO_ERROR]: {
                 index: number;
             };
@@ -423,12 +465,34 @@ export type SolanaErrorContext = ReadonlyContextValue<
                 index: number;
                 instructionErrorContext?: unknown;
             };
+            [SOLANA_ERROR__INSTRUCTION_PLANS__EXPECTED_SUCCESSFUL_TRANSACTION_PLAN_RESULT]: {
+                transactionPlanResult: unknown;
+            };
+            [SOLANA_ERROR__INSTRUCTION_PLANS__FAILED_SINGLE_TRANSACTION_PLAN_RESULT_NOT_FOUND]: {
+                transactionPlanResult: unknown;
+            };
             [SOLANA_ERROR__INSTRUCTION_PLANS__FAILED_TO_EXECUTE_TRANSACTION_PLAN]: {
+                abortReason?: unknown;
                 transactionPlanResult: unknown;
             };
             [SOLANA_ERROR__INSTRUCTION_PLANS__MESSAGE_CANNOT_ACCOMMODATE_PLAN]: {
                 numBytesRequired: number;
                 numFreeBytes: number;
+            };
+            [SOLANA_ERROR__INSTRUCTION_PLANS__UNEXPECTED_INSTRUCTION_PLAN]: {
+                actualKind: string;
+                expectedKind: string;
+                instructionPlan: unknown;
+            };
+            [SOLANA_ERROR__INSTRUCTION_PLANS__UNEXPECTED_TRANSACTION_PLAN]: {
+                actualKind: string;
+                expectedKind: string;
+                transactionPlan: unknown;
+            };
+            [SOLANA_ERROR__INSTRUCTION_PLANS__UNEXPECTED_TRANSACTION_PLAN_RESULT]: {
+                actualKind: string;
+                expectedKind: string;
+                transactionPlanResult: unknown;
             };
             [SOLANA_ERROR__INSTRUCTION__EXPECTED_TO_HAVE_ACCOUNTS]: {
                 data?: ReadonlyUint8Array;
@@ -595,6 +659,33 @@ export type SolanaErrorContext = ReadonlyContextValue<
             [SOLANA_ERROR__OFFCHAIN_MESSAGE__VERSION_NUMBER_NOT_SUPPORTED]: {
                 unsupportedVersion: number;
             };
+            [SOLANA_ERROR__PROGRAM_CLIENTS__FAILED_TO_IDENTIFY_ACCOUNT]: {
+                accountData: ReadonlyUint8Array;
+                programName: string;
+            };
+            [SOLANA_ERROR__PROGRAM_CLIENTS__FAILED_TO_IDENTIFY_INSTRUCTION]: {
+                instructionData: ReadonlyUint8Array;
+                programName: string;
+            };
+            [SOLANA_ERROR__PROGRAM_CLIENTS__INSUFFICIENT_ACCOUNT_METAS]: {
+                actualAccountMetas: number;
+                expectedAccountMetas: number;
+            };
+            [SOLANA_ERROR__PROGRAM_CLIENTS__RESOLVED_INSTRUCTION_INPUT_MUST_BE_NON_NULL]: {
+                inputName: string;
+            };
+            [SOLANA_ERROR__PROGRAM_CLIENTS__UNEXPECTED_RESOLVED_INSTRUCTION_INPUT_TYPE]: {
+                expectedType: string;
+                inputName: string;
+            };
+            [SOLANA_ERROR__PROGRAM_CLIENTS__UNRECOGNIZED_ACCOUNT_TYPE]: {
+                accountType: number | string;
+                programName: string;
+            };
+            [SOLANA_ERROR__PROGRAM_CLIENTS__UNRECOGNIZED_INSTRUCTION_TYPE]: {
+                instructionType: number | string;
+                programName: string;
+            };
             [SOLANA_ERROR__RPC_SUBSCRIPTIONS__CANNOT_CREATE_SUBSCRIPTION_PLAN]: {
                 notificationName: string;
             };
@@ -648,6 +739,10 @@ export type SolanaErrorContext = ReadonlyContextValue<
             [SOLANA_ERROR__SIGNER__EXPECTED_TRANSACTION_SIGNER]: {
                 address: string;
             };
+            [SOLANA_ERROR__SIGNER__WALLET_ACCOUNT_CANNOT_SIGN_TRANSACTION]: {
+                address: string;
+                supportedFeatures: string[];
+            };
             [SOLANA_ERROR__SUBTLE_CRYPTO__CANNOT_EXPORT_NON_EXTRACTABLE_KEY]: {
                 key: CryptoKey;
             };
@@ -689,14 +784,35 @@ export type SolanaErrorContext = ReadonlyContextValue<
             [SOLANA_ERROR__TRANSACTION__FAILED_TO_DECOMPILE_INSTRUCTION_PROGRAM_ADDRESS_NOT_FOUND]: {
                 index: number;
             };
-            [SOLANA_ERROR__TRANSACTION__FAILED_WHEN_SIMULATING_TO_ESTIMATE_COMPUTE_LIMIT]: {
-                unitsConsumed: number;
+            [SOLANA_ERROR__TRANSACTION__FAILED_WHEN_SIMULATING_TO_ESTIMATE_COMPUTE_LIMIT]: Omit<
+                RpcSimulateTransactionResult,
+                'err'
+            >;
+            [SOLANA_ERROR__TRANSACTION__INSTRUCTION_HEADERS_PAYLOADS_MISMATCH]: {
+                numInstructionHeaders: number;
+                numInstructionPayloads: number;
+            };
+            [SOLANA_ERROR__TRANSACTION__INVALID_CONFIG_MASK_PRIORITY_FEE_BITS]: {
+                mask: number;
+            };
+            [SOLANA_ERROR__TRANSACTION__INVALID_CONFIG_VALUE_KIND]: {
+                actualKind: 'u32' | 'u64';
+                configName: string;
+                expectedKind: 'u32' | 'u64';
+            };
+            [SOLANA_ERROR__TRANSACTION__INVALID_NONCE_ACCOUNT_INDEX]: {
+                nonce: string;
+                nonceAccountIndex: number;
+                numberOfStaticAccounts: number;
             };
             [SOLANA_ERROR__TRANSACTION__INVOKED_PROGRAMS_CANNOT_PAY_FEES]: {
                 programAddress: string;
             };
             [SOLANA_ERROR__TRANSACTION__INVOKED_PROGRAMS_MUST_NOT_BE_WRITABLE]: {
                 programAddress: string;
+            };
+            [SOLANA_ERROR__TRANSACTION__MALFORMED_MESSAGE_BYTES]: {
+                messageBytes: ReadonlyUint8Array;
             };
             [SOLANA_ERROR__TRANSACTION__MESSAGE_SIGNATURES_MISMATCH]: {
                 numRequiredSignatures: number;
@@ -709,11 +825,20 @@ export type SolanaErrorContext = ReadonlyContextValue<
             [SOLANA_ERROR__TRANSACTION__SIGNATURES_MISSING]: {
                 addresses: readonly string[];
             };
+            [SOLANA_ERROR__TRANSACTION__SIGNATURE_COUNT_TOO_HIGH_FOR_TRANSACTION_BYTES]: {
+                numExpectedSignatures: number;
+                transactionBytes: ReadonlyUint8Array;
+                transactionBytesLength: number;
+            };
             [SOLANA_ERROR__TRANSACTION__VERSION_NUMBER_NOT_SUPPORTED]: {
                 unsupportedVersion: number;
             };
             [SOLANA_ERROR__TRANSACTION__VERSION_NUMBER_OUT_OF_RANGE]: {
                 actualVersion: number;
+            };
+            [SOLANA_ERROR__TRANSACTION__VERSION_ZERO_MUST_BE_ENCODED_WITH_SIGNATURES_FIRST]: {
+                firstByte: number;
+                transactionBytes: ReadonlyUint8Array;
             };
         }
     >

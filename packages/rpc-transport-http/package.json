@@ -1,6 +1,6 @@
 {
     "name": "@solana/rpc-transport-http",
-    "version": "5.4.0",
+    "version": "6.3.1",
     "description": "An RPC transport that uses HTTP requests",
     "homepage": "https://www.solanakit.com/api#solanarpc-transport-http",
     "exports": {
@@ -33,7 +33,8 @@
     "types": "./dist/types/index.d.ts",
     "type": "commonjs",
     "files": [
-        "./dist/"
+        "./dist/",
+        "./src/"
     ],
     "sideEffects": false,
     "keywords": [
@@ -77,11 +78,11 @@
         "@solana/errors": "workspace:*",
         "@solana/rpc-spec": "workspace:*",
         "@solana/rpc-spec-types": "workspace:*",
-        "undici-types": "^7.18.2"
+        "undici-types": "^7.22.0"
     },
     "devDependencies": {
         "tinybench": "^6.0.0",
-        "undici": "^7.18.2",
+        "undici": "^7.22.0",
         "zx": "^8.8.5"
     },
     "peerDependencies": {

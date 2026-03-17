@@ -1,5 +1,93 @@
 # @solana/codecs
 
+## 6.3.1
+
+### Patch Changes
+
+- Updated dependencies []:
+    - @solana/codecs-core@6.3.1
+    - @solana/codecs-data-structures@6.3.1
+    - @solana/codecs-numbers@6.3.1
+    - @solana/codecs-strings@6.3.1
+    - @solana/options@6.3.1
+
+## 6.3.0
+
+### Patch Changes
+
+- Updated dependencies []:
+    - @solana/codecs-core@6.3.0
+    - @solana/codecs-data-structures@6.3.0
+    - @solana/codecs-numbers@6.3.0
+    - @solana/codecs-strings@6.3.0
+    - @solana/options@6.3.0
+
+## 6.2.0
+
+### Patch Changes
+
+- Updated dependencies [[`5390602`](https://github.com/anza-xyz/kit/commit/53906024cffc3facb7259ab65ab974b6b1038f56), [`3f4c5f0`](https://github.com/anza-xyz/kit/commit/3f4c5f003e343c21a785e8f339f84c8d6bd3a3b1)]:
+    - @solana/codecs-data-structures@6.2.0
+    - @solana/codecs-core@6.2.0
+    - @solana/codecs-numbers@6.2.0
+    - @solana/codecs-strings@6.2.0
+    - @solana/options@6.2.0
+
+## 6.1.0
+
+### Patch Changes
+
+- Updated dependencies [[`70b1ed8`](https://github.com/anza-xyz/kit/commit/70b1ed83be4c5445f81c600a8ca70127dbdf3463), [`7ce7545`](https://github.com/anza-xyz/kit/commit/7ce75455659ace9776042def6774678a81c43a4a)]:
+    - @solana/codecs-data-structures@6.1.0
+    - @solana/options@6.1.0
+    - @solana/codecs-core@6.1.0
+    - @solana/codecs-numbers@6.1.0
+    - @solana/codecs-strings@6.1.0
+
+## 6.0.1
+
+### Patch Changes
+
+- Updated dependencies []:
+    - @solana/codecs-core@6.0.1
+    - @solana/codecs-data-structures@6.0.1
+    - @solana/codecs-numbers@6.0.1
+    - @solana/codecs-strings@6.0.1
+    - @solana/options@6.0.1
+
+## 6.0.0
+
+### Patch Changes
+
+- Updated dependencies []:
+    - @solana/codecs-core@6.0.0
+    - @solana/codecs-data-structures@6.0.0
+    - @solana/codecs-numbers@6.0.0
+    - @solana/codecs-strings@6.0.0
+    - @solana/options@6.0.0
+
+## 5.5.1
+
+### Patch Changes
+
+- Updated dependencies []:
+    - @solana/codecs-core@5.5.1
+    - @solana/codecs-data-structures@5.5.1
+    - @solana/codecs-numbers@5.5.1
+    - @solana/codecs-strings@5.5.1
+    - @solana/options@5.5.1
+
+## 5.5.0
+
+### Patch Changes
+
+- Updated dependencies []:
+    - @solana/codecs-core@5.5.0
+    - @solana/codecs-data-structures@5.5.0
+    - @solana/codecs-numbers@5.5.0
+    - @solana/codecs-strings@5.5.0
+    - @solana/options@5.5.0
+
 ## 5.4.0
 
 ### Patch Changes

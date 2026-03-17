@@ -1,6 +1,6 @@
 import '@solana/test-matchers/toBeFrozenObject';
 
-import { createEmptyClient } from '../client';
+import { createEmptyClient, extendClient } from '../client';
 
 describe('createEmptyClient', () => {
     it('creates an empty object with a use function', () => {
@@ -44,6 +44,43 @@ describe('createEmptyClient', () => {
             fruit: 'apple',
             use: expect.any(Function),
         });
+    });
+
+    it('preserves getter properties from plugins', () => {
+        const client = createEmptyClient()
+            // Make fruit a get() property
+            .use(c => {
+                const result = { ...c };
+                Object.defineProperty(result, 'fruit', { configurable: true, enumerable: true, get: () => 'apple' });
+                return result;
+            })
+            // Make dessert a normal property
+            .use(c => {
+                // Use Object.defineProperties to preserve the getter on fruit
+                const result: typeof c = Object.defineProperties({}, Object.getOwnPropertyDescriptors(c));
+                Object.defineProperty(result, 'dessert', { configurable: true, enumerable: true, value: 'apple cake' });
+                return result;
+            });
+        expect(Object.getOwnPropertyDescriptor(client, 'fruit')?.get).toBeInstanceOf(Function);
+        expect((client as unknown as { fruit: string }).fruit).toBe('apple');
+        expect((client as unknown as { dessert: string }).dessert).toBe('apple cake');
+    });
+
+    it('preserves symbol-keyed properties from plugins', () => {
+        const sym = Symbol('fruit');
+
+        const client = createEmptyClient()
+            // Add the fruit symbol property
+            .use(c => ({ ...c, [sym]: 'apple' }))
+            // Add dessert as a normal property
+            .use(c => {
+                // Use Object.defineProperties to preserve the symbol on fruit
+                const result = Object.defineProperties({}, Object.getOwnPropertyDescriptors(c)) as typeof c;
+                Object.defineProperty(result, 'dessert', { configurable: true, enumerable: true, value: 'apple cake' });
+                return result;
+            });
+        expect((client as Record<symbol, unknown>)[sym]).toBe('apple');
+        expect((client as unknown as { dessert: string }).dessert).toBe('apple cake');
     });
 
     it('supports asynchronous plugins', async () => {
@@ -150,5 +187,77 @@ describe('createEmptyClient', () => {
 
     it('returns a frozen object when extended by an asynchronous plugin', () => {
         expect(createEmptyClient().use(() => Promise.resolve({ fruit: 'apple' as const }))).toBeFrozenObject();
+    });
+});
+
+describe('extendClient', () => {
+    it('merges client and additions into a new object', () => {
+        expect(extendClient({ fruit: 'apple' as const }, { vegetable: 'carrot' as const })).toStrictEqual({
+            fruit: 'apple',
+            vegetable: 'carrot',
+        });
+    });
+
+    it('additions override client on key conflict', () => {
+        expect(extendClient({ fruit: 'apple' as const }, { fruit: 'banana' as const })).toStrictEqual({
+            fruit: 'banana',
+        });
+    });
+
+    it('client properties not present in additions are preserved', () => {
+        expect(
+            extendClient({ fruit: 'apple' as const, vegetable: 'carrot' as const }, { fruit: 'banana' as const }),
+        ).toStrictEqual(expect.objectContaining({ fruit: 'banana', vegetable: 'carrot' }));
+    });
+
+    it('preserves getter from client', () => {
+        const client = Object.defineProperty({} as { fruit: string }, 'fruit', {
+            configurable: true,
+            enumerable: true,
+            get: () => 'apple',
+        });
+        const result = extendClient(client, { vegetable: 'carrot' as const });
+        expect(Object.getOwnPropertyDescriptor(result, 'fruit')?.get).toBeInstanceOf(Function);
+        expect(result.fruit).toBe('apple');
+    });
+
+    it('preserves getter from additions', () => {
+        const additions = Object.defineProperty({} as { vegetable: string }, 'vegetable', {
+            configurable: true,
+            enumerable: true,
+            get: () => 'carrot',
+        });
+        const result = extendClient({ fruit: 'apple' as const }, additions);
+        expect(Object.getOwnPropertyDescriptor(result, 'vegetable')?.get).toBeInstanceOf(Function);
+        expect(result.vegetable).toBe('carrot');
+    });
+
+    it('preserves symbol-keyed property from client', () => {
+        const sym = Symbol('tag');
+        const result = extendClient({ [sym]: 'apple' }, { vegetable: 'carrot' as const });
+        expect((result as Record<symbol, unknown>)[sym]).toBe('apple');
+        expect(result.vegetable).toBe('carrot');
+    });
+
+    it('includes symbol-keyed property from additions', () => {
+        const sym = Symbol('tag');
+        const result = extendClient({ fruit: 'apple' as const }, { [sym]: 'carrot' });
+        expect((result as Record<symbol, unknown>)[sym]).toBe('carrot');
+    });
+
+    it('preserves non-enumerable property from client', () => {
+        const client = Object.defineProperty({}, 'secret', {
+            configurable: true,
+            enumerable: false,
+            value: 'hidden',
+            writable: true,
+        });
+        const result = extendClient(client, { vegetable: 'carrot' as const });
+        expect(Object.getOwnPropertyDescriptor(result, 'secret')?.enumerable).toBe(false);
+        expect((result as Record<string, unknown>)['secret']).toBe('hidden');
+    });
+
+    it('returns a frozen object', () => {
+        expect(extendClient({ fruit: 'apple' as const }, { vegetable: 'carrot' as const })).toBeFrozenObject();
     });
 });

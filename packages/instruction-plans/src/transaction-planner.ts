@@ -9,7 +9,7 @@ import {
 import { getAbortablePromise } from '@solana/promises';
 import {
     appendTransactionMessageInstructions,
-    BaseTransactionMessage,
+    TransactionMessage,
     TransactionMessageWithFeePayer,
 } from '@solana/transaction-messages';
 import { getTransactionMessageSize, TRANSACTION_SIZE_LIMIT } from '@solana/transactions';
@@ -22,7 +22,7 @@ import {
     SingleInstructionPlan,
 } from './instruction-plan';
 import {
-    getAllSingleTransactionPlans,
+    flattenTransactionPlan,
     nonDivisibleSequentialTransactionPlan,
     parallelTransactionPlan,
     sequentialTransactionPlan,
@@ -50,15 +50,15 @@ type Mutable<T> = { -readonly [P in keyof T]: T[P] };
 type CreateTransactionMessage = (config?: {
     abortSignal?: AbortSignal;
 }) =>
-    | Promise<BaseTransactionMessage & TransactionMessageWithFeePayer>
-    | (BaseTransactionMessage & TransactionMessageWithFeePayer);
+    | Promise<TransactionMessage & TransactionMessageWithFeePayer>
+    | (TransactionMessage & TransactionMessageWithFeePayer);
 
 type OnTransactionMessageUpdated = (
-    transactionMessage: BaseTransactionMessage & TransactionMessageWithFeePayer,
+    transactionMessage: TransactionMessage & TransactionMessageWithFeePayer,
     config?: { abortSignal?: AbortSignal },
 ) =>
-    | Promise<BaseTransactionMessage & TransactionMessageWithFeePayer>
-    | (BaseTransactionMessage & TransactionMessageWithFeePayer);
+    | Promise<TransactionMessage & TransactionMessageWithFeePayer>
+    | (TransactionMessage & TransactionMessageWithFeePayer);
 
 /**
  * Configuration object for creating a new transaction planner.
@@ -203,6 +203,7 @@ async function traverseSequential(
     return {
         divisible: instructionPlan.divisible,
         kind: 'sequential',
+        planType: 'transactionPlan',
         plans: transactionPlans,
     };
 }
@@ -239,21 +240,21 @@ async function traverseParallel(
     if (transactionPlans.length === 0) {
         return null;
     }
-    return { kind: 'parallel', plans: transactionPlans };
+    return { kind: 'parallel', planType: 'transactionPlan', plans: transactionPlans };
 }
 
 async function traverseSingle(
     instructionPlan: SingleInstructionPlan,
     context: TraverseContext,
 ): Promise<MutableTransactionPlan | null> {
-    const predicate = (message: BaseTransactionMessage & TransactionMessageWithFeePayer) =>
+    const predicate = (message: TransactionMessage & TransactionMessageWithFeePayer) =>
         appendTransactionMessageInstructions([instructionPlan.instruction], message);
     const candidate = await selectAndMutateCandidate(context, context.parentCandidates, predicate);
     if (candidate) {
         return null;
     }
     const message = await createNewMessage(context, predicate);
-    return { kind: 'single', message };
+    return { kind: 'single', message, planType: 'transactionPlan' };
 }
 
 async function traverseMessagePacker(
@@ -268,7 +269,7 @@ async function traverseMessagePacker(
         const candidate = await selectAndMutateCandidate(context, candidates, messagePacker.packMessageToCapacity);
         if (!candidate) {
             const message = await createNewMessage(context, messagePacker.packMessageToCapacity);
-            const newPlan: MutableSingleTransactionPlan = { kind: 'single', message };
+            const newPlan: MutableSingleTransactionPlan = { kind: 'single', message, planType: 'transactionPlan' };
             transactionPlans.push(newPlan);
         }
     }
@@ -280,11 +281,12 @@ async function traverseMessagePacker(
         return null;
     }
     if (context.parent?.kind === 'parallel') {
-        return { kind: 'parallel', plans: transactionPlans };
+        return { kind: 'parallel', planType: 'transactionPlan', plans: transactionPlans };
     }
     return {
         divisible: context.parent?.kind === 'sequential' ? context.parent.divisible : true,
         kind: 'sequential',
+        planType: 'transactionPlan',
         plans: transactionPlans,
     };
 }
@@ -300,15 +302,15 @@ function getSequentialCandidate(latestPlan: MutableTransactionPlan): MutableSing
 }
 
 function getParallelCandidates(latestPlan: TransactionPlan): MutableSingleTransactionPlan[] {
-    return getAllSingleTransactionPlans(latestPlan);
+    return flattenTransactionPlan(latestPlan);
 }
 
 async function selectAndMutateCandidate(
     context: Pick<TraverseContext, 'abortSignal' | 'onTransactionMessageUpdated'>,
     candidates: MutableSingleTransactionPlan[],
     predicate: (
-        message: BaseTransactionMessage & TransactionMessageWithFeePayer,
-    ) => BaseTransactionMessage & TransactionMessageWithFeePayer,
+        message: TransactionMessage & TransactionMessageWithFeePayer,
+    ) => TransactionMessage & TransactionMessageWithFeePayer,
 ): Promise<MutableSingleTransactionPlan | null> {
     for (const candidate of candidates) {
         try {
@@ -338,9 +340,9 @@ async function selectAndMutateCandidate(
 async function createNewMessage(
     context: Pick<TraverseContext, 'abortSignal' | 'createTransactionMessage' | 'onTransactionMessageUpdated'>,
     predicate: (
-        message: BaseTransactionMessage & TransactionMessageWithFeePayer,
-    ) => BaseTransactionMessage & TransactionMessageWithFeePayer,
-): Promise<BaseTransactionMessage & TransactionMessageWithFeePayer> {
+        message: TransactionMessage & TransactionMessageWithFeePayer,
+    ) => TransactionMessage & TransactionMessageWithFeePayer,
+): Promise<TransactionMessage & TransactionMessageWithFeePayer> {
     const newMessage = await getAbortablePromise(
         Promise.resolve(context.createTransactionMessage({ abortSignal: context.abortSignal })),
         context.abortSignal,
@@ -381,9 +383,9 @@ function freezeTransactionPlan(plan: MutableTransactionPlan): TransactionPlan {
 
 function fitEntirePlanInsideMessage(
     instructionPlan: InstructionPlan,
-    message: BaseTransactionMessage & TransactionMessageWithFeePayer,
-): BaseTransactionMessage & TransactionMessageWithFeePayer {
-    let newMessage: BaseTransactionMessage & TransactionMessageWithFeePayer = message;
+    message: TransactionMessage & TransactionMessageWithFeePayer,
+): TransactionMessage & TransactionMessageWithFeePayer {
+    let newMessage: TransactionMessage & TransactionMessageWithFeePayer = message;
 
     const kind = instructionPlan.kind;
     switch (kind) {
@@ -409,7 +411,7 @@ function fitEntirePlanInsideMessage(
             // eslint-disable-next-line no-case-declarations
             const messagePacker = instructionPlan.getMessagePacker();
             while (!messagePacker.done()) {
-                newMessage = messagePacker.packMessageToCapacity(message);
+                newMessage = messagePacker.packMessageToCapacity(newMessage);
             }
             return newMessage;
         default:

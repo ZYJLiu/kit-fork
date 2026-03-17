@@ -44,6 +44,8 @@ import {
     SOLANA_ERROR__CODECS__INVALID_ENUM_VARIANT,
     SOLANA_ERROR__CODECS__INVALID_LITERAL_UNION_VARIANT,
     SOLANA_ERROR__CODECS__INVALID_NUMBER_OF_ITEMS,
+    SOLANA_ERROR__CODECS__INVALID_PATTERN_MATCH_BYTES,
+    SOLANA_ERROR__CODECS__INVALID_PATTERN_MATCH_VALUE,
     SOLANA_ERROR__CODECS__INVALID_STRING_FOR_BASE,
     SOLANA_ERROR__CODECS__LITERAL_UNION_DISCRIMINATOR_OUT_OF_RANGE,
     SOLANA_ERROR__CODECS__NUMBER_OUT_OF_RANGE,
@@ -51,6 +53,8 @@ import {
     SOLANA_ERROR__CODECS__SENTINEL_MISSING_IN_DECODED_BYTES,
     SOLANA_ERROR__CODECS__UNION_VARIANT_OUT_OF_RANGE,
     SOLANA_ERROR__CRYPTO__RANDOM_VALUES_FUNCTION_UNIMPLEMENTED,
+    SOLANA_ERROR__FAILED_TO_SEND_TRANSACTION,
+    SOLANA_ERROR__FAILED_TO_SEND_TRANSACTIONS,
     SOLANA_ERROR__INSTRUCTION__EXPECTED_TO_HAVE_ACCOUNTS,
     SOLANA_ERROR__INSTRUCTION__EXPECTED_TO_HAVE_DATA,
     SOLANA_ERROR__INSTRUCTION__PROGRAM_ID_MISMATCH,
@@ -110,10 +114,15 @@ import {
     SOLANA_ERROR__INSTRUCTION_ERROR__UNSUPPORTED_PROGRAM_ID,
     SOLANA_ERROR__INSTRUCTION_ERROR__UNSUPPORTED_SYSVAR,
     SOLANA_ERROR__INSTRUCTION_PLANS__EMPTY_INSTRUCTION_PLAN,
+    SOLANA_ERROR__INSTRUCTION_PLANS__EXPECTED_SUCCESSFUL_TRANSACTION_PLAN_RESULT,
+    SOLANA_ERROR__INSTRUCTION_PLANS__FAILED_SINGLE_TRANSACTION_PLAN_RESULT_NOT_FOUND,
     SOLANA_ERROR__INSTRUCTION_PLANS__FAILED_TO_EXECUTE_TRANSACTION_PLAN,
     SOLANA_ERROR__INSTRUCTION_PLANS__MESSAGE_CANNOT_ACCOMMODATE_PLAN,
     SOLANA_ERROR__INSTRUCTION_PLANS__MESSAGE_PACKER_ALREADY_COMPLETE,
     SOLANA_ERROR__INSTRUCTION_PLANS__NON_DIVISIBLE_TRANSACTION_PLANS_NOT_SUPPORTED,
+    SOLANA_ERROR__INSTRUCTION_PLANS__UNEXPECTED_INSTRUCTION_PLAN,
+    SOLANA_ERROR__INSTRUCTION_PLANS__UNEXPECTED_TRANSACTION_PLAN,
+    SOLANA_ERROR__INSTRUCTION_PLANS__UNEXPECTED_TRANSACTION_PLAN_RESULT,
     SOLANA_ERROR__INVALID_BLOCKHASH_BYTE_LENGTH,
     SOLANA_ERROR__INVALID_NONCE,
     SOLANA_ERROR__INVARIANT_VIOLATION__CACHED_ABORTABLE_ITERABLE_CACHE_ENTRY_MISSING,
@@ -175,6 +184,13 @@ import {
     SOLANA_ERROR__OFFCHAIN_MESSAGE__SIGNATURES_MISSING,
     SOLANA_ERROR__OFFCHAIN_MESSAGE__UNEXPECTED_VERSION,
     SOLANA_ERROR__OFFCHAIN_MESSAGE__VERSION_NUMBER_NOT_SUPPORTED,
+    SOLANA_ERROR__PROGRAM_CLIENTS__FAILED_TO_IDENTIFY_ACCOUNT,
+    SOLANA_ERROR__PROGRAM_CLIENTS__FAILED_TO_IDENTIFY_INSTRUCTION,
+    SOLANA_ERROR__PROGRAM_CLIENTS__INSUFFICIENT_ACCOUNT_METAS,
+    SOLANA_ERROR__PROGRAM_CLIENTS__RESOLVED_INSTRUCTION_INPUT_MUST_BE_NON_NULL,
+    SOLANA_ERROR__PROGRAM_CLIENTS__UNEXPECTED_RESOLVED_INSTRUCTION_INPUT_TYPE,
+    SOLANA_ERROR__PROGRAM_CLIENTS__UNRECOGNIZED_ACCOUNT_TYPE,
+    SOLANA_ERROR__PROGRAM_CLIENTS__UNRECOGNIZED_INSTRUCTION_TYPE,
     SOLANA_ERROR__RPC__API_PLAN_MISSING_FOR_RPC_METHOD,
     SOLANA_ERROR__RPC__INTEGER_OVERFLOW,
     SOLANA_ERROR__RPC__TRANSPORT_HTTP_ERROR,
@@ -195,6 +211,7 @@ import {
     SOLANA_ERROR__SIGNER__EXPECTED_TRANSACTION_SIGNER,
     SOLANA_ERROR__SIGNER__TRANSACTION_CANNOT_HAVE_MULTIPLE_SENDING_SIGNERS,
     SOLANA_ERROR__SIGNER__TRANSACTION_SENDING_SIGNER_MISSING,
+    SOLANA_ERROR__SIGNER__WALLET_ACCOUNT_CANNOT_SIGN_TRANSACTION,
     SOLANA_ERROR__SIGNER__WALLET_MULTISIGN_UNIMPLEMENTED,
     SOLANA_ERROR__SUBTLE_CRYPTO__CANNOT_EXPORT_NON_EXTRACTABLE_KEY,
     SOLANA_ERROR__SUBTLE_CRYPTO__DIGEST_UNIMPLEMENTED,
@@ -207,6 +224,8 @@ import {
     SOLANA_ERROR__TIMESTAMP_OUT_OF_RANGE,
     SOLANA_ERROR__TRANSACTION__ADDRESS_MISSING,
     SOLANA_ERROR__TRANSACTION__ADDRESSES_CANNOT_SIGN_TRANSACTION,
+    SOLANA_ERROR__TRANSACTION__CANNOT_DECODE_EMPTY_TRANSACTION_BYTES,
+    SOLANA_ERROR__TRANSACTION__CANNOT_ENCODE_WITH_EMPTY_MESSAGE_BYTES,
     SOLANA_ERROR__TRANSACTION__CANNOT_ENCODE_WITH_EMPTY_SIGNATURES,
     SOLANA_ERROR__TRANSACTION__EXCEEDS_SIZE_LIMIT,
     SOLANA_ERROR__TRANSACTION__EXPECTED_BLOCKHASH_LIFETIME,
@@ -219,15 +238,22 @@ import {
     SOLANA_ERROR__TRANSACTION__FAILED_WHEN_SIMULATING_TO_ESTIMATE_COMPUTE_LIMIT,
     SOLANA_ERROR__TRANSACTION__FEE_PAYER_MISSING,
     SOLANA_ERROR__TRANSACTION__FEE_PAYER_SIGNATURE_MISSING,
+    SOLANA_ERROR__TRANSACTION__INSTRUCTION_HEADERS_PAYLOADS_MISMATCH,
+    SOLANA_ERROR__TRANSACTION__INVALID_CONFIG_MASK_PRIORITY_FEE_BITS,
+    SOLANA_ERROR__TRANSACTION__INVALID_CONFIG_VALUE_KIND,
+    SOLANA_ERROR__TRANSACTION__INVALID_NONCE_ACCOUNT_INDEX,
     SOLANA_ERROR__TRANSACTION__INVALID_NONCE_TRANSACTION_FIRST_INSTRUCTION_MUST_BE_ADVANCE_NONCE,
     SOLANA_ERROR__TRANSACTION__INVALID_NONCE_TRANSACTION_INSTRUCTIONS_MISSING,
     SOLANA_ERROR__TRANSACTION__INVOKED_PROGRAMS_CANNOT_PAY_FEES,
     SOLANA_ERROR__TRANSACTION__INVOKED_PROGRAMS_MUST_NOT_BE_WRITABLE,
+    SOLANA_ERROR__TRANSACTION__MALFORMED_MESSAGE_BYTES,
     SOLANA_ERROR__TRANSACTION__MESSAGE_SIGNATURES_MISMATCH,
     SOLANA_ERROR__TRANSACTION__NONCE_ACCOUNT_CANNOT_BE_IN_LOOKUP_TABLE,
+    SOLANA_ERROR__TRANSACTION__SIGNATURE_COUNT_TOO_HIGH_FOR_TRANSACTION_BYTES,
     SOLANA_ERROR__TRANSACTION__SIGNATURES_MISSING,
     SOLANA_ERROR__TRANSACTION__VERSION_NUMBER_NOT_SUPPORTED,
     SOLANA_ERROR__TRANSACTION__VERSION_NUMBER_OUT_OF_RANGE,
+    SOLANA_ERROR__TRANSACTION__VERSION_ZERO_MUST_BE_ENCODED_WITH_SIGNATURES_FIRST,
     SOLANA_ERROR__TRANSACTION_ERROR__ACCOUNT_BORROW_OUTSTANDING,
     SOLANA_ERROR__TRANSACTION_ERROR__ACCOUNT_IN_USE,
     SOLANA_ERROR__TRANSACTION_ERROR__ACCOUNT_LOADED_TWICE,
@@ -352,48 +378,54 @@ export const SolanaErrorMessages: Readonly<{
         'Union variant out of range. Expected an index between $minRange and $maxRange, got $variant.',
     [SOLANA_ERROR__CODECS__EXPECTED_DECODER_TO_CONSUME_ENTIRE_BYTE_ARRAY]:
         'This decoder expected a byte array of exactly $expectedLength bytes, but $numExcessBytes unexpected excess bytes remained after decoding. Are you sure that you have chosen the correct decoder for this data?',
+    [SOLANA_ERROR__CODECS__INVALID_PATTERN_MATCH_VALUE]:
+        'Invalid pattern match value. The provided value does not match any of the specified patterns.',
+    [SOLANA_ERROR__CODECS__INVALID_PATTERN_MATCH_BYTES]:
+        'Invalid pattern match bytes. The provided byte array does not match any of the specified patterns.',
     [SOLANA_ERROR__CRYPTO__RANDOM_VALUES_FUNCTION_UNIMPLEMENTED]: 'No random values implementation could be found.',
-    [SOLANA_ERROR__INSTRUCTION_ERROR__ACCOUNT_ALREADY_INITIALIZED]: 'instruction requires an uninitialized account',
+    [SOLANA_ERROR__FAILED_TO_SEND_TRANSACTION]: 'Failed to send transaction$causeMessage',
+    [SOLANA_ERROR__FAILED_TO_SEND_TRANSACTIONS]: 'Failed to send transactions$causeMessages',
+    [SOLANA_ERROR__INSTRUCTION_ERROR__ACCOUNT_ALREADY_INITIALIZED]: 'Instruction requires an uninitialized account',
     [SOLANA_ERROR__INSTRUCTION_ERROR__ACCOUNT_BORROW_FAILED]:
-        'instruction tries to borrow reference for an account which is already borrowed',
+        'Instruction tries to borrow reference for an account which is already borrowed',
     [SOLANA_ERROR__INSTRUCTION_ERROR__ACCOUNT_BORROW_OUTSTANDING]:
-        'instruction left account with an outstanding borrowed reference',
+        'Instruction left account with an outstanding borrowed reference',
     [SOLANA_ERROR__INSTRUCTION_ERROR__ACCOUNT_DATA_SIZE_CHANGED]:
-        "program other than the account's owner changed the size of the account data",
-    [SOLANA_ERROR__INSTRUCTION_ERROR__ACCOUNT_DATA_TOO_SMALL]: 'account data too small for instruction',
-    [SOLANA_ERROR__INSTRUCTION_ERROR__ACCOUNT_NOT_EXECUTABLE]: 'instruction expected an executable account',
+        "Program other than the account's owner changed the size of the account data",
+    [SOLANA_ERROR__INSTRUCTION_ERROR__ACCOUNT_DATA_TOO_SMALL]: 'Account data too small for instruction',
+    [SOLANA_ERROR__INSTRUCTION_ERROR__ACCOUNT_NOT_EXECUTABLE]: 'Instruction expected an executable account',
     [SOLANA_ERROR__INSTRUCTION_ERROR__ACCOUNT_NOT_RENT_EXEMPT]:
         'An account does not have enough lamports to be rent-exempt',
     [SOLANA_ERROR__INSTRUCTION_ERROR__ARITHMETIC_OVERFLOW]: 'Program arithmetic overflowed',
-    [SOLANA_ERROR__INSTRUCTION_ERROR__BORSH_IO_ERROR]: 'Failed to serialize or deserialize account data: $encodedData',
+    [SOLANA_ERROR__INSTRUCTION_ERROR__BORSH_IO_ERROR]: 'Failed to serialize or deserialize account data',
     [SOLANA_ERROR__INSTRUCTION_ERROR__BUILTIN_PROGRAMS_MUST_CONSUME_COMPUTE_UNITS]:
         'Builtin programs must consume compute units',
     [SOLANA_ERROR__INSTRUCTION_ERROR__CALL_DEPTH]: 'Cross-program invocation call depth too deep',
     [SOLANA_ERROR__INSTRUCTION_ERROR__COMPUTATIONAL_BUDGET_EXCEEDED]: 'Computational budget exceeded',
-    [SOLANA_ERROR__INSTRUCTION_ERROR__CUSTOM]: 'custom program error: #$code',
-    [SOLANA_ERROR__INSTRUCTION_ERROR__DUPLICATE_ACCOUNT_INDEX]: 'instruction contains duplicate accounts',
+    [SOLANA_ERROR__INSTRUCTION_ERROR__CUSTOM]: 'Custom program error: #$code',
+    [SOLANA_ERROR__INSTRUCTION_ERROR__DUPLICATE_ACCOUNT_INDEX]: 'Instruction contains duplicate accounts',
     [SOLANA_ERROR__INSTRUCTION_ERROR__DUPLICATE_ACCOUNT_OUT_OF_SYNC]:
-        'instruction modifications of multiply-passed account differ',
-    [SOLANA_ERROR__INSTRUCTION_ERROR__EXECUTABLE_ACCOUNT_NOT_RENT_EXEMPT]: 'executable accounts must be rent exempt',
-    [SOLANA_ERROR__INSTRUCTION_ERROR__EXECUTABLE_DATA_MODIFIED]: 'instruction changed executable accounts data',
+        'Instruction modifications of multiply-passed account differ',
+    [SOLANA_ERROR__INSTRUCTION_ERROR__EXECUTABLE_ACCOUNT_NOT_RENT_EXEMPT]: 'Executable accounts must be rent exempt',
+    [SOLANA_ERROR__INSTRUCTION_ERROR__EXECUTABLE_DATA_MODIFIED]: 'Instruction changed executable accounts data',
     [SOLANA_ERROR__INSTRUCTION_ERROR__EXECUTABLE_LAMPORT_CHANGE]:
-        'instruction changed the balance of an executable account',
-    [SOLANA_ERROR__INSTRUCTION_ERROR__EXECUTABLE_MODIFIED]: 'instruction changed executable bit of an account',
+        'Instruction changed the balance of an executable account',
+    [SOLANA_ERROR__INSTRUCTION_ERROR__EXECUTABLE_MODIFIED]: 'Instruction changed executable bit of an account',
     [SOLANA_ERROR__INSTRUCTION_ERROR__EXTERNAL_ACCOUNT_DATA_MODIFIED]:
-        'instruction modified data of an account it does not own',
+        'Instruction modified data of an account it does not own',
     [SOLANA_ERROR__INSTRUCTION_ERROR__EXTERNAL_ACCOUNT_LAMPORT_SPEND]:
-        'instruction spent from the balance of an account it does not own',
-    [SOLANA_ERROR__INSTRUCTION_ERROR__GENERIC_ERROR]: 'generic instruction error',
+        'Instruction spent from the balance of an account it does not own',
+    [SOLANA_ERROR__INSTRUCTION_ERROR__GENERIC_ERROR]: 'Generic instruction error',
     [SOLANA_ERROR__INSTRUCTION_ERROR__ILLEGAL_OWNER]: 'Provided owner is not allowed',
     [SOLANA_ERROR__INSTRUCTION_ERROR__IMMUTABLE]: 'Account is immutable',
     [SOLANA_ERROR__INSTRUCTION_ERROR__INCORRECT_AUTHORITY]: 'Incorrect authority provided',
-    [SOLANA_ERROR__INSTRUCTION_ERROR__INCORRECT_PROGRAM_ID]: 'incorrect program id for instruction',
-    [SOLANA_ERROR__INSTRUCTION_ERROR__INSUFFICIENT_FUNDS]: 'insufficient funds for instruction',
-    [SOLANA_ERROR__INSTRUCTION_ERROR__INVALID_ACCOUNT_DATA]: 'invalid account data for instruction',
+    [SOLANA_ERROR__INSTRUCTION_ERROR__INCORRECT_PROGRAM_ID]: 'Incorrect program id for instruction',
+    [SOLANA_ERROR__INSTRUCTION_ERROR__INSUFFICIENT_FUNDS]: 'Insufficient funds for instruction',
+    [SOLANA_ERROR__INSTRUCTION_ERROR__INVALID_ACCOUNT_DATA]: 'Invalid account data for instruction',
     [SOLANA_ERROR__INSTRUCTION_ERROR__INVALID_ACCOUNT_OWNER]: 'Invalid account owner',
-    [SOLANA_ERROR__INSTRUCTION_ERROR__INVALID_ARGUMENT]: 'invalid program argument',
-    [SOLANA_ERROR__INSTRUCTION_ERROR__INVALID_ERROR]: 'program returned invalid error code',
-    [SOLANA_ERROR__INSTRUCTION_ERROR__INVALID_INSTRUCTION_DATA]: 'invalid instruction data',
+    [SOLANA_ERROR__INSTRUCTION_ERROR__INVALID_ARGUMENT]: 'Invalid program argument',
+    [SOLANA_ERROR__INSTRUCTION_ERROR__INVALID_ERROR]: 'Program returned invalid error code',
+    [SOLANA_ERROR__INSTRUCTION_ERROR__INVALID_INSTRUCTION_DATA]: 'Invalid instruction data',
     [SOLANA_ERROR__INSTRUCTION_ERROR__INVALID_REALLOC]: 'Failed to reallocate account data',
     [SOLANA_ERROR__INSTRUCTION_ERROR__INVALID_SEEDS]: 'Provided seeds do not result in a valid address',
     [SOLANA_ERROR__INSTRUCTION_ERROR__MAX_ACCOUNTS_DATA_ALLOCATIONS_EXCEEDED]:
@@ -403,39 +435,49 @@ export const SolanaErrorMessages: Readonly<{
     [SOLANA_ERROR__INSTRUCTION_ERROR__MAX_SEED_LENGTH_EXCEEDED]:
         'Length of the seed is too long for address generation',
     [SOLANA_ERROR__INSTRUCTION_ERROR__MISSING_ACCOUNT]: 'An account required by the instruction is missing',
-    [SOLANA_ERROR__INSTRUCTION_ERROR__MISSING_REQUIRED_SIGNATURE]: 'missing required signature for instruction',
+    [SOLANA_ERROR__INSTRUCTION_ERROR__MISSING_REQUIRED_SIGNATURE]: 'Missing required signature for instruction',
     [SOLANA_ERROR__INSTRUCTION_ERROR__MODIFIED_PROGRAM_ID]:
-        'instruction illegally modified the program id of an account',
-    [SOLANA_ERROR__INSTRUCTION_ERROR__NOT_ENOUGH_ACCOUNT_KEYS]: 'insufficient account keys for instruction',
+        'Instruction illegally modified the program id of an account',
+    [SOLANA_ERROR__INSTRUCTION_ERROR__NOT_ENOUGH_ACCOUNT_KEYS]: 'Insufficient account keys for instruction',
     [SOLANA_ERROR__INSTRUCTION_ERROR__PRIVILEGE_ESCALATION]:
         'Cross-program invocation with unauthorized signer or writable account',
     [SOLANA_ERROR__INSTRUCTION_ERROR__PROGRAM_ENVIRONMENT_SETUP_FAILURE]:
         'Failed to create program execution environment',
     [SOLANA_ERROR__INSTRUCTION_ERROR__PROGRAM_FAILED_TO_COMPILE]: 'Program failed to compile',
     [SOLANA_ERROR__INSTRUCTION_ERROR__PROGRAM_FAILED_TO_COMPLETE]: 'Program failed to complete',
-    [SOLANA_ERROR__INSTRUCTION_ERROR__READONLY_DATA_MODIFIED]: 'instruction modified data of a read-only account',
+    [SOLANA_ERROR__INSTRUCTION_ERROR__READONLY_DATA_MODIFIED]: 'Instruction modified data of a read-only account',
     [SOLANA_ERROR__INSTRUCTION_ERROR__READONLY_LAMPORT_CHANGE]:
-        'instruction changed the balance of a read-only account',
+        'Instruction changed the balance of a read-only account',
     [SOLANA_ERROR__INSTRUCTION_ERROR__REENTRANCY_NOT_ALLOWED]:
         'Cross-program invocation reentrancy not allowed for this instruction',
-    [SOLANA_ERROR__INSTRUCTION_ERROR__RENT_EPOCH_MODIFIED]: 'instruction modified rent epoch of an account',
+    [SOLANA_ERROR__INSTRUCTION_ERROR__RENT_EPOCH_MODIFIED]: 'Instruction modified rent epoch of an account',
     [SOLANA_ERROR__INSTRUCTION_ERROR__UNBALANCED_INSTRUCTION]:
-        'sum of account balances before and after instruction do not match',
-    [SOLANA_ERROR__INSTRUCTION_ERROR__UNINITIALIZED_ACCOUNT]: 'instruction requires an initialized account',
-    [SOLANA_ERROR__INSTRUCTION_ERROR__UNKNOWN]: '',
+        'Sum of account balances before and after instruction do not match',
+    [SOLANA_ERROR__INSTRUCTION_ERROR__UNINITIALIZED_ACCOUNT]: 'Instruction requires an initialized account',
+    [SOLANA_ERROR__INSTRUCTION_ERROR__UNKNOWN]: 'The instruction failed with the error: $errorName',
     [SOLANA_ERROR__INSTRUCTION_ERROR__UNSUPPORTED_PROGRAM_ID]: 'Unsupported program id',
     [SOLANA_ERROR__INSTRUCTION_ERROR__UNSUPPORTED_SYSVAR]: 'Unsupported sysvar',
     [SOLANA_ERROR__INVARIANT_VIOLATION__INVALID_INSTRUCTION_PLAN_KIND]: 'Invalid instruction plan kind: $kind.',
     [SOLANA_ERROR__INSTRUCTION_PLANS__EMPTY_INSTRUCTION_PLAN]: 'The provided instruction plan is empty.',
+    [SOLANA_ERROR__INSTRUCTION_PLANS__FAILED_SINGLE_TRANSACTION_PLAN_RESULT_NOT_FOUND]:
+        'No failed transaction plan result was found in the provided transaction plan result.',
     [SOLANA_ERROR__INSTRUCTION_PLANS__NON_DIVISIBLE_TRANSACTION_PLANS_NOT_SUPPORTED]:
         'This transaction plan executor does not support non-divisible sequential plans. To support them, you may create your own executor such that multi-transaction atomicity is preserved — e.g. by targetting RPCs that support transaction bundles.',
     [SOLANA_ERROR__INSTRUCTION_PLANS__FAILED_TO_EXECUTE_TRANSACTION_PLAN]:
-        'The provided transaction plan failed to execute. See the `transactionPlanResult` attribute and the `cause` error for more details.',
+        'The provided transaction plan failed to execute. See the `transactionPlanResult` attribute for more details. Note that the `cause` property is deprecated, and a future version will not set it.',
     [SOLANA_ERROR__INSTRUCTION_PLANS__MESSAGE_CANNOT_ACCOMMODATE_PLAN]:
         'The provided message has insufficient capacity to accommodate the next instruction(s) in this plan. Expected at least $numBytesRequired free byte(s), got $numFreeBytes byte(s).',
     [SOLANA_ERROR__INVARIANT_VIOLATION__INVALID_TRANSACTION_PLAN_KIND]: 'Invalid transaction plan kind: $kind.',
     [SOLANA_ERROR__INSTRUCTION_PLANS__MESSAGE_PACKER_ALREADY_COMPLETE]:
         'No more instructions to pack; the message packer has completed the instruction plan.',
+    [SOLANA_ERROR__INSTRUCTION_PLANS__UNEXPECTED_INSTRUCTION_PLAN]:
+        'Unexpected instruction plan. Expected $expectedKind plan, got $actualKind plan.',
+    [SOLANA_ERROR__INSTRUCTION_PLANS__UNEXPECTED_TRANSACTION_PLAN]:
+        'Unexpected transaction plan. Expected $expectedKind plan, got $actualKind plan.',
+    [SOLANA_ERROR__INSTRUCTION_PLANS__UNEXPECTED_TRANSACTION_PLAN_RESULT]:
+        'Unexpected transaction plan result. Expected $expectedKind plan, got $actualKind plan.',
+    [SOLANA_ERROR__INSTRUCTION_PLANS__EXPECTED_SUCCESSFUL_TRANSACTION_PLAN_RESULT]:
+        'Expected a successful transaction plan result. I.e. there is at least one failed or cancelled transaction in the plan.',
     [SOLANA_ERROR__INSTRUCTION__EXPECTED_TO_HAVE_ACCOUNTS]: 'The instruction does not have any accounts.',
     [SOLANA_ERROR__INSTRUCTION__EXPECTED_TO_HAVE_DATA]: 'The instruction does not have any data.',
     [SOLANA_ERROR__INSTRUCTION__PROGRAM_ID_MISMATCH]:
@@ -552,6 +594,20 @@ export const SolanaErrorMessages: Readonly<{
     [SOLANA_ERROR__OFFCHAIN_MESSAGE__VERSION_NUMBER_NOT_SUPPORTED]:
         'This version of Kit does not support decoding offchain messages with version ' +
         '$unsupportedVersion. The current max supported version is 0.',
+    [SOLANA_ERROR__PROGRAM_CLIENTS__FAILED_TO_IDENTIFY_ACCOUNT]:
+        'The provided account could not be identified as an account from the $programName program.',
+    [SOLANA_ERROR__PROGRAM_CLIENTS__FAILED_TO_IDENTIFY_INSTRUCTION]:
+        'The provided instruction could not be identified as an instruction from the $programName program.',
+    [SOLANA_ERROR__PROGRAM_CLIENTS__INSUFFICIENT_ACCOUNT_METAS]:
+        'The provided instruction is missing some accounts. Expected at least $expectedAccountMetas account(s), got $actualAccountMetas.',
+    [SOLANA_ERROR__PROGRAM_CLIENTS__RESOLVED_INSTRUCTION_INPUT_MUST_BE_NON_NULL]:
+        "Expected resolved instruction input '$inputName' to be non-null.",
+    [SOLANA_ERROR__PROGRAM_CLIENTS__UNEXPECTED_RESOLVED_INSTRUCTION_INPUT_TYPE]:
+        "Expected resolved instruction input '$inputName' to be of type `$expectedType`.",
+    [SOLANA_ERROR__PROGRAM_CLIENTS__UNRECOGNIZED_ACCOUNT_TYPE]:
+        "Unrecognized account type '$accountType' for the $programName program.",
+    [SOLANA_ERROR__PROGRAM_CLIENTS__UNRECOGNIZED_INSTRUCTION_TYPE]:
+        "Unrecognized instruction type '$instructionType' for the $programName program.",
     [SOLANA_ERROR__RPC_SUBSCRIPTIONS__CANNOT_CREATE_SUBSCRIPTION_PLAN]:
         "The notification name must end in 'Notifications' and the API must supply a " +
         "subscription plan creator function for the notification '$notificationName'.",
@@ -594,6 +650,11 @@ export const SolanaErrorMessages: Readonly<{
     [SOLANA_ERROR__SIGNER__TRANSACTION_SENDING_SIGNER_MISSING]:
         'No `TransactionSendingSigner` was identified. Please provide a valid ' +
         '`TransactionWithSingleSendingSigner` transaction.',
+    [SOLANA_ERROR__SIGNER__WALLET_ACCOUNT_CANNOT_SIGN_TRANSACTION]:
+        'The wallet account $address cannot be used to create a transaction signer because it does not ' +
+        'implement either the `solana:signTransaction` or `solana:signAndSendTransaction` feature. ' +
+        'At least one of these features is required. ' +
+        'The account supports the following features: $supportedFeatures.',
     [SOLANA_ERROR__SIGNER__WALLET_MULTISIGN_UNIMPLEMENTED]:
         'Wallet account signers do not support signing multiple messages/transactions in a single operation',
     [SOLANA_ERROR__SUBTLE_CRYPTO__CANNOT_EXPORT_NON_EXTRACTABLE_KEY]: 'Cannot export a non-extractable key.',
@@ -719,7 +780,24 @@ export const SolanaErrorMessages: Readonly<{
     [SOLANA_ERROR__TRANSACTION__VERSION_NUMBER_OUT_OF_RANGE]:
         'Transaction version must be in the range [0, 127]. `$actualVersion` given',
     [SOLANA_ERROR__TRANSACTION__VERSION_NUMBER_NOT_SUPPORTED]:
-        'This version of Kit does not support decoding transactions with version $unsupportedVersion. The current max supported version is 0.',
+        'This version of Kit does not support decoding transactions with version $unsupportedVersion. The current max supported version is 1.',
     [SOLANA_ERROR__TRANSACTION__NONCE_ACCOUNT_CANNOT_BE_IN_LOOKUP_TABLE]:
         'The transaction has a durable nonce lifetime (with nonce `$nonce`), but the nonce account address is in a lookup table. The lifetime constraint cannot be constructed without fetching the lookup tables for the transaction.',
+    [SOLANA_ERROR__TRANSACTION__INVALID_CONFIG_MASK_PRIORITY_FEE_BITS]:
+        'Invalid transaction config mask: $mask. Bits 0 and 1 must match (both set or both unset)',
+    [SOLANA_ERROR__TRANSACTION__MALFORMED_MESSAGE_BYTES]: 'Transaction message bytes are malformed: $messageBytes',
+    [SOLANA_ERROR__TRANSACTION__CANNOT_ENCODE_WITH_EMPTY_MESSAGE_BYTES]:
+        'Transaction message bytes are empty, so the transaction cannot be encoded',
+    [SOLANA_ERROR__TRANSACTION__CANNOT_DECODE_EMPTY_TRANSACTION_BYTES]:
+        'Transaction bytes are empty, so no transaction can be decoded',
+    [SOLANA_ERROR__TRANSACTION__VERSION_ZERO_MUST_BE_ENCODED_WITH_SIGNATURES_FIRST]:
+        'Transaction version 0 must be encoded with signatures first. This transaction was encoded with first byte $firstByte, which is expected to be a signature count for v0 transactions.',
+    [SOLANA_ERROR__TRANSACTION__SIGNATURE_COUNT_TOO_HIGH_FOR_TRANSACTION_BYTES]:
+        'The provided transaction bytes expect that there should be $numExpectedSignatures signatures, but the bytes are not long enough to contain a transaction message with this many signatures. The provided bytes are $transactionBytesLength bytes long.',
+    [SOLANA_ERROR__TRANSACTION__INVALID_NONCE_ACCOUNT_INDEX]:
+        'The transaction has a durable nonce lifetime, but the nonce account index is invalid. Expected a nonce account index less than $numberOfStaticAccounts, got $nonceAccountIndex.',
+    [SOLANA_ERROR__TRANSACTION__INVALID_CONFIG_VALUE_KIND]:
+        'The transaction config value for $configName has the incorrect kind. Expected $expectedKind, got $actualKind.',
+    [SOLANA_ERROR__TRANSACTION__INSTRUCTION_HEADERS_PAYLOADS_MISMATCH]:
+        'The transaction does not have the same number of instruction headers and instruction payloads. Got $numInstructionHeaders instruction headers, and $numInstructionPayloads instruction payloads.',
 };

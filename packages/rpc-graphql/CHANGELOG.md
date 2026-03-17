@@ -1,5 +1,69 @@
 # @solana/rpc-graphql
 
+## 6.3.1
+
+### Patch Changes
+
+- Updated dependencies []:
+    - @solana/codecs-strings@6.3.1
+    - @solana/fast-stable-stringify@6.3.1
+
+## 6.3.0
+
+### Patch Changes
+
+- Updated dependencies []:
+    - @solana/codecs-strings@6.3.0
+    - @solana/fast-stable-stringify@6.3.0
+
+## 6.2.0
+
+### Patch Changes
+
+- Updated dependencies []:
+    - @solana/codecs-strings@6.2.0
+    - @solana/fast-stable-stringify@6.2.0
+
+## 6.1.0
+
+### Patch Changes
+
+- Updated dependencies []:
+    - @solana/codecs-strings@6.1.0
+    - @solana/fast-stable-stringify@6.1.0
+
+## 6.0.1
+
+### Patch Changes
+
+- Updated dependencies []:
+    - @solana/codecs-strings@6.0.1
+    - @solana/fast-stable-stringify@6.0.1
+
+## 6.0.0
+
+### Patch Changes
+
+- Updated dependencies []:
+    - @solana/codecs-strings@6.0.0
+    - @solana/fast-stable-stringify@6.0.0
+
+## 5.5.1
+
+### Patch Changes
+
+- Updated dependencies []:
+    - @solana/codecs-strings@5.5.1
+    - @solana/fast-stable-stringify@5.5.1
+
+## 5.5.0
+
+### Patch Changes
+
+- Updated dependencies []:
+    - @solana/codecs-strings@5.5.0
+    - @solana/fast-stable-stringify@5.5.0
+
 ## 5.4.0
 
 ### Patch Changes

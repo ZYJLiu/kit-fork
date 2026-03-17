@@ -6,16 +6,45 @@ import type { Instruction } from '@solana/instructions';
 import { SignatureBytes } from '@solana/keys';
 import {
     appendTransactionMessageInstruction,
-    type BaseTransactionMessage,
     createTransactionMessage,
     setTransactionMessageFeePayer,
+    type TransactionMessage,
     type TransactionMessageWithFeePayer,
 } from '@solana/transaction-messages';
 import { getTransactionMessageSize, SignaturesMap, Transaction, TRANSACTION_SIZE_LIMIT } from '@solana/transactions';
 
-import { MessagePackerInstructionPlan } from '../instruction-plan';
+import { MessagePackerInstructionPlan } from '../index';
 
 const MINIMUM_INSTRUCTION_SIZE = 35;
+
+/**
+ * Creates a message packer that packs one instruction at a time,
+ * even when there's space to pack more in a single iteration.
+ * This is useful for testing that the message packer loop correctly accumulates
+ * results across iterations.
+ */
+export function createSingleInstructionAtATimeMessagePackerInstructionPlan(
+    instructions: Instruction[],
+): MessagePackerInstructionPlan {
+    return Object.freeze({
+        getMessagePacker: () => {
+            let index = 0;
+            return {
+                done: () => index >= instructions.length,
+                packMessageToCapacity: message => {
+                    if (index >= instructions.length) {
+                        return message;
+                    }
+                    const instruction = instructions[index];
+                    index++;
+                    return appendTransactionMessageInstruction(instruction, message);
+                },
+            };
+        },
+        kind: 'messagePacker',
+        planType: 'instructionPlan',
+    });
+}
 
 export const FOREVER_PROMISE = new Promise(() => {
     /* never resolve */
@@ -23,7 +52,7 @@ export const FOREVER_PROMISE = new Promise(() => {
 
 export function createMessage<TId extends string>(
     id: TId,
-): BaseTransactionMessage & TransactionMessageWithFeePayer & { id: TId } {
+): TransactionMessage & TransactionMessageWithFeePayer & { id: TId } {
     return pipe(
         createTransactionMessage({ version: 0 }),
         m => setTransactionMessageFeePayer('E9Nykp3rSdza2moQutaJ3K3RSC8E5iFERX2SqLTsQfjJ' as Address, m),
@@ -57,7 +86,7 @@ export function instructionFactory(baseSeed?: string) {
 }
 
 export function transactionPercentFactory(
-    createTransactionMessage: () => BaseTransactionMessage & TransactionMessageWithFeePayer,
+    createTransactionMessage: () => TransactionMessage & TransactionMessageWithFeePayer,
 ) {
     const minimumTransactionSize = getTransactionMessageSize(createTransactionMessage());
     const remainingSize = TRANSACTION_SIZE_LIMIT - minimumTransactionSize - 1; /* For shortU16. */
@@ -111,5 +140,6 @@ export function createMessagePackerInstructionPlan(
             };
         },
         kind: 'messagePacker',
+        planType: 'instructionPlan',
     });
 }

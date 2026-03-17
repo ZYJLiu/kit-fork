@@ -1,5 +1,302 @@
 # @solana/instruction-plans
 
+## 6.3.1
+
+### Patch Changes
+
+- [#1464](https://github.com/anza-xyz/kit/pull/1464) [`a557a62`](https://github.com/anza-xyz/kit/commit/a557a62e0f42d2d526f0b8fbdd0a9fcc08ac9ef7) Thanks [@lorisleiva](https://github.com/lorisleiva)! - Add the last 8 transaction log lines to the error message of `SOLANA_ERROR__FAILED_TO_SEND_TRANSACTION` and `SOLANA_ERROR__FAILED_TO_SEND_TRANSACTIONS` (when only one transaction failed).
+
+- Updated dependencies []:
+    - @solana/errors@6.3.1
+    - @solana/instructions@6.3.1
+    - @solana/keys@6.3.1
+    - @solana/promises@6.3.1
+    - @solana/transaction-messages@6.3.1
+    - @solana/transactions@6.3.1
+
+## 6.3.0
+
+### Minor Changes
+
+- [#1444](https://github.com/anza-xyz/kit/pull/1444) [`f47d5cf`](https://github.com/anza-xyz/kit/commit/f47d5cf30512bbae3233f0ddccae45462af7f309) Thanks [@lorisleiva](https://github.com/lorisleiva)! - Enrich the `SOLANA_ERROR__TRANSACTION__FAILED_WHEN_SIMULATING_TO_ESTIMATE_COMPUTE_LIMIT` error context with the full simulation result (`Omit<RpcSimulateTransactionResult, 'err'>`) and add it to `SolanaErrorCodeWithCause`, aligning it with the `SOLANA_ERROR__JSON_RPC__SERVER_ERROR_SEND_TRANSACTION_PREFLIGHT_FAILURE` error.
+
+### Patch Changes
+
+- Updated dependencies [[`f47d5cf`](https://github.com/anza-xyz/kit/commit/f47d5cf30512bbae3233f0ddccae45462af7f309)]:
+    - @solana/errors@6.3.0
+    - @solana/instructions@6.3.0
+    - @solana/keys@6.3.0
+    - @solana/transaction-messages@6.3.0
+    - @solana/transactions@6.3.0
+    - @solana/promises@6.3.0
+
+## 6.2.0
+
+### Patch Changes
+
+- [#1435](https://github.com/anza-xyz/kit/pull/1435) [`98a8869`](https://github.com/anza-xyz/kit/commit/98a8869d5a728a65b7a525d87ed481616112503c) Thanks [@lorisleiva](https://github.com/lorisleiva)! - Add `createFailedToExecuteTransactionPlanError` factory helper for custom transaction plan executor authors and refactor the built-in executor to use it.
+
+- [#1434](https://github.com/anza-xyz/kit/pull/1434) [`79db829`](https://github.com/anza-xyz/kit/commit/79db8292b2064145f615576589d8ecbf32196dc1) Thanks [@lorisleiva](https://github.com/lorisleiva)! - Add `createFailedToSendTransactionError` and `createFailedToSendTransactionsError` factory helpers that create high-level `SolanaError` instances from failed or canceled transaction plan results, with unwrapped simulation errors, preflight data, and logs in the error context.
+
+- [#1433](https://github.com/anza-xyz/kit/pull/1433) [`49c1195`](https://github.com/anza-xyz/kit/commit/49c1195637a8d550b864918e96d9f9681f658bfe) Thanks [@lorisleiva](https://github.com/lorisleiva)! - Add `abortReason` to the `SOLANA_ERROR__INSTRUCTION_PLANS__FAILED_TO_EXECUTE_TRANSACTION_PLAN` error context so consumers can access the abort reason when converting this error to higher-level error types.
+
+- Updated dependencies [[`0d0be3e`](https://github.com/anza-xyz/kit/commit/0d0be3e18bfbb053b92c4b2d338c5bb0ed414bcc), [`7568a12`](https://github.com/anza-xyz/kit/commit/7568a127e1d1197d2362be464117bc41c82b01ad), [`e33a65f`](https://github.com/anza-xyz/kit/commit/e33a65fd18d52bd2d7a0018ff9a152ff6f43a3b3), [`49c1195`](https://github.com/anza-xyz/kit/commit/49c1195637a8d550b864918e96d9f9681f658bfe)]:
+    - @solana/errors@6.2.0
+    - @solana/instructions@6.2.0
+    - @solana/keys@6.2.0
+    - @solana/transaction-messages@6.2.0
+    - @solana/transactions@6.2.0
+    - @solana/promises@6.2.0
+
+## 6.1.0
+
+### Minor Changes
+
+- [#1334](https://github.com/anza-xyz/kit/pull/1334) [`1f6cd4b`](https://github.com/anza-xyz/kit/commit/1f6cd4bc7f41e865ff81ecd819dd9f728c27af77) Thanks [@lorisleiva](https://github.com/lorisleiva)! - Add `parseInstructionOrTransactionPlanInput` helper that converts flexible inputs (instruction plan input or transaction plan input) into an `InstructionPlan` or `TransactionPlan`
+
+- [#1332](https://github.com/anza-xyz/kit/pull/1332) [`50010b5`](https://github.com/anza-xyz/kit/commit/50010b5b791ff0e6d8636ded3af33158f2380e4e) Thanks [@lorisleiva](https://github.com/lorisleiva)! - Add `parseInstructionPlanInput` helper that converts flexible inputs (single instruction, instruction plan, or array) into an `InstructionPlan`
+
+- [#1333](https://github.com/anza-xyz/kit/pull/1333) [`33234f5`](https://github.com/anza-xyz/kit/commit/33234f50760e34a21072304e6aaf1a31b7a410f1) Thanks [@lorisleiva](https://github.com/lorisleiva)! - Add `parseTransactionPlanInput` helper that converts flexible inputs (single transaction message, transaction plan, or array) into an `TransactionPlan`
+
+### Patch Changes
+
+- Updated dependencies [[`3f711e1`](https://github.com/anza-xyz/kit/commit/3f711e16bc38657d5d1ff71cf98e73897ff19ea5), [`215027c`](https://github.com/anza-xyz/kit/commit/215027c49845bd5cbd86d3da396f0c3895283d75)]:
+    - @solana/errors@6.1.0
+    - @solana/transaction-messages@6.1.0
+    - @solana/transactions@6.1.0
+    - @solana/instructions@6.1.0
+    - @solana/keys@6.1.0
+    - @solana/promises@6.1.0
+
+## 6.0.1
+
+### Patch Changes
+
+- Updated dependencies [[`2d3296f`](https://github.com/anza-xyz/kit/commit/2d3296f1ea03184455197d0284be73ada999b492), [`a8a57ce`](https://github.com/anza-xyz/kit/commit/a8a57cebc47caa24f6d105c346427baa244fa462)]:
+    - @solana/transaction-messages@6.0.1
+    - @solana/transactions@6.0.1
+    - @solana/errors@6.0.1
+    - @solana/instructions@6.0.1
+    - @solana/keys@6.0.1
+    - @solana/promises@6.0.1
+
+## 6.0.0
+
+### Major Changes
+
+- [#1302](https://github.com/anza-xyz/kit/pull/1302) [`5f12df2`](https://github.com/anza-xyz/kit/commit/5f12df20b6f4b4b3536cc76c69b90fb8dc22455d) Thanks [@lorisleiva](https://github.com/lorisleiva)! - The `executeTransactionMessage` callback in `createTransactionPlanExecutor` now receives a mutable context object as its first argument. This context can be incrementally populated during execution (e.g. with the latest transaction message, the compiled transaction, or custom properties) and is preserved in the resulting `SingleTransactionPlanResult` regardless of the outcome. If an error is thrown at any point in the callback, any attributes already saved to the context will still be available in the `FailedSingleTransactionPlanResult`, which is useful for debugging failures or building recovery plans.
+
+    The callback must now return either a `Signature` or a full `Transaction` object directly, instead of wrapping the result in an object.
+
+    **BREAKING CHANGES**
+
+    **`executeTransactionMessage` callback signature changed.** The callback now receives `(context, message, config)` instead of `(message, config)` and returns `Signature | Transaction` instead of `{ transaction: Transaction } | { signature: Signature }`.
+
+    ```diff
+      const executor = createTransactionPlanExecutor({
+    -   executeTransactionMessage: async (message, { abortSignal }) => {
+    +   executeTransactionMessage: async (context, message, { abortSignal }) => {
+          const transaction = await signTransactionMessageWithSigners(message);
+    +     context.transaction = transaction;
+          await sendAndConfirmTransaction(transaction, { commitment: 'confirmed' });
+    -     return { transaction };
+    +     return transaction;
+        }
+      });
+    ```
+
+    **Custom context is now set via mutation instead of being returned.** Previously, custom context was returned as part of the result object. Now, it must be set directly on the mutable context argument.
+
+    ```diff
+      const executor = createTransactionPlanExecutor({
+    -   executeTransactionMessage: async (message) => {
+    -     const transaction = await signAndSend(message);
+    -     return { transaction, context: { custom: 'value' } };
+    +   executeTransactionMessage: async (context, message) => {
+    +     context.custom = 'value';
+    +     const transaction = await signAndSend(message);
+    +     return transaction;
+        }
+      });
+    ```
+
+- [#1293](https://github.com/anza-xyz/kit/pull/1293) [`5c810ac`](https://github.com/anza-xyz/kit/commit/5c810ac20414a893b94045f0e89f01a8ca79ba8a) Thanks [@lorisleiva](https://github.com/lorisleiva)! - Reshape the successful `SingleTransactionPlanResult` factory functions. The `successfulSingleTransactionPlanResult` helper now accepts a context object (which must include a `signature` property) instead of a separate `signature` argument. A new `successfulSingleTransactionPlanResultFromTransaction` helper is introduced for the common case of creating a successful result from a full `Transaction` object.
+
+    **BREAKING CHANGES**
+
+    **`successfulSingleTransactionPlanResult` renamed to `successfulSingleTransactionPlanResultFromTransaction`.** If you were creating a successful result from a `Transaction`, update the function name.
+
+    ```diff
+    - successfulSingleTransactionPlanResult(message, transaction)
+    + successfulSingleTransactionPlanResultFromTransaction(message, transaction)
+    ```
+
+    **`successfulSingleTransactionPlanResultFromSignature` renamed to `successfulSingleTransactionPlanResult` with a new signature.** The `signature` is no longer a separate argument — it must be included in the `context` object.
+
+    ```diff
+    - successfulSingleTransactionPlanResultFromSignature(message, signature)
+    + successfulSingleTransactionPlanResult(message, { signature })
+    ```
+
+    ```diff
+    - successfulSingleTransactionPlanResultFromSignature(message, signature, context)
+    + successfulSingleTransactionPlanResult(message, { ...context, signature })
+    ```
+
+- [#1309](https://github.com/anza-xyz/kit/pull/1309) [`bd3d5f1`](https://github.com/anza-xyz/kit/commit/bd3d5f11eac57d1930a747af9ae02cde07d13aa1) Thanks [@lorisleiva](https://github.com/lorisleiva)! - Add a new `planType` property to all `InstructionPlan`, `TransactionPlan`, and `TransactionPlanResult` types to distinguish them from each other at runtime. This property is a string literal with the value `'instructionPlan'`, `'transactionPlan'`, or `'transactionPlanResult'` respectively. It also adds new type guard functions that make use of that new property: `isInstructionPlan`, `isTransactionPlan`, and `isTransactionPlanResult`.
+
+    **BREAKING CHANGES**
+
+    **`InstructionPlan`, `TransactionPlan`, and `TransactionPlanResult` type guards updated.** All factories have been updated to add the new `planType` property but any custom instantiation of these types must be updated to include it as well.
+
+    ```diff
+      const myInstructionPlan: InstructionPlan = {
+        kind: 'parallel',
+        plans: [/* ... */],
+    +   planType: 'instructionPlan',
+      };
+
+      const myTransactionPlan: TransactionPlan = {
+        kind: 'parallel',
+        plans: [/* ... */],
+    +   planType: 'transactionPlan',
+      };
+
+      const myTransactionPlanResult: TransactionPlanResult = {
+        kind: 'parallel',
+        plans: [/* ... */],
+    +   planType: 'transactionPlanResult',
+      };
+    ```
+
+- [#1311](https://github.com/anza-xyz/kit/pull/1311) [`91cdb71`](https://github.com/anza-xyz/kit/commit/91cdb7129daaf0fa0a6d78d16a571e6f2a3feded) Thanks [@lorisleiva](https://github.com/lorisleiva)! - Remove deprecated function `getAllSingleTransactionPlans`
+
+    **BREAKING CHANGES**
+
+    **`getAllSingleTransactionPlans` removed.** Use `flattenTransactionPlan` instead.
+
+    ```diff
+    - const singlePlans = getAllSingleTransactionPlans(transactionPlan);
+    + const singlePlans = flattenTransactionPlan(transactionPlan);
+    ```
+
+- [#1276](https://github.com/anza-xyz/kit/pull/1276) [`2fbad6a`](https://github.com/anza-xyz/kit/commit/2fbad6ab60789e4207f6c4c95c4c2ac514aafab5) Thanks [@lorisleiva](https://github.com/lorisleiva)! - Reshape `SingleTransactionPlanResult` from a single object type with a `status` discriminated union into three distinct types: `SuccessfulSingleTransactionPlanResult`, `FailedSingleTransactionPlanResult`, and `CanceledSingleTransactionPlanResult`. This flattens the result structure so that `status` is now a string literal (`'successful'`, `'failed'`, or `'canceled'`) and properties like `context`, `error`, and `plannedMessage` live at the top level of each variant.
+
+    Other changes include:
+    - Rename the `message` property to `plannedMessage` on all single transaction plan result types. This makes it clearer that this original planned message from the `TransactionPlan`, not the final message that was sent to the network.
+    - Move the `context` object from inside the `status` field to the top level of each result variant. All variants now carry a `context` — not just successful ones.
+    - Expand `context` attribute to optionally include `message`, `signature`, and `transaction` properties. These properties are meant to hold the actual `TransactionMessage`, `Signature`, and `Transaction` used when the transaction was sent to the network — which may differ from the originally `plannedMessage`.
+    - Remove the now-unused `TransactionPlanResultStatus` type.
+    - `failedSingleTransactionPlanResult` and `canceledSingleTransactionPlanResult` now accept an optional `context` parameter too.
+
+    **BREAKING CHANGES**
+
+    **Accessing the status kind.** Replace `result.status.kind` with `result.status`.
+
+    ```diff
+    - if (result.status.kind === 'successful') { /* ... */ }
+    + if (result.status === 'successful') { /* ... */ }
+    ```
+
+    **Accessing the signature.** The signature has moved from `result.status.signature` to `result.context.signature`.
+
+    ```diff
+    - const sig = result.status.signature;
+    + const sig = result.context.signature;
+    ```
+
+    **Accessing the transaction.** The transaction has moved from `result.status.transaction` to `result.context.transaction`.
+
+    ```diff
+    - const tx = result.status.transaction;
+    + const tx = result.context.transaction;
+    ```
+
+    **Accessing the error.** The error has moved from `result.status.error` to `result.error`.
+
+    ```diff
+    - const err = result.status.error;
+    + const err = result.error;
+    ```
+
+    **Accessing the context.** The context has moved from `result.status.context` to `result.context`.
+
+    ```diff
+    - const ctx = result.status.context;
+    + const ctx = result.context;
+    ```
+
+    **Accessing the message.** The `message` property has been renamed to `plannedMessage`.
+
+    ```diff
+    - const msg = result.message;
+    + const msg = result.plannedMessage;
+    ```
+
+    **`TransactionPlanResultStatus` removed.** Code that references this type must be updated to use the individual result variant types (`SuccessfulSingleTransactionPlanResult`, `FailedSingleTransactionPlanResult`, `CanceledSingleTransactionPlanResult`) or the `SingleTransactionPlanResult` union directly.
+
+### Minor Changes
+
+- [#1275](https://github.com/anza-xyz/kit/pull/1275) [`f8ef83e`](https://github.com/anza-xyz/kit/commit/f8ef83ee7491db8aa7331a0628045ee9072196a4) Thanks [@lorisleiva](https://github.com/lorisleiva)! - Add missing `TContext`, `TTransactionMessage` and/or `TSingle` type parameters to `TransactionPlanResult` types and helper functions to better preserve type information through narrowing operations.
+
+### Patch Changes
+
+- Updated dependencies [[`f80b6de`](https://github.com/anza-xyz/kit/commit/f80b6de0649ed2df3aa64fdd01215322bb8cc926), [`b82df4c`](https://github.com/anza-xyz/kit/commit/b82df4c98a9f157c030f62735f4427ba095bee6a), [`986a09c`](https://github.com/anza-xyz/kit/commit/986a09c56c38c2a91752972ec258fe790f8620db)]:
+    - @solana/transaction-messages@6.0.0
+    - @solana/transactions@6.0.0
+    - @solana/errors@6.0.0
+    - @solana/instructions@6.0.0
+    - @solana/keys@6.0.0
+    - @solana/promises@6.0.0
+
+## 5.5.1
+
+### Patch Changes
+
+- [#1264](https://github.com/anza-xyz/kit/pull/1264) [`d957526`](https://github.com/anza-xyz/kit/commit/d9575263c3e563c6951cd35bbc6e65e70a0e6a10) Thanks [@lorisleiva](https://github.com/lorisleiva)! - Exports missing helpers in errors and instruction-plans
+
+- Updated dependencies [[`d957526`](https://github.com/anza-xyz/kit/commit/d9575263c3e563c6951cd35bbc6e65e70a0e6a10)]:
+    - @solana/errors@5.5.1
+    - @solana/instructions@5.5.1
+    - @solana/keys@5.5.1
+    - @solana/transaction-messages@5.5.1
+    - @solana/transactions@5.5.1
+    - @solana/promises@5.5.1
+
+## 5.5.0
+
+### Minor Changes
+
+- [#1245](https://github.com/anza-xyz/kit/pull/1245) [`f731129`](https://github.com/anza-xyz/kit/commit/f731129939bac8b2574ecbbcd6afe0a0a6b00e5f) Thanks [@mcintyre94](https://github.com/mcintyre94)! - Add `flattenInstructionPlan` and `flattenTransactionPlan` functions, that can be used to remove the sequential/parallel structure from these plans. Deprecate `getAllSingleTransactionPlans` which is superseded by `flattenTransactionPlan`.
+
+- [#1233](https://github.com/anza-xyz/kit/pull/1233) [`b174ed5`](https://github.com/anza-xyz/kit/commit/b174ed531c15d34e354657d3945e4ea5b38932bc) Thanks [@lorisleiva](https://github.com/lorisleiva)! - Add `everyInstructionPlan`, `everyTransactionPlan` and `everyTransactionPlanResult` functions that can be used to ensure a given predicate holds for all nodes inside their respective plan structures.
+
+- [#1247](https://github.com/anza-xyz/kit/pull/1247) [`ea97d43`](https://github.com/anza-xyz/kit/commit/ea97d43f588c6b5bf3d4bd96464f3c927967ae28) Thanks [@mcintyre94](https://github.com/mcintyre94)! - Add a new function `appendTransactionMessageInstructionPlan` that can be used to add the instructions from an instruction plan to a transaction message
+
+- [#1253](https://github.com/anza-xyz/kit/pull/1253) [`b4f5897`](https://github.com/anza-xyz/kit/commit/b4f5897cab50a92f50b6b390ae76d743173c26dd) Thanks [@lorisleiva](https://github.com/lorisleiva)! - Add `isX` and `assertIsX` type guard helpers for instruction plans, transaction plans, and transaction plan results
+
+- [#1243](https://github.com/anza-xyz/kit/pull/1243) [`60e8c45`](https://github.com/anza-xyz/kit/commit/60e8c456356d52fb93637a6323cac9d9b2fc6816) Thanks [@lorisleiva](https://github.com/lorisleiva)! - Add `transformInstructionPlan`, `transformTransactionPlan` and `transformTransactionPlanResult` helpers for bottom-up transformation of instruction plan trees.
+
+- [#1235](https://github.com/anza-xyz/kit/pull/1235) [`a47e441`](https://github.com/anza-xyz/kit/commit/a47e44109e90ddb03193d4e1e207f9e68118679d) Thanks [@lorisleiva](https://github.com/lorisleiva)! - Add `passthroughFailedTransactionPlanExecution` helper function that wraps a transaction plan execution promise to return a `TransactionPlanResult` even on execution failure. This allows handling execution results in a unified way without try/catch.
+
+- [#1254](https://github.com/anza-xyz/kit/pull/1254) [`ba3f186`](https://github.com/anza-xyz/kit/commit/ba3f1861a9cb53b4c0e7c6d1b92791d8983e001b) Thanks [@lorisleiva](https://github.com/lorisleiva)! - Add `SuccessfulTransactionPlanResult` type with `isSuccessfulTransactionPlanResult` and `assertIsSuccessfulTransactionPlanResult` type guards
+
+- [#1236](https://github.com/anza-xyz/kit/pull/1236) [`1cc0a31`](https://github.com/anza-xyz/kit/commit/1cc0a3163cf884a715aef5ba336adfd980dabfa6) Thanks [@mcintyre94](https://github.com/mcintyre94)! - Add `getFirstFailedSingleTransactionPlanResult`, which you can use to get the first failed transaction plan result from a transaction plan result, or throw if none failed
+
+- [#1232](https://github.com/anza-xyz/kit/pull/1232) [`589d761`](https://github.com/anza-xyz/kit/commit/589d761483a8feaf46b4cda7a97ec7abd5e7ab90) Thanks [@mcintyre94](https://github.com/mcintyre94)! - Add `findInstructionPlan`, `findTransactionPlan` and `findTransactionPlanResult` functions that can be used to find the plan matching a given predicate
+
+### Patch Changes
+
+- [#1256](https://github.com/anza-xyz/kit/pull/1256) [`cccea6f`](https://github.com/anza-xyz/kit/commit/cccea6fc266e71bb2f1b4b843c3a815e3032f208) Thanks [@mcintyre94](https://github.com/mcintyre94)! - Fix a bug where a message packer that requires multiple iterations is not correctly added when forced to fit in a single transaction, even if it can fit
+
+- Updated dependencies [[`b4f5897`](https://github.com/anza-xyz/kit/commit/b4f5897cab50a92f50b6b390ae76d743173c26dd), [`08c9062`](https://github.com/anza-xyz/kit/commit/08c906299409e82a5941e1044fc6d47d633df784), [`ba3f186`](https://github.com/anza-xyz/kit/commit/ba3f1861a9cb53b4c0e7c6d1b92791d8983e001b), [`1cc0a31`](https://github.com/anza-xyz/kit/commit/1cc0a3163cf884a715aef5ba336adfd980dabfa6), [`6af7c15`](https://github.com/anza-xyz/kit/commit/6af7c156a9cd196d0d5ecb374fe696ec659756bf)]:
+    - @solana/errors@5.5.0
+    - @solana/instructions@5.5.0
+    - @solana/keys@5.5.0
+    - @solana/transaction-messages@5.5.0
+    - @solana/transactions@5.5.0
+    - @solana/promises@5.5.0
+
 ## 5.4.0
 
 ### Patch Changes

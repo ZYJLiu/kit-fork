@@ -26,7 +26,6 @@ import { getFixedSize, getMaxSize } from './utils';
  * - A {@link NumberCodec}, {@link NumberDecoder}, or {@link NumberEncoder} to store a size prefix.
  * - A fixed `number` of items, enforcing an exact length.
  * - The string `"remainder"`, which infers the number of items by consuming the rest of the available bytes.
- *   This option is only available when encoding fixed-size items.
  *
  * @typeParam TPrefix - A number codec, decoder, or encoder used for size prefixing.
  */
@@ -41,6 +40,10 @@ export type ArrayLikeCodecSize<TPrefix extends NumberCodec | NumberDecoder | Num
  * @typeParam TPrefix - A number codec, decoder, or encoder used for size prefixing.
  */
 export type ArrayCodecConfig<TPrefix extends NumberCodec | NumberDecoder | NumberEncoder> = {
+    /**
+     * An optional description for the codec, that will be used in error messages.
+     */
+    description?: string;
     /**
      * Specifies how the size of the array is determined.
      *
@@ -65,7 +68,7 @@ export type ArrayCodecConfig<TPrefix extends NumberCodec | NumberDecoder | Numbe
  * @typeParam TFrom - The type of the elements in the array.
  *
  * @param item - The encoder for each item in the array.
- * @param config - Optional configuration for the size encoding strategy.
+ * @param config - Optional configuration for the size encoding strategy and description.
  * @returns A `VariableSizeEncoder<TFrom[]>` for encoding arrays.
  *
  * @example
@@ -112,7 +115,7 @@ export function getArrayEncoder<TFrom>(
               }),
         write: (array: TFrom[], bytes, offset) => {
             if (typeof size === 'number') {
-                assertValidNumberOfItemsForCodec('array', size, array.length);
+                assertValidNumberOfItemsForCodec(config.description ?? 'array', size, array.length);
             }
             if (typeof size === 'object') {
                 offset = size.write(array.length, bytes, offset);

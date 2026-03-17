@@ -1,5 +1,149 @@
 # @solana/transactions
 
+## 6.3.1
+
+### Patch Changes
+
+- Updated dependencies []:
+    - @solana/addresses@6.3.1
+    - @solana/codecs-core@6.3.1
+    - @solana/codecs-data-structures@6.3.1
+    - @solana/codecs-numbers@6.3.1
+    - @solana/codecs-strings@6.3.1
+    - @solana/errors@6.3.1
+    - @solana/functional@6.3.1
+    - @solana/instructions@6.3.1
+    - @solana/keys@6.3.1
+    - @solana/nominal-types@6.3.1
+    - @solana/rpc-types@6.3.1
+    - @solana/transaction-messages@6.3.1
+
+## 6.3.0
+
+### Patch Changes
+
+- Updated dependencies [[`f47d5cf`](https://github.com/anza-xyz/kit/commit/f47d5cf30512bbae3233f0ddccae45462af7f309)]:
+    - @solana/errors@6.3.0
+    - @solana/addresses@6.3.0
+    - @solana/codecs-core@6.3.0
+    - @solana/codecs-data-structures@6.3.0
+    - @solana/codecs-numbers@6.3.0
+    - @solana/codecs-strings@6.3.0
+    - @solana/instructions@6.3.0
+    - @solana/keys@6.3.0
+    - @solana/rpc-types@6.3.0
+    - @solana/transaction-messages@6.3.0
+    - @solana/functional@6.3.0
+    - @solana/nominal-types@6.3.0
+
+## 6.2.0
+
+### Patch Changes
+
+- Updated dependencies [[`0d0be3e`](https://github.com/anza-xyz/kit/commit/0d0be3e18bfbb053b92c4b2d338c5bb0ed414bcc), [`7568a12`](https://github.com/anza-xyz/kit/commit/7568a127e1d1197d2362be464117bc41c82b01ad), [`e33a65f`](https://github.com/anza-xyz/kit/commit/e33a65fd18d52bd2d7a0018ff9a152ff6f43a3b3), [`5390602`](https://github.com/anza-xyz/kit/commit/53906024cffc3facb7259ab65ab974b6b1038f56), [`3f4c5f0`](https://github.com/anza-xyz/kit/commit/3f4c5f003e343c21a785e8f339f84c8d6bd3a3b1), [`49c1195`](https://github.com/anza-xyz/kit/commit/49c1195637a8d550b864918e96d9f9681f658bfe)]:
+    - @solana/errors@6.2.0
+    - @solana/codecs-data-structures@6.2.0
+    - @solana/addresses@6.2.0
+    - @solana/codecs-core@6.2.0
+    - @solana/codecs-numbers@6.2.0
+    - @solana/codecs-strings@6.2.0
+    - @solana/instructions@6.2.0
+    - @solana/keys@6.2.0
+    - @solana/rpc-types@6.2.0
+    - @solana/transaction-messages@6.2.0
+    - @solana/functional@6.2.0
+    - @solana/nominal-types@6.2.0
+
+## 6.1.0
+
+### Patch Changes
+
+- Updated dependencies [[`70b1ed8`](https://github.com/anza-xyz/kit/commit/70b1ed83be4c5445f81c600a8ca70127dbdf3463), [`3f711e1`](https://github.com/anza-xyz/kit/commit/3f711e16bc38657d5d1ff71cf98e73897ff19ea5), [`215027c`](https://github.com/anza-xyz/kit/commit/215027c49845bd5cbd86d3da396f0c3895283d75), [`7ce7545`](https://github.com/anza-xyz/kit/commit/7ce75455659ace9776042def6774678a81c43a4a)]:
+    - @solana/codecs-data-structures@6.1.0
+    - @solana/errors@6.1.0
+    - @solana/transaction-messages@6.1.0
+    - @solana/addresses@6.1.0
+    - @solana/codecs-core@6.1.0
+    - @solana/codecs-numbers@6.1.0
+    - @solana/codecs-strings@6.1.0
+    - @solana/instructions@6.1.0
+    - @solana/keys@6.1.0
+    - @solana/rpc-types@6.1.0
+    - @solana/functional@6.1.0
+    - @solana/nominal-types@6.1.0
+
+## 6.0.1
+
+### Patch Changes
+
+- Updated dependencies [[`2d3296f`](https://github.com/anza-xyz/kit/commit/2d3296f1ea03184455197d0284be73ada999b492), [`a8a57ce`](https://github.com/anza-xyz/kit/commit/a8a57cebc47caa24f6d105c346427baa244fa462)]:
+    - @solana/transaction-messages@6.0.1
+    - @solana/addresses@6.0.1
+    - @solana/codecs-core@6.0.1
+    - @solana/codecs-data-structures@6.0.1
+    - @solana/codecs-numbers@6.0.1
+    - @solana/codecs-strings@6.0.1
+    - @solana/errors@6.0.1
+    - @solana/functional@6.0.1
+    - @solana/instructions@6.0.1
+    - @solana/keys@6.0.1
+    - @solana/nominal-types@6.0.1
+    - @solana/rpc-types@6.0.1
+
+## 6.0.0
+
+### Patch Changes
+
+- Updated dependencies [[`f80b6de`](https://github.com/anza-xyz/kit/commit/f80b6de0649ed2df3aa64fdd01215322bb8cc926), [`b82df4c`](https://github.com/anza-xyz/kit/commit/b82df4c98a9f157c030f62735f4427ba095bee6a), [`986a09c`](https://github.com/anza-xyz/kit/commit/986a09c56c38c2a91752972ec258fe790f8620db)]:
+    - @solana/transaction-messages@6.0.0
+    - @solana/addresses@6.0.0
+    - @solana/codecs-core@6.0.0
+    - @solana/codecs-data-structures@6.0.0
+    - @solana/codecs-numbers@6.0.0
+    - @solana/codecs-strings@6.0.0
+    - @solana/errors@6.0.0
+    - @solana/functional@6.0.0
+    - @solana/instructions@6.0.0
+    - @solana/keys@6.0.0
+    - @solana/nominal-types@6.0.0
+    - @solana/rpc-types@6.0.0
+
+## 5.5.1
+
+### Patch Changes
+
+- Updated dependencies [[`d957526`](https://github.com/anza-xyz/kit/commit/d9575263c3e563c6951cd35bbc6e65e70a0e6a10)]:
+    - @solana/errors@5.5.1
+    - @solana/addresses@5.5.1
+    - @solana/codecs-core@5.5.1
+    - @solana/codecs-data-structures@5.5.1
+    - @solana/codecs-numbers@5.5.1
+    - @solana/codecs-strings@5.5.1
+    - @solana/instructions@5.5.1
+    - @solana/keys@5.5.1
+    - @solana/rpc-types@5.5.1
+    - @solana/transaction-messages@5.5.1
+    - @solana/functional@5.5.1
+    - @solana/nominal-types@5.5.1
+
+## 5.5.0
+
+### Patch Changes
+
+- Updated dependencies [[`b4f5897`](https://github.com/anza-xyz/kit/commit/b4f5897cab50a92f50b6b390ae76d743173c26dd), [`08c9062`](https://github.com/anza-xyz/kit/commit/08c906299409e82a5941e1044fc6d47d633df784), [`ba3f186`](https://github.com/anza-xyz/kit/commit/ba3f1861a9cb53b4c0e7c6d1b92791d8983e001b), [`1cc0a31`](https://github.com/anza-xyz/kit/commit/1cc0a3163cf884a715aef5ba336adfd980dabfa6), [`6af7c15`](https://github.com/anza-xyz/kit/commit/6af7c156a9cd196d0d5ecb374fe696ec659756bf)]:
+    - @solana/errors@5.5.0
+    - @solana/addresses@5.5.0
+    - @solana/codecs-core@5.5.0
+    - @solana/codecs-data-structures@5.5.0
+    - @solana/codecs-numbers@5.5.0
+    - @solana/codecs-strings@5.5.0
+    - @solana/instructions@5.5.0
+    - @solana/keys@5.5.0
+    - @solana/rpc-types@5.5.0
+    - @solana/transaction-messages@5.5.0
+    - @solana/functional@5.5.0
+    - @solana/nominal-types@5.5.0
+
 ## 5.4.0
 
 ### Patch Changes

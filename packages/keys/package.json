@@ -1,6 +1,6 @@
 {
     "name": "@solana/keys",
-    "version": "5.4.0",
+    "version": "6.3.1",
     "description": "Helpers for generating and transforming key material",
     "homepage": "https://www.solanakit.com/api#solanakeys",
     "exports": {
@@ -33,7 +33,8 @@
     "types": "./dist/types/index.d.ts",
     "type": "commonjs",
     "files": [
-        "./dist/"
+        "./dist/",
+        "./src/"
     ],
     "sideEffects": false,
     "keywords": [

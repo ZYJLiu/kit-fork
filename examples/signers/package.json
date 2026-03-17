@@ -12,12 +12,12 @@
         "test:typecheck": "tsc"
     },
     "dependencies": {
-        "@solana-program/system": "^0.10.0",
+        "@solana-program/system": "^0.12.0",
         "@solana/example-utils": "workspace:*",
         "@solana/kit": "workspace:*"
     },
     "devDependencies": {
-        "start-server-and-test": "^2.1.3",
+        "start-server-and-test": "^2.1.5",
         "tsx": "^4.21.0"
     }
 }

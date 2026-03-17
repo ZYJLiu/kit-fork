@@ -1,5 +1,245 @@
 # @solana/kit
 
+## 6.3.1
+
+### Patch Changes
+
+- Updated dependencies [[`a557a62`](https://github.com/anza-xyz/kit/commit/a557a62e0f42d2d526f0b8fbdd0a9fcc08ac9ef7)]:
+    - @solana/instruction-plans@6.3.1
+    - @solana/plugin-interfaces@6.3.1
+    - @solana/program-client-core@6.3.1
+    - @solana/accounts@6.3.1
+    - @solana/addresses@6.3.1
+    - @solana/codecs@6.3.1
+    - @solana/errors@6.3.1
+    - @solana/functional@6.3.1
+    - @solana/instructions@6.3.1
+    - @solana/keys@6.3.1
+    - @solana/offchain-messages@6.3.1
+    - @solana/plugin-core@6.3.1
+    - @solana/programs@6.3.1
+    - @solana/rpc@6.3.1
+    - @solana/rpc-api@6.3.1
+    - @solana/rpc-parsed-types@6.3.1
+    - @solana/rpc-spec-types@6.3.1
+    - @solana/rpc-subscriptions@6.3.1
+    - @solana/rpc-types@6.3.1
+    - @solana/signers@6.3.1
+    - @solana/sysvars@6.3.1
+    - @solana/transaction-confirmation@6.3.1
+    - @solana/transaction-messages@6.3.1
+    - @solana/transactions@6.3.1
+
+## 6.3.0
+
+### Patch Changes
+
+- Updated dependencies [[`f47d5cf`](https://github.com/anza-xyz/kit/commit/f47d5cf30512bbae3233f0ddccae45462af7f309)]:
+    - @solana/errors@6.3.0
+    - @solana/instruction-plans@6.3.0
+    - @solana/accounts@6.3.0
+    - @solana/addresses@6.3.0
+    - @solana/instructions@6.3.0
+    - @solana/keys@6.3.0
+    - @solana/offchain-messages@6.3.0
+    - @solana/program-client-core@6.3.0
+    - @solana/programs@6.3.0
+    - @solana/rpc@6.3.0
+    - @solana/rpc-api@6.3.0
+    - @solana/rpc-subscriptions@6.3.0
+    - @solana/rpc-types@6.3.0
+    - @solana/signers@6.3.0
+    - @solana/sysvars@6.3.0
+    - @solana/transaction-confirmation@6.3.0
+    - @solana/transaction-messages@6.3.0
+    - @solana/transactions@6.3.0
+    - @solana/plugin-interfaces@6.3.0
+    - @solana/rpc-parsed-types@6.3.0
+    - @solana/codecs@6.3.0
+    - @solana/functional@6.3.0
+    - @solana/plugin-core@6.3.0
+    - @solana/rpc-spec-types@6.3.0
+
+## 6.2.0
+
+### Patch Changes
+
+- Updated dependencies [[`b28b843`](https://github.com/anza-xyz/kit/commit/b28b8439b1f62aefd9c35c4bea733816975033e5), [`0d0be3e`](https://github.com/anza-xyz/kit/commit/0d0be3e18bfbb053b92c4b2d338c5bb0ed414bcc), [`98a8869`](https://github.com/anza-xyz/kit/commit/98a8869d5a728a65b7a525d87ed481616112503c), [`7568a12`](https://github.com/anza-xyz/kit/commit/7568a127e1d1197d2362be464117bc41c82b01ad), [`e33a65f`](https://github.com/anza-xyz/kit/commit/e33a65fd18d52bd2d7a0018ff9a152ff6f43a3b3), [`79db829`](https://github.com/anza-xyz/kit/commit/79db8292b2064145f615576589d8ecbf32196dc1), [`49c1195`](https://github.com/anza-xyz/kit/commit/49c1195637a8d550b864918e96d9f9681f658bfe)]:
+    - @solana/sysvars@6.2.0
+    - @solana/errors@6.2.0
+    - @solana/instruction-plans@6.2.0
+    - @solana/accounts@6.2.0
+    - @solana/addresses@6.2.0
+    - @solana/instructions@6.2.0
+    - @solana/keys@6.2.0
+    - @solana/offchain-messages@6.2.0
+    - @solana/program-client-core@6.2.0
+    - @solana/programs@6.2.0
+    - @solana/rpc@6.2.0
+    - @solana/rpc-api@6.2.0
+    - @solana/rpc-subscriptions@6.2.0
+    - @solana/rpc-types@6.2.0
+    - @solana/signers@6.2.0
+    - @solana/transaction-confirmation@6.2.0
+    - @solana/transaction-messages@6.2.0
+    - @solana/transactions@6.2.0
+    - @solana/plugin-interfaces@6.2.0
+    - @solana/codecs@6.2.0
+    - @solana/rpc-parsed-types@6.2.0
+    - @solana/functional@6.2.0
+    - @solana/plugin-core@6.2.0
+    - @solana/rpc-spec-types@6.2.0
+
+## 6.1.0
+
+### Minor Changes
+
+- [#1356](https://github.com/anza-xyz/kit/pull/1356) [`da61429`](https://github.com/anza-xyz/kit/commit/da614294bb8af73302cdd0ff565e48b8a05ab478) Thanks [@lorisleiva](https://github.com/lorisleiva)! - Add `@solana/kit/program-client-core` as a subpath export for `@solana/program-client-core` without changing root `@solana/kit` exports.
+
+### Patch Changes
+
+- Updated dependencies [[`3f711e1`](https://github.com/anza-xyz/kit/commit/3f711e16bc38657d5d1ff71cf98e73897ff19ea5), [`1f6cd4b`](https://github.com/anza-xyz/kit/commit/1f6cd4bc7f41e865ff81ecd819dd9f728c27af77), [`215027c`](https://github.com/anza-xyz/kit/commit/215027c49845bd5cbd86d3da396f0c3895283d75), [`ee558a1`](https://github.com/anza-xyz/kit/commit/ee558a1ea8a95295db0e7b0751b32ac9d6342911), [`50010b5`](https://github.com/anza-xyz/kit/commit/50010b5b791ff0e6d8636ded3af33158f2380e4e), [`d3314a6`](https://github.com/anza-xyz/kit/commit/d3314a6e22d32219a11953e4a7ef8274b82f4b37), [`33234f5`](https://github.com/anza-xyz/kit/commit/33234f50760e34a21072304e6aaf1a31b7a410f1)]:
+    - @solana/errors@6.1.0
+    - @solana/instruction-plans@6.1.0
+    - @solana/plugin-interfaces@6.1.0
+    - @solana/program-client-core@6.1.0
+    - @solana/codecs@6.1.0
+    - @solana/offchain-messages@6.1.0
+    - @solana/transaction-messages@6.1.0
+    - @solana/transactions@6.1.0
+    - @solana/accounts@6.1.0
+    - @solana/addresses@6.1.0
+    - @solana/instructions@6.1.0
+    - @solana/keys@6.1.0
+    - @solana/programs@6.1.0
+    - @solana/rpc@6.1.0
+    - @solana/rpc-api@6.1.0
+    - @solana/rpc-subscriptions@6.1.0
+    - @solana/rpc-types@6.1.0
+    - @solana/signers@6.1.0
+    - @solana/sysvars@6.1.0
+    - @solana/transaction-confirmation@6.1.0
+    - @solana/rpc-parsed-types@6.1.0
+    - @solana/functional@6.1.0
+    - @solana/plugin-core@6.1.0
+    - @solana/rpc-spec-types@6.1.0
+
+## 6.0.1
+
+### Patch Changes
+
+- [#1321](https://github.com/anza-xyz/kit/pull/1321) [`2d3296f`](https://github.com/anza-xyz/kit/commit/2d3296f1ea03184455197d0284be73ada999b492) Thanks [@mcintyre94](https://github.com/mcintyre94)! - Fix a bug in the type of `TransactionMessageWithSigners`
+
+- Updated dependencies [[`2d3296f`](https://github.com/anza-xyz/kit/commit/2d3296f1ea03184455197d0284be73ada999b492), [`a8a57ce`](https://github.com/anza-xyz/kit/commit/a8a57cebc47caa24f6d105c346427baa244fa462)]:
+    - @solana/transaction-messages@6.0.1
+    - @solana/signers@6.0.1
+    - @solana/instruction-plans@6.0.1
+    - @solana/programs@6.0.1
+    - @solana/rpc-api@6.0.1
+    - @solana/transaction-confirmation@6.0.1
+    - @solana/transactions@6.0.1
+    - @solana/rpc@6.0.1
+    - @solana/sysvars@6.0.1
+    - @solana/rpc-subscriptions@6.0.1
+    - @solana/accounts@6.0.1
+    - @solana/addresses@6.0.1
+    - @solana/codecs@6.0.1
+    - @solana/errors@6.0.1
+    - @solana/functional@6.0.1
+    - @solana/instructions@6.0.1
+    - @solana/keys@6.0.1
+    - @solana/offchain-messages@6.0.1
+    - @solana/plugin-core@6.0.1
+    - @solana/rpc-parsed-types@6.0.1
+    - @solana/rpc-spec-types@6.0.1
+    - @solana/rpc-types@6.0.1
+
+## 6.0.0
+
+### Patch Changes
+
+- Updated dependencies [[`f80b6de`](https://github.com/anza-xyz/kit/commit/f80b6de0649ed2df3aa64fdd01215322bb8cc926), [`5f12df2`](https://github.com/anza-xyz/kit/commit/5f12df20b6f4b4b3536cc76c69b90fb8dc22455d), [`b82df4c`](https://github.com/anza-xyz/kit/commit/b82df4c98a9f157c030f62735f4427ba095bee6a), [`5c810ac`](https://github.com/anza-xyz/kit/commit/5c810ac20414a893b94045f0e89f01a8ca79ba8a), [`bd3d5f1`](https://github.com/anza-xyz/kit/commit/bd3d5f11eac57d1930a747af9ae02cde07d13aa1), [`986a09c`](https://github.com/anza-xyz/kit/commit/986a09c56c38c2a91752972ec258fe790f8620db), [`f8ef83e`](https://github.com/anza-xyz/kit/commit/f8ef83ee7491db8aa7331a0628045ee9072196a4), [`91cdb71`](https://github.com/anza-xyz/kit/commit/91cdb7129daaf0fa0a6d78d16a571e6f2a3feded), [`2fbad6a`](https://github.com/anza-xyz/kit/commit/2fbad6ab60789e4207f6c4c95c4c2ac514aafab5)]:
+    - @solana/transaction-messages@6.0.0
+    - @solana/instruction-plans@6.0.0
+    - @solana/programs@6.0.0
+    - @solana/rpc-api@6.0.0
+    - @solana/signers@6.0.0
+    - @solana/transaction-confirmation@6.0.0
+    - @solana/transactions@6.0.0
+    - @solana/rpc@6.0.0
+    - @solana/sysvars@6.0.0
+    - @solana/rpc-subscriptions@6.0.0
+    - @solana/accounts@6.0.0
+    - @solana/addresses@6.0.0
+    - @solana/codecs@6.0.0
+    - @solana/errors@6.0.0
+    - @solana/functional@6.0.0
+    - @solana/instructions@6.0.0
+    - @solana/keys@6.0.0
+    - @solana/offchain-messages@6.0.0
+    - @solana/plugin-core@6.0.0
+    - @solana/rpc-parsed-types@6.0.0
+    - @solana/rpc-spec-types@6.0.0
+    - @solana/rpc-types@6.0.0
+
+## 5.5.1
+
+### Patch Changes
+
+- Updated dependencies [[`d957526`](https://github.com/anza-xyz/kit/commit/d9575263c3e563c6951cd35bbc6e65e70a0e6a10)]:
+    - @solana/instruction-plans@5.5.1
+    - @solana/errors@5.5.1
+    - @solana/accounts@5.5.1
+    - @solana/addresses@5.5.1
+    - @solana/instructions@5.5.1
+    - @solana/keys@5.5.1
+    - @solana/offchain-messages@5.5.1
+    - @solana/programs@5.5.1
+    - @solana/rpc@5.5.1
+    - @solana/rpc-api@5.5.1
+    - @solana/rpc-subscriptions@5.5.1
+    - @solana/rpc-types@5.5.1
+    - @solana/signers@5.5.1
+    - @solana/sysvars@5.5.1
+    - @solana/transaction-confirmation@5.5.1
+    - @solana/transaction-messages@5.5.1
+    - @solana/transactions@5.5.1
+    - @solana/rpc-parsed-types@5.5.1
+    - @solana/codecs@5.5.1
+    - @solana/functional@5.5.1
+    - @solana/plugin-core@5.5.1
+    - @solana/rpc-spec-types@5.5.1
+
+## 5.5.0
+
+### Patch Changes
+
+- [#1234](https://github.com/anza-xyz/kit/pull/1234) [`7e0377b`](https://github.com/anza-xyz/kit/commit/7e0377b41caed78f81b3fe8272efbc9d4af0464a) Thanks [@mcintyre94](https://github.com/mcintyre94)! - Fix a race condition in `sendAndConfirmDurableNonceTransactionFactory`
+
+- Updated dependencies [[`f731129`](https://github.com/anza-xyz/kit/commit/f731129939bac8b2574ecbbcd6afe0a0a6b00e5f), [`b174ed5`](https://github.com/anza-xyz/kit/commit/b174ed531c15d34e354657d3945e4ea5b38932bc), [`ea97d43`](https://github.com/anza-xyz/kit/commit/ea97d43f588c6b5bf3d4bd96464f3c927967ae28), [`b4f5897`](https://github.com/anza-xyz/kit/commit/b4f5897cab50a92f50b6b390ae76d743173c26dd), [`60e8c45`](https://github.com/anza-xyz/kit/commit/60e8c456356d52fb93637a6323cac9d9b2fc6816), [`cccea6f`](https://github.com/anza-xyz/kit/commit/cccea6fc266e71bb2f1b4b843c3a815e3032f208), [`08c9062`](https://github.com/anza-xyz/kit/commit/08c906299409e82a5941e1044fc6d47d633df784), [`a47e441`](https://github.com/anza-xyz/kit/commit/a47e44109e90ddb03193d4e1e207f9e68118679d), [`ba3f186`](https://github.com/anza-xyz/kit/commit/ba3f1861a9cb53b4c0e7c6d1b92791d8983e001b), [`1cc0a31`](https://github.com/anza-xyz/kit/commit/1cc0a3163cf884a715aef5ba336adfd980dabfa6), [`589d761`](https://github.com/anza-xyz/kit/commit/589d761483a8feaf46b4cda7a97ec7abd5e7ab90), [`6af7c15`](https://github.com/anza-xyz/kit/commit/6af7c156a9cd196d0d5ecb374fe696ec659756bf)]:
+    - @solana/instruction-plans@5.5.0
+    - @solana/errors@5.5.0
+    - @solana/accounts@5.5.0
+    - @solana/addresses@5.5.0
+    - @solana/instructions@5.5.0
+    - @solana/keys@5.5.0
+    - @solana/offchain-messages@5.5.0
+    - @solana/programs@5.5.0
+    - @solana/rpc@5.5.0
+    - @solana/rpc-api@5.5.0
+    - @solana/rpc-subscriptions@5.5.0
+    - @solana/rpc-types@5.5.0
+    - @solana/signers@5.5.0
+    - @solana/sysvars@5.5.0
+    - @solana/transaction-confirmation@5.5.0
+    - @solana/transaction-messages@5.5.0
+    - @solana/transactions@5.5.0
+    - @solana/rpc-parsed-types@5.5.0
+    - @solana/codecs@5.5.0
+    - @solana/functional@5.5.0
+    - @solana/plugin-core@5.5.0
+    - @solana/rpc-spec-types@5.5.0
+
 ## 5.4.0
 
 ### Patch Changes

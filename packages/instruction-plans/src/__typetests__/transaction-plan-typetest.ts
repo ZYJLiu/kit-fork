@@ -1,7 +1,16 @@
-import type { BaseTransactionMessage, TransactionMessageWithFeePayer } from '@solana/transaction-messages';
+import type { TransactionMessage, TransactionMessageWithFeePayer } from '@solana/transaction-messages';
 
 import {
-    getAllSingleTransactionPlans,
+    assertIsNonDivisibleSequentialTransactionPlan,
+    assertIsParallelTransactionPlan,
+    assertIsSequentialTransactionPlan,
+    assertIsSingleTransactionPlan,
+    flattenTransactionPlan,
+    isNonDivisibleSequentialTransactionPlan,
+    isParallelTransactionPlan,
+    isSequentialTransactionPlan,
+    isSingleTransactionPlan,
+    isTransactionPlan,
     nonDivisibleSequentialTransactionPlan,
     ParallelTransactionPlan,
     parallelTransactionPlan,
@@ -9,11 +18,12 @@ import {
     sequentialTransactionPlan,
     SingleTransactionPlan,
     singleTransactionPlan,
-} from '../transaction-plan';
+    TransactionPlan,
+} from '../index';
 
-const messageA = null as unknown as BaseTransactionMessage & TransactionMessageWithFeePayer & { id: 'A' };
-const messageB = null as unknown as BaseTransactionMessage & TransactionMessageWithFeePayer & { id: 'B' };
-const messageC = null as unknown as BaseTransactionMessage & TransactionMessageWithFeePayer & { id: 'C' };
+const messageA = null as unknown as TransactionMessage & TransactionMessageWithFeePayer & { id: 'A' };
+const messageB = null as unknown as TransactionMessage & TransactionMessageWithFeePayer & { id: 'B' };
+const messageC = null as unknown as TransactionMessage & TransactionMessageWithFeePayer & { id: 'C' };
 
 // [DESCRIBE] parallelTransactionPlan
 {
@@ -72,12 +82,12 @@ const messageC = null as unknown as BaseTransactionMessage & TransactionMessageW
     }
 }
 
-// [DESCRIBE] getAllSingleTransactionPlans
+// [DESCRIBE] flattenTransactionPlan
 {
     // It extracts single transaction plans from a simple plan.
     {
         const plan = singleTransactionPlan(messageA);
-        const singlePlans = getAllSingleTransactionPlans(plan);
+        const singlePlans = flattenTransactionPlan(plan);
         singlePlans satisfies SingleTransactionPlan[];
     }
 
@@ -87,7 +97,102 @@ const messageC = null as unknown as BaseTransactionMessage & TransactionMessageW
             sequentialTransactionPlan([messageA, messageB]),
             nonDivisibleSequentialTransactionPlan([messageC]),
         ]);
-        const singlePlans = getAllSingleTransactionPlans(plan);
+        const singlePlans = flattenTransactionPlan(plan);
         singlePlans satisfies SingleTransactionPlan[];
+    }
+}
+
+// [DESCRIBE] isSingleTransactionPlan
+{
+    // It narrows SingleTransactionPlan.
+    {
+        const plan = null as unknown as TransactionPlan;
+        if (isSingleTransactionPlan(plan)) {
+            plan satisfies SingleTransactionPlan;
+        }
+    }
+}
+
+// [DESCRIBE] assertIsSingleTransactionPlan
+{
+    // It narrows SingleTransactionPlan.
+    {
+        const plan = null as unknown as TransactionPlan;
+        assertIsSingleTransactionPlan(plan);
+        plan satisfies SingleTransactionPlan;
+    }
+}
+
+// [DESCRIBE] isSequentialTransactionPlan
+{
+    // It narrows SequentialTransactionPlan.
+    {
+        const plan = null as unknown as TransactionPlan;
+        if (isSequentialTransactionPlan(plan)) {
+            plan satisfies SequentialTransactionPlan;
+        }
+    }
+}
+
+// [DESCRIBE] assertIsSequentialTransactionPlan
+{
+    // It narrows SequentialTransactionPlan.
+    {
+        const plan = null as unknown as TransactionPlan;
+        assertIsSequentialTransactionPlan(plan);
+        plan satisfies SequentialTransactionPlan;
+    }
+}
+
+// [DESCRIBE] isNonDivisibleTransactionPlan
+{
+    // It narrows non-divisible SequentialTransactionPlan.
+    {
+        const plan = null as unknown as TransactionPlan;
+        if (isNonDivisibleSequentialTransactionPlan(plan)) {
+            plan satisfies SequentialTransactionPlan & { divisible: false };
+        }
+    }
+}
+
+// [DESCRIBE] assertIsNonDivisibleSequentialTransactionPlan
+{
+    // It narrows non-divisible SequentialTransactionPlan.
+    {
+        const plan = null as unknown as TransactionPlan;
+        assertIsNonDivisibleSequentialTransactionPlan(plan);
+        plan satisfies SequentialTransactionPlan & { divisible: false };
+    }
+}
+
+// [DESCRIBE] isParallelTransactionPlan
+{
+    // It narrows ParallelTransactionPlan.
+    {
+        const plan = null as unknown as TransactionPlan;
+        if (isParallelTransactionPlan(plan)) {
+            plan satisfies ParallelTransactionPlan;
+        }
+    }
+}
+
+// [DESCRIBE] assertIsParallelTransactionPlan
+{
+    // It narrows ParallelTransactionPlan.
+    {
+        const plan = null as unknown as TransactionPlan;
+        assertIsParallelTransactionPlan(plan);
+        plan satisfies ParallelTransactionPlan;
+    }
+}
+
+// [DESCRIBE] isTransactionPlan
+{
+    // It narrows to any TransactionPlan.
+    {
+        const plan = null as unknown;
+        if (isTransactionPlan(plan)) {
+            plan satisfies TransactionPlan;
+        }
     }
 }
