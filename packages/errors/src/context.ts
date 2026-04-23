@@ -44,6 +44,7 @@ import {
     SOLANA_ERROR__CODECS__UNION_VARIANT_OUT_OF_RANGE,
     SOLANA_ERROR__FAILED_TO_SEND_TRANSACTION,
     SOLANA_ERROR__FAILED_TO_SEND_TRANSACTIONS,
+    SOLANA_ERROR__FS__UNSUPPORTED_ENVIRONMENT,
     SOLANA_ERROR__INSTRUCTION__EXPECTED_TO_HAVE_ACCOUNTS,
     SOLANA_ERROR__INSTRUCTION__EXPECTED_TO_HAVE_DATA,
     SOLANA_ERROR__INSTRUCTION__PROGRAM_ID_MISMATCH,
@@ -135,6 +136,7 @@ import {
     SOLANA_ERROR__JSON_RPC__SERVER_ERROR_SLOT_SKIPPED,
     SOLANA_ERROR__JSON_RPC__SERVER_ERROR_TRANSACTION_PRECOMPILE_VERIFICATION_FAILURE,
     SOLANA_ERROR__JSON_RPC__SERVER_ERROR_UNSUPPORTED_TRANSACTION_VERSION,
+    SOLANA_ERROR__KEYS__INVALID_BASE58_IN_GRIND_REGEX,
     SOLANA_ERROR__KEYS__INVALID_KEY_PAIR_BYTE_LENGTH,
     SOLANA_ERROR__KEYS__INVALID_PRIVATE_KEY_BYTE_LENGTH,
     SOLANA_ERROR__KEYS__INVALID_SIGNATURE_BYTE_LENGTH,
@@ -198,6 +200,10 @@ import {
     SOLANA_ERROR__TRANSACTION__NONCE_ACCOUNT_CANNOT_BE_IN_LOOKUP_TABLE,
     SOLANA_ERROR__TRANSACTION__SIGNATURE_COUNT_TOO_HIGH_FOR_TRANSACTION_BYTES,
     SOLANA_ERROR__TRANSACTION__SIGNATURES_MISSING,
+    SOLANA_ERROR__TRANSACTION__TOO_MANY_ACCOUNT_ADDRESSES,
+    SOLANA_ERROR__TRANSACTION__TOO_MANY_ACCOUNTS_IN_INSTRUCTION,
+    SOLANA_ERROR__TRANSACTION__TOO_MANY_INSTRUCTIONS,
+    SOLANA_ERROR__TRANSACTION__TOO_MANY_SIGNER_ADDRESSES,
     SOLANA_ERROR__TRANSACTION__VERSION_NUMBER_NOT_SUPPORTED,
     SOLANA_ERROR__TRANSACTION__VERSION_NUMBER_OUT_OF_RANGE,
     SOLANA_ERROR__TRANSACTION__VERSION_ZERO_MUST_BE_ENCODED_WITH_SIGNATURES_FIRST,
@@ -205,6 +211,8 @@ import {
     SOLANA_ERROR__TRANSACTION_ERROR__INSUFFICIENT_FUNDS_FOR_RENT,
     SOLANA_ERROR__TRANSACTION_ERROR__PROGRAM_EXECUTION_TEMPORARILY_RESTRICTED,
     SOLANA_ERROR__TRANSACTION_ERROR__UNKNOWN,
+    SOLANA_ERROR__WALLET__NO_SIGNER_CONNECTED,
+    SOLANA_ERROR__WALLET__NOT_CONNECTED,
     SolanaErrorCode,
 } from './codes';
 import { RpcSimulateTransactionResult } from './json-rpc-error';
@@ -453,6 +461,9 @@ export type SolanaErrorContext = ReadonlyContextValue<
                 }>;
                 transactionPlanResult: unknown;
             };
+            [SOLANA_ERROR__FS__UNSUPPORTED_ENVIRONMENT]: {
+                operation: string;
+            };
             [SOLANA_ERROR__INSTRUCTION_ERROR__BORSH_IO_ERROR]: {
                 index: number;
             };
@@ -588,6 +599,10 @@ export type SolanaErrorContext = ReadonlyContextValue<
             };
             [SOLANA_ERROR__JSON_RPC__SERVER_ERROR_UNSUPPORTED_TRANSACTION_VERSION]: {
                 __serverMessage: string;
+            };
+            [SOLANA_ERROR__KEYS__INVALID_BASE58_IN_GRIND_REGEX]: {
+                character: string;
+                source: string;
             };
             [SOLANA_ERROR__KEYS__INVALID_KEY_PAIR_BYTE_LENGTH]: {
                 byteLength: number;
@@ -830,6 +845,23 @@ export type SolanaErrorContext = ReadonlyContextValue<
                 transactionBytes: ReadonlyUint8Array;
                 transactionBytesLength: number;
             };
+            [SOLANA_ERROR__TRANSACTION__TOO_MANY_ACCOUNTS_IN_INSTRUCTION]: {
+                actualCount: number;
+                instructionIndex: number;
+                maxAllowed: number;
+            };
+            [SOLANA_ERROR__TRANSACTION__TOO_MANY_ACCOUNT_ADDRESSES]: {
+                actualCount: number;
+                maxAllowed: number;
+            };
+            [SOLANA_ERROR__TRANSACTION__TOO_MANY_INSTRUCTIONS]: {
+                actualCount: number;
+                maxAllowed: number;
+            };
+            [SOLANA_ERROR__TRANSACTION__TOO_MANY_SIGNER_ADDRESSES]: {
+                actualCount: number;
+                maxAllowed: number;
+            };
             [SOLANA_ERROR__TRANSACTION__VERSION_NUMBER_NOT_SUPPORTED]: {
                 unsupportedVersion: number;
             };
@@ -839,6 +871,12 @@ export type SolanaErrorContext = ReadonlyContextValue<
             [SOLANA_ERROR__TRANSACTION__VERSION_ZERO_MUST_BE_ENCODED_WITH_SIGNATURES_FIRST]: {
                 firstByte: number;
                 transactionBytes: ReadonlyUint8Array;
+            };
+            [SOLANA_ERROR__WALLET__NOT_CONNECTED]: {
+                operation: string;
+            };
+            [SOLANA_ERROR__WALLET__NO_SIGNER_CONNECTED]: {
+                status: string;
             };
         }
     >

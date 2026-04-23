@@ -1,5 +1,38 @@
 # @solana/plugin-core
 
+## 6.8.0
+
+### Patch Changes
+
+- [#1532](https://github.com/anza-xyz/kit/pull/1532) [`667a0f0`](https://github.com/anza-xyz/kit/commit/667a0f059f5432244ab2cf8a23a22f53c7a36b4b) Thanks [@mcintyre94](https://github.com/mcintyre94)! - Update the TypeScript peer dependency from `^5.0.0` to `>=5.0.0` to allow TypeScript 6 and above.
+
+## 6.7.0
+
+### Minor Changes
+
+- [#1509](https://github.com/anza-xyz/kit/pull/1509) [`2763d0c`](https://github.com/anza-xyz/kit/commit/2763d0c92b60089f4b20f6241cb5f91232cc2e75) Thanks [@lorisleiva](https://github.com/lorisleiva)! - Add `createClient` function that replaces `createEmptyClient` and accepts an optional initial value. The old `createEmptyClient` is preserved as a deprecated re-export.
+
+## 6.6.0
+
+### Minor Changes
+
+- [#1480](https://github.com/anza-xyz/kit/pull/1480) [`9c4fd6e`](https://github.com/anza-xyz/kit/commit/9c4fd6e67a6f70b1386f0745cf5afe0f93c75e36) Thanks [@mcintyre94](https://github.com/mcintyre94)! - Add `withCleanup` function to `@solana/plugin-core`. Plugin authors can use it to register teardown logic (e.g. closing connections or clearing timers) on a client, making it `Disposable`. If the client already implements `Symbol.dispose`, the new cleanup function is chained so both run on disposal.
+
+## 6.5.0
+
+## 6.4.0
+
+### Minor Changes
+
+- [#1479](https://github.com/anza-xyz/kit/pull/1479) [`abeca1b`](https://github.com/anza-xyz/kit/commit/abeca1b28725f675128f68e4e73d2f655e500eaa) Thanks [@mcintyre94](https://github.com/mcintyre94)! - Add `extendClient` helper for plugin authors to merge client objects while preserving property descriptors (getters, symbol-keyed properties, and non-enumerable properties).
+
+    Plugin authors should migrate plugins to use this instead of spreading the input client.
+
+    ```diff
+    - return { ...client, rpc };
+    + return extendClient(client, { rpc });
+    ```
+
 ## 6.3.1
 
 ## 6.3.0

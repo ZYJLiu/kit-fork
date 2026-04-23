@@ -1,5 +1,96 @@
 # @solana/signers
 
+## 6.8.0
+
+### Minor Changes
+
+- [#1531](https://github.com/anza-xyz/kit/pull/1531) [`d79f8d1`](https://github.com/anza-xyz/kit/commit/d79f8d115065557194db9604f3a0bfef7d37a2b6) Thanks [@lorisleiva](https://github.com/lorisleiva)! - Add an optional `extractable` argument to `generateKeyPair` and `generateKeyPairSigner`. It defaults to `false`, preserving the existing secure-by-default behavior, but can be set to `true` when you need to export the generated private key bytes via `crypto.subtle.exportKey()`.
+
+- [#1537](https://github.com/anza-xyz/kit/pull/1537) [`fdfcb6c`](https://github.com/anza-xyz/kit/commit/fdfcb6cbf439eb55e07ad7d59372347bd816d6d3) Thanks [@lorisleiva](https://github.com/lorisleiva)! - Add `writeKeyPair` and `writeKeyPairSigner` helpers for persisting an extractable key pair to disk as a JSON byte array, matching the format produced by `solana-keygen`. Missing parent directories are created automatically, and written files use mode `0600`. These helpers are Node-only and refuse to overwrite an existing file unless the caller sets `unsafelyOverwriteExistingKeyPair: true`.
+
+- [#1534](https://github.com/anza-xyz/kit/pull/1534) [`43bc570`](https://github.com/anza-xyz/kit/commit/43bc570a5b51a9fda75abc1f0f818728ca3cd439) Thanks [@lorisleiva](https://github.com/lorisleiva)! - Add `grindKeyPair`, `grindKeyPairs`, `grindKeyPairSigner`, and `grindKeyPairSigners` for mining vanity key pairs whose base58-encoded public key matches a `RegExp` or a custom predicate. Supports `amount` for mining multiple key pairs, `extractable` for forwarding to the underlying `generateKeyPair` call, `concurrency` (defaulting to `32`) for batched parallel key generation, and `abortSignal` for cancellation. Regex matchers are statically checked for base58-alphabet violations at runtime (after stripping escapes, character classes, quantifiers, and groups) to catch common typos like `/^sol0/`.
+
+### Patch Changes
+
+- [#1532](https://github.com/anza-xyz/kit/pull/1532) [`667a0f0`](https://github.com/anza-xyz/kit/commit/667a0f059f5432244ab2cf8a23a22f53c7a36b4b) Thanks [@mcintyre94](https://github.com/mcintyre94)! - Update the TypeScript peer dependency from `^5.0.0` to `>=5.0.0` to allow TypeScript 6 and above.
+
+- Updated dependencies [[`d79f8d1`](https://github.com/anza-xyz/kit/commit/d79f8d115065557194db9604f3a0bfef7d37a2b6), [`667a0f0`](https://github.com/anza-xyz/kit/commit/667a0f059f5432244ab2cf8a23a22f53c7a36b4b), [`fdfcb6c`](https://github.com/anza-xyz/kit/commit/fdfcb6cbf439eb55e07ad7d59372347bd816d6d3), [`43bc570`](https://github.com/anza-xyz/kit/commit/43bc570a5b51a9fda75abc1f0f818728ca3cd439), [`ffb7665`](https://github.com/anza-xyz/kit/commit/ffb76652f6b887eb5020c3584f1d827a1098dccc)]:
+    - @solana/keys@6.8.0
+    - @solana/addresses@6.8.0
+    - @solana/codecs-core@6.8.0
+    - @solana/errors@6.8.0
+    - @solana/instructions@6.8.0
+    - @solana/nominal-types@6.8.0
+    - @solana/offchain-messages@6.8.0
+    - @solana/transaction-messages@6.8.0
+    - @solana/transactions@6.8.0
+
+## 6.7.0
+
+### Patch Changes
+
+- Updated dependencies []:
+    - @solana/addresses@6.7.0
+    - @solana/codecs-core@6.7.0
+    - @solana/errors@6.7.0
+    - @solana/instructions@6.7.0
+    - @solana/keys@6.7.0
+    - @solana/nominal-types@6.7.0
+    - @solana/offchain-messages@6.7.0
+    - @solana/transaction-messages@6.7.0
+    - @solana/transactions@6.7.0
+
+## 6.6.0
+
+### Patch Changes
+
+- [#1492](https://github.com/anza-xyz/kit/pull/1492) [`0fa54a4`](https://github.com/anza-xyz/kit/commit/0fa54a469937db3989f42afc4248882736f719f5) Thanks [@lorisleiva](https://github.com/lorisleiva)! - Allow `deduplicateSigners` to handle structurally equivalent signers (e.g. two `createNoopSigner` calls with the same address) instead of throwing.
+
+- Updated dependencies [[`742ffca`](https://github.com/anza-xyz/kit/commit/742ffcaf5304f702334e1f0b2a14cf208ae0ee5f), [`7f02d23`](https://github.com/anza-xyz/kit/commit/7f02d23948cc09e3f0bc70931d845569f1cb38ad)]:
+    - @solana/transactions@6.6.0
+    - @solana/errors@6.6.0
+    - @solana/transaction-messages@6.6.0
+    - @solana/addresses@6.6.0
+    - @solana/codecs-core@6.6.0
+    - @solana/instructions@6.6.0
+    - @solana/keys@6.6.0
+    - @solana/offchain-messages@6.6.0
+    - @solana/nominal-types@6.6.0
+
+## 6.5.0
+
+### Minor Changes
+
+- [#1487](https://github.com/anza-xyz/kit/pull/1487) [`9e05736`](https://github.com/anza-xyz/kit/commit/9e057365a1a4e350f8a0ccc233b262e09b0134fa) Thanks [@lorisleiva](https://github.com/lorisleiva)! - Add `partiallySignTransactionWithSigners`, `signTransactionWithSigners`, and `signAndSendTransactionWithSigners` functions that accept a set of signers and a compiled `Transaction` directly, without requiring signers to be embedded in a transaction message. Also add `assertContainsResolvableTransactionSendingSigner` to validate that a set of signers contains an unambiguously resolvable sending signer. The existing transaction message helpers now delegate to these new functions internally.
+
+### Patch Changes
+
+- Updated dependencies []:
+    - @solana/addresses@6.5.0
+    - @solana/codecs-core@6.5.0
+    - @solana/errors@6.5.0
+    - @solana/instructions@6.5.0
+    - @solana/keys@6.5.0
+    - @solana/nominal-types@6.5.0
+    - @solana/offchain-messages@6.5.0
+    - @solana/transaction-messages@6.5.0
+    - @solana/transactions@6.5.0
+
+## 6.4.0
+
+### Patch Changes
+
+- Updated dependencies [[`27c3975`](https://github.com/anza-xyz/kit/commit/27c39755f5185e09a194c0b22eac4286f14c552c), [`084e92e`](https://github.com/anza-xyz/kit/commit/084e92e668d41041c6424d616441557560873888)]:
+    - @solana/codecs-core@6.4.0
+    - @solana/transaction-messages@6.4.0
+    - @solana/addresses@6.4.0
+    - @solana/instructions@6.4.0
+    - @solana/keys@6.4.0
+    - @solana/offchain-messages@6.4.0
+    - @solana/transactions@6.4.0
+    - @solana/errors@6.4.0
+    - @solana/nominal-types@6.4.0
+
 ## 6.3.1
 
 ### Patch Changes

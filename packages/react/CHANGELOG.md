@@ -1,5 +1,70 @@
 # @solana/react
 
+## 6.8.0
+
+### Patch Changes
+
+- Updated dependencies [[`d79f8d1`](https://github.com/anza-xyz/kit/commit/d79f8d115065557194db9604f3a0bfef7d37a2b6), [`667a0f0`](https://github.com/anza-xyz/kit/commit/667a0f059f5432244ab2cf8a23a22f53c7a36b4b), [`fdfcb6c`](https://github.com/anza-xyz/kit/commit/fdfcb6cbf439eb55e07ad7d59372347bd816d6d3), [`43bc570`](https://github.com/anza-xyz/kit/commit/43bc570a5b51a9fda75abc1f0f818728ca3cd439), [`ffb7665`](https://github.com/anza-xyz/kit/commit/ffb76652f6b887eb5020c3584f1d827a1098dccc)]:
+    - @solana/signers@6.8.0
+    - @solana/keys@6.8.0
+    - @solana/addresses@6.8.0
+    - @solana/errors@6.8.0
+    - @solana/promises@6.8.0
+    - @solana/transaction-messages@6.8.0
+    - @solana/transactions@6.8.0
+
+## 6.7.0
+
+### Patch Changes
+
+- Updated dependencies []:
+    - @solana/addresses@6.7.0
+    - @solana/errors@6.7.0
+    - @solana/keys@6.7.0
+    - @solana/promises@6.7.0
+    - @solana/signers@6.7.0
+    - @solana/transaction-messages@6.7.0
+    - @solana/transactions@6.7.0
+
+## 6.6.0
+
+### Patch Changes
+
+- Updated dependencies [[`742ffca`](https://github.com/anza-xyz/kit/commit/742ffcaf5304f702334e1f0b2a14cf208ae0ee5f), [`7f02d23`](https://github.com/anza-xyz/kit/commit/7f02d23948cc09e3f0bc70931d845569f1cb38ad), [`0fa54a4`](https://github.com/anza-xyz/kit/commit/0fa54a469937db3989f42afc4248882736f719f5)]:
+    - @solana/transactions@6.6.0
+    - @solana/errors@6.6.0
+    - @solana/transaction-messages@6.6.0
+    - @solana/signers@6.6.0
+    - @solana/addresses@6.6.0
+    - @solana/keys@6.6.0
+    - @solana/promises@6.6.0
+
+## 6.5.0
+
+### Patch Changes
+
+- Updated dependencies [[`9e05736`](https://github.com/anza-xyz/kit/commit/9e057365a1a4e350f8a0ccc233b262e09b0134fa)]:
+    - @solana/signers@6.5.0
+    - @solana/addresses@6.5.0
+    - @solana/errors@6.5.0
+    - @solana/keys@6.5.0
+    - @solana/promises@6.5.0
+    - @solana/transaction-messages@6.5.0
+    - @solana/transactions@6.5.0
+
+## 6.4.0
+
+### Patch Changes
+
+- Updated dependencies [[`084e92e`](https://github.com/anza-xyz/kit/commit/084e92e668d41041c6424d616441557560873888)]:
+    - @solana/transaction-messages@6.4.0
+    - @solana/addresses@6.4.0
+    - @solana/keys@6.4.0
+    - @solana/signers@6.4.0
+    - @solana/transactions@6.4.0
+    - @solana/errors@6.4.0
+    - @solana/promises@6.4.0
+
 ## 6.3.1
 
 ### Patch Changes

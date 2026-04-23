@@ -55,6 +55,7 @@ import {
     SOLANA_ERROR__CRYPTO__RANDOM_VALUES_FUNCTION_UNIMPLEMENTED,
     SOLANA_ERROR__FAILED_TO_SEND_TRANSACTION,
     SOLANA_ERROR__FAILED_TO_SEND_TRANSACTIONS,
+    SOLANA_ERROR__FS__UNSUPPORTED_ENVIRONMENT,
     SOLANA_ERROR__INSTRUCTION__EXPECTED_TO_HAVE_ACCOUNTS,
     SOLANA_ERROR__INSTRUCTION__EXPECTED_TO_HAVE_DATA,
     SOLANA_ERROR__INSTRUCTION__PROGRAM_ID_MISMATCH,
@@ -156,11 +157,13 @@ import {
     SOLANA_ERROR__JSON_RPC__SERVER_ERROR_TRANSACTION_SIGNATURE_LEN_MISMATCH,
     SOLANA_ERROR__JSON_RPC__SERVER_ERROR_TRANSACTION_SIGNATURE_VERIFICATION_FAILURE,
     SOLANA_ERROR__JSON_RPC__SERVER_ERROR_UNSUPPORTED_TRANSACTION_VERSION,
+    SOLANA_ERROR__KEYS__INVALID_BASE58_IN_GRIND_REGEX,
     SOLANA_ERROR__KEYS__INVALID_KEY_PAIR_BYTE_LENGTH,
     SOLANA_ERROR__KEYS__INVALID_PRIVATE_KEY_BYTE_LENGTH,
     SOLANA_ERROR__KEYS__INVALID_SIGNATURE_BYTE_LENGTH,
     SOLANA_ERROR__KEYS__PUBLIC_KEY_MUST_MATCH_PRIVATE_KEY,
     SOLANA_ERROR__KEYS__SIGNATURE_STRING_LENGTH_OUT_OF_RANGE,
+    SOLANA_ERROR__KEYS__WRITE_KEY_PAIR_UNSUPPORTED_ENVIRONMENT,
     SOLANA_ERROR__LAMPORTS_OUT_OF_RANGE,
     SOLANA_ERROR__MALFORMED_BIGINT_STRING,
     SOLANA_ERROR__MALFORMED_JSON_RPC_ERROR,
@@ -251,6 +254,10 @@ import {
     SOLANA_ERROR__TRANSACTION__NONCE_ACCOUNT_CANNOT_BE_IN_LOOKUP_TABLE,
     SOLANA_ERROR__TRANSACTION__SIGNATURE_COUNT_TOO_HIGH_FOR_TRANSACTION_BYTES,
     SOLANA_ERROR__TRANSACTION__SIGNATURES_MISSING,
+    SOLANA_ERROR__TRANSACTION__TOO_MANY_ACCOUNT_ADDRESSES,
+    SOLANA_ERROR__TRANSACTION__TOO_MANY_ACCOUNTS_IN_INSTRUCTION,
+    SOLANA_ERROR__TRANSACTION__TOO_MANY_INSTRUCTIONS,
+    SOLANA_ERROR__TRANSACTION__TOO_MANY_SIGNER_ADDRESSES,
     SOLANA_ERROR__TRANSACTION__VERSION_NUMBER_NOT_SUPPORTED,
     SOLANA_ERROR__TRANSACTION__VERSION_NUMBER_OUT_OF_RANGE,
     SOLANA_ERROR__TRANSACTION__VERSION_ZERO_MUST_BE_ENCODED_WITH_SIGNATURES_FIRST,
@@ -291,6 +298,9 @@ import {
     SOLANA_ERROR__TRANSACTION_ERROR__WOULD_EXCEED_MAX_ACCOUNT_COST_LIMIT,
     SOLANA_ERROR__TRANSACTION_ERROR__WOULD_EXCEED_MAX_BLOCK_COST_LIMIT,
     SOLANA_ERROR__TRANSACTION_ERROR__WOULD_EXCEED_MAX_VOTE_COST_LIMIT,
+    SOLANA_ERROR__WALLET__NO_SIGNER_CONNECTED,
+    SOLANA_ERROR__WALLET__NOT_CONNECTED,
+    SOLANA_ERROR__WALLET__SIGNER_NOT_AVAILABLE,
     SolanaErrorCode,
 } from './codes';
 
@@ -330,7 +340,7 @@ export const SolanaErrorMessages: Readonly<{
     [SOLANA_ERROR__ADDRESSES__STRING_LENGTH_OUT_OF_RANGE]:
         'Expected base58-encoded address string of length in the range [32, 44]. Actual length: $actualLength.',
     [SOLANA_ERROR__BLOCKHASH_STRING_LENGTH_OUT_OF_RANGE]:
-        'Expected base58-encoded blockash string of length in the range [32, 44]. Actual length: $actualLength.',
+        'Expected base58-encoded blockhash string of length in the range [32, 44]. Actual length: $actualLength.',
     [SOLANA_ERROR__BLOCK_HEIGHT_EXCEEDED]:
         'The network has progressed past the last block for which this transaction could have been committed.',
     [SOLANA_ERROR__CODECS__CANNOT_DECODE_EMPTY_BYTE_ARRAY]:
@@ -385,6 +395,8 @@ export const SolanaErrorMessages: Readonly<{
     [SOLANA_ERROR__CRYPTO__RANDOM_VALUES_FUNCTION_UNIMPLEMENTED]: 'No random values implementation could be found.',
     [SOLANA_ERROR__FAILED_TO_SEND_TRANSACTION]: 'Failed to send transaction$causeMessage',
     [SOLANA_ERROR__FAILED_TO_SEND_TRANSACTIONS]: 'Failed to send transactions$causeMessages',
+    [SOLANA_ERROR__FS__UNSUPPORTED_ENVIRONMENT]:
+        'Filesystem operation `$operation` is not supported in this environment.',
     [SOLANA_ERROR__INSTRUCTION_ERROR__ACCOUNT_ALREADY_INITIALIZED]: 'Instruction requires an uninitialized account',
     [SOLANA_ERROR__INSTRUCTION_ERROR__ACCOUNT_BORROW_FAILED]:
         'Instruction tries to borrow reference for an account which is already borrowed',
@@ -536,6 +548,8 @@ export const SolanaErrorMessages: Readonly<{
     [SOLANA_ERROR__JSON_RPC__SERVER_ERROR_TRANSACTION_SIGNATURE_VERIFICATION_FAILURE]:
         'Transaction signature verification failure',
     [SOLANA_ERROR__JSON_RPC__SERVER_ERROR_UNSUPPORTED_TRANSACTION_VERSION]: '$__serverMessage',
+    [SOLANA_ERROR__KEYS__INVALID_BASE58_IN_GRIND_REGEX]:
+        'The grind regex `/$source/` contains the character `$character`, which is not in the base58 alphabet and can never match a Solana address.',
     [SOLANA_ERROR__KEYS__INVALID_KEY_PAIR_BYTE_LENGTH]: 'Key pair bytes must be of length 64, got $byteLength.',
     [SOLANA_ERROR__KEYS__INVALID_PRIVATE_KEY_BYTE_LENGTH]:
         'Expected private key bytes with length 32. Actual length: $actualLength.',
@@ -545,6 +559,8 @@ export const SolanaErrorMessages: Readonly<{
         'The provided private key does not match the provided public key.',
     [SOLANA_ERROR__KEYS__SIGNATURE_STRING_LENGTH_OUT_OF_RANGE]:
         'Expected base58-encoded signature string of length in the range [64, 88]. Actual length: $actualLength.',
+    [SOLANA_ERROR__KEYS__WRITE_KEY_PAIR_UNSUPPORTED_ENVIRONMENT]:
+        'Writing a key pair to disk is not supported in this environment.',
     [SOLANA_ERROR__LAMPORTS_OUT_OF_RANGE]: 'Lamports value must be in the range [0, 2e64-1]',
     [SOLANA_ERROR__MALFORMED_BIGINT_STRING]: '`$value` cannot be parsed as a `BigInt`',
     [SOLANA_ERROR__MALFORMED_JSON_RPC_ERROR]: '$message',
@@ -668,11 +684,11 @@ export const SolanaErrorMessages: Readonly<{
         'environments that do not support Ed25519.\n\nFor a list of runtimes that ' +
         'currently support Ed25519 operations, visit ' +
         'https://github.com/WICG/webcrypto-secure-curves/issues/20.',
-    [SOLANA_ERROR__SUBTLE_CRYPTO__EXPORT_FUNCTION_UNIMPLEMENTED]:
-        'No signature verification implementation could be found.',
+    [SOLANA_ERROR__SUBTLE_CRYPTO__EXPORT_FUNCTION_UNIMPLEMENTED]: 'No key export implementation could be found.',
     [SOLANA_ERROR__SUBTLE_CRYPTO__GENERATE_FUNCTION_UNIMPLEMENTED]: 'No key generation implementation could be found.',
     [SOLANA_ERROR__SUBTLE_CRYPTO__SIGN_FUNCTION_UNIMPLEMENTED]: 'No signing implementation could be found.',
-    [SOLANA_ERROR__SUBTLE_CRYPTO__VERIFY_FUNCTION_UNIMPLEMENTED]: 'No key export implementation could be found.',
+    [SOLANA_ERROR__SUBTLE_CRYPTO__VERIFY_FUNCTION_UNIMPLEMENTED]:
+        'No signature verification implementation could be found.',
     [SOLANA_ERROR__TIMESTAMP_OUT_OF_RANGE]:
         'Timestamp value must be in the range [-(2n ** 63n), (2n ** 63n) - 1]. `$value` given',
     [SOLANA_ERROR__TRANSACTION_ERROR__ACCOUNT_BORROW_OUTSTANDING]:
@@ -800,4 +816,15 @@ export const SolanaErrorMessages: Readonly<{
         'The transaction config value for $configName has the incorrect kind. Expected $expectedKind, got $actualKind.',
     [SOLANA_ERROR__TRANSACTION__INSTRUCTION_HEADERS_PAYLOADS_MISMATCH]:
         'The transaction does not have the same number of instruction headers and instruction payloads. Got $numInstructionHeaders instruction headers, and $numInstructionPayloads instruction payloads.',
+    [SOLANA_ERROR__TRANSACTION__TOO_MANY_SIGNER_ADDRESSES]:
+        'Transaction has $actualCount unique signer addresses but the maximum allowed is $maxAllowed',
+    [SOLANA_ERROR__TRANSACTION__TOO_MANY_ACCOUNT_ADDRESSES]:
+        'Transaction has $actualCount unique account addresses but the maximum allowed is $maxAllowed',
+    [SOLANA_ERROR__TRANSACTION__TOO_MANY_INSTRUCTIONS]:
+        'Transaction has $actualCount instructions but the maximum allowed is $maxAllowed',
+    [SOLANA_ERROR__TRANSACTION__TOO_MANY_ACCOUNTS_IN_INSTRUCTION]:
+        'The instruction at index $instructionIndex has $actualCount account references but the maximum allowed is $maxAllowed',
+    [SOLANA_ERROR__WALLET__NOT_CONNECTED]: 'Cannot $operation: no wallet connected',
+    [SOLANA_ERROR__WALLET__NO_SIGNER_CONNECTED]: 'No signing wallet connected (status: $status)',
+    [SOLANA_ERROR__WALLET__SIGNER_NOT_AVAILABLE]: 'Connected wallet does not support signing',
 };

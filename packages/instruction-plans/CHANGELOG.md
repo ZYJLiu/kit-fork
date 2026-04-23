@@ -1,5 +1,77 @@
 # @solana/instruction-plans
 
+## 6.8.0
+
+### Patch Changes
+
+- [#1532](https://github.com/anza-xyz/kit/pull/1532) [`667a0f0`](https://github.com/anza-xyz/kit/commit/667a0f059f5432244ab2cf8a23a22f53c7a36b4b) Thanks [@mcintyre94](https://github.com/mcintyre94)! - Update the TypeScript peer dependency from `^5.0.0` to `>=5.0.0` to allow TypeScript 6 and above.
+
+- Updated dependencies [[`d79f8d1`](https://github.com/anza-xyz/kit/commit/d79f8d115065557194db9604f3a0bfef7d37a2b6), [`667a0f0`](https://github.com/anza-xyz/kit/commit/667a0f059f5432244ab2cf8a23a22f53c7a36b4b), [`fdfcb6c`](https://github.com/anza-xyz/kit/commit/fdfcb6cbf439eb55e07ad7d59372347bd816d6d3), [`43bc570`](https://github.com/anza-xyz/kit/commit/43bc570a5b51a9fda75abc1f0f818728ca3cd439), [`ffb7665`](https://github.com/anza-xyz/kit/commit/ffb76652f6b887eb5020c3584f1d827a1098dccc)]:
+    - @solana/keys@6.8.0
+    - @solana/errors@6.8.0
+    - @solana/instructions@6.8.0
+    - @solana/promises@6.8.0
+    - @solana/transaction-messages@6.8.0
+    - @solana/transactions@6.8.0
+
+## 6.7.0
+
+### Patch Changes
+
+- Updated dependencies []:
+    - @solana/errors@6.7.0
+    - @solana/instructions@6.7.0
+    - @solana/keys@6.7.0
+    - @solana/promises@6.7.0
+    - @solana/transaction-messages@6.7.0
+    - @solana/transactions@6.7.0
+
+## 6.6.0
+
+### Minor Changes
+
+- [#1499](https://github.com/anza-xyz/kit/pull/1499) [`742ffca`](https://github.com/anza-xyz/kit/commit/742ffcaf5304f702334e1f0b2a14cf208ae0ee5f) Thanks [@mcintyre94](https://github.com/mcintyre94)! - Add version-aware transaction size limits. Version 1 transactions now allow up to 4096 bytes, while legacy and v0 transactions continue to use the existing 1232-byte limit. Two new helper functions are exported from `@solana/transactions`: `getTransactionSizeLimit` for compiled `Transaction` objects, and `getTransactionMessageSizeLimit` for `TransactionMessage` objects.
+
+    The existing `TRANSACTION_SIZE_LIMIT`, `TRANSACTION_PACKET_SIZE`, and `TRANSACTION_PACKET_HEADER` constants are now deprecated in favour of `getTransactionSizeLimit` and will be removed in a future major version.
+
+### Patch Changes
+
+- [#1497](https://github.com/anza-xyz/kit/pull/1497) [`f055201`](https://github.com/anza-xyz/kit/commit/f055201c2dd3a4a69b9894d66b622ae81c13b8cd) Thanks [@mcintyre94](https://github.com/mcintyre94)! - The transaction planner now handles the four new transaction compilation constraint errors (`TOO_MANY_ACCOUNT_ADDRESSES`, `TOO_MANY_SIGNER_ADDRESSES`, `TOO_MANY_INSTRUCTIONS`, `TOO_MANY_ACCOUNTS_IN_INSTRUCTION`) gracefully. When adding an instruction to an existing candidate transaction would violate a constraint, the planner splits it into a new transaction — the same behaviour it already had for transactions that exceed the byte size limit. If even a fresh transaction cannot accommodate the instruction, the constraint error propagates to the caller.
+
+- Updated dependencies [[`742ffca`](https://github.com/anza-xyz/kit/commit/742ffcaf5304f702334e1f0b2a14cf208ae0ee5f), [`7f02d23`](https://github.com/anza-xyz/kit/commit/7f02d23948cc09e3f0bc70931d845569f1cb38ad)]:
+    - @solana/transactions@6.6.0
+    - @solana/errors@6.6.0
+    - @solana/transaction-messages@6.6.0
+    - @solana/instructions@6.6.0
+    - @solana/keys@6.6.0
+    - @solana/promises@6.6.0
+
+## 6.5.0
+
+### Patch Changes
+
+- Updated dependencies []:
+    - @solana/errors@6.5.0
+    - @solana/instructions@6.5.0
+    - @solana/keys@6.5.0
+    - @solana/promises@6.5.0
+    - @solana/transaction-messages@6.5.0
+    - @solana/transactions@6.5.0
+
+## 6.4.0
+
+### Patch Changes
+
+- [#1470](https://github.com/anza-xyz/kit/pull/1470) [`896412d`](https://github.com/anza-xyz/kit/commit/896412da20ced2b81f9f529e9b5feef16b7e790f) Thanks [@lorisleiva](https://github.com/lorisleiva)! - Add trailing newline to multi-line error messages so that chained error causes render on their own line.
+
+- Updated dependencies [[`084e92e`](https://github.com/anza-xyz/kit/commit/084e92e668d41041c6424d616441557560873888)]:
+    - @solana/transaction-messages@6.4.0
+    - @solana/instructions@6.4.0
+    - @solana/keys@6.4.0
+    - @solana/transactions@6.4.0
+    - @solana/errors@6.4.0
+    - @solana/promises@6.4.0
+
 ## 6.3.1
 
 ### Patch Changes

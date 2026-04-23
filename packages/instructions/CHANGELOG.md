@@ -1,5 +1,47 @@
 # @solana/instructions
 
+## 6.8.0
+
+### Patch Changes
+
+- [#1532](https://github.com/anza-xyz/kit/pull/1532) [`667a0f0`](https://github.com/anza-xyz/kit/commit/667a0f059f5432244ab2cf8a23a22f53c7a36b4b) Thanks [@mcintyre94](https://github.com/mcintyre94)! - Update the TypeScript peer dependency from `^5.0.0` to `>=5.0.0` to allow TypeScript 6 and above.
+
+- Updated dependencies [[`667a0f0`](https://github.com/anza-xyz/kit/commit/667a0f059f5432244ab2cf8a23a22f53c7a36b4b), [`43bc570`](https://github.com/anza-xyz/kit/commit/43bc570a5b51a9fda75abc1f0f818728ca3cd439), [`ffb7665`](https://github.com/anza-xyz/kit/commit/ffb76652f6b887eb5020c3584f1d827a1098dccc)]:
+    - @solana/codecs-core@6.8.0
+    - @solana/errors@6.8.0
+
+## 6.7.0
+
+### Patch Changes
+
+- Updated dependencies []:
+    - @solana/codecs-core@6.7.0
+    - @solana/errors@6.7.0
+
+## 6.6.0
+
+### Patch Changes
+
+- Updated dependencies [[`7f02d23`](https://github.com/anza-xyz/kit/commit/7f02d23948cc09e3f0bc70931d845569f1cb38ad)]:
+    - @solana/errors@6.6.0
+    - @solana/codecs-core@6.6.0
+
+## 6.5.0
+
+### Patch Changes
+
+- Updated dependencies []:
+    - @solana/codecs-core@6.5.0
+    - @solana/errors@6.5.0
+
+## 6.4.0
+
+### Patch Changes
+
+- Updated dependencies [[`27c3975`](https://github.com/anza-xyz/kit/commit/27c39755f5185e09a194c0b22eac4286f14c552c)]:
+    - @solana/codecs-core@6.4.0
+    - @solana/errors@6.4.0
+
 ## 6.3.1
 
 ### Patch Changes

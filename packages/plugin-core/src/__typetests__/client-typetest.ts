@@ -1,5 +1,5 @@
 /* eslint-disable @typescript-eslint/no-floating-promises */
-import { type AsyncClient, type Client, type ClientPlugin, createEmptyClient, extendClient } from '../client';
+import { type AsyncClient, type Client, type ClientPlugin, createClient, extendClient, withCleanup } from '../client';
 
 const EMPTY_CLIENT = null as unknown as Client<object>;
 const EMPTY_ASYNC_CLIENT = null as unknown as AsyncClient<object>;
@@ -197,11 +197,16 @@ const EMPTY_ASYNC_CLIENT = null as unknown as AsyncClient<object>;
     }
 }
 
-// [DESCRIBE] createEmptyClient
+// [DESCRIBE] createClient
 {
     // It returns an empty Client (See typetests above).
     {
-        createEmptyClient() satisfies typeof EMPTY_CLIENT;
+        createClient() satisfies typeof EMPTY_CLIENT;
+    }
+
+    // It creates a Client from an existing object.
+    {
+        createClient({ fruit: 'banana' as const }) satisfies Client<{ fruit: 'banana' }>;
     }
 }
 
@@ -231,5 +236,26 @@ const EMPTY_ASYNC_CLIENT = null as unknown as AsyncClient<object>;
     {
         // @ts-expect-error - additions is not an object.
         extendClient({}, 'hello');
+    }
+}
+
+// [Describe] withCleanup
+{
+    // It returns a Disposable client
+    {
+        const client = null as unknown as Client<object>;
+        withCleanup(client, () => {}) satisfies Client<object> & Disposable;
+    }
+
+    // It accepts an already Disposable client
+    {
+        const client = null as unknown as Client<object> & Disposable;
+        withCleanup(client, () => {}) satisfies Client<object> & Disposable;
+    }
+
+    // It accepts an AsyncClient
+    {
+        const client = null as unknown as AsyncClient<object>;
+        withCleanup(client, () => {}) satisfies AsyncClient<object> & Disposable;
     }
 }

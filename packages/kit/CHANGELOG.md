@@ -1,5 +1,172 @@
 # @solana/kit
 
+## 6.8.0
+
+### Minor Changes
+
+- [#1528](https://github.com/anza-xyz/kit/pull/1528) [`09a7509`](https://github.com/anza-xyz/kit/commit/09a75092c48f4b827d7d2ac6db0b1bd34c4a41dd) Thanks [@mcintyre94](https://github.com/mcintyre94)! - Add `createReactiveStoreWithInitialValueAndSlotTracking()`, a helper that combines an initial RPC fetch with an ongoing subscription into a single `ReactiveStore`. Uses slot-based comparison to ensure only the most recent value is kept, regardless of arrival order. The store state is a `SolanaRpcResponse<TItem>`. Compatible with `useSyncExternalStore`, Svelte stores, and other reactive primitives.
+
+- [#1536](https://github.com/anza-xyz/kit/pull/1536) [`cec688e`](https://github.com/anza-xyz/kit/commit/cec688e59a34f092d89f9a3f2253edb571c37899) Thanks [@mcintyre94](https://github.com/mcintyre94)! - Add `createAsyncGeneratorWithInitialValueAndSlotTracking`, an async generator alternative to `createReactiveStoreWithInitialValueAndSlotTracking` that yields values from both an RPC fetch and an ongoing subscription, silently dropping any value at a slot older than the last seen.
+
+### Patch Changes
+
+- [#1532](https://github.com/anza-xyz/kit/pull/1532) [`667a0f0`](https://github.com/anza-xyz/kit/commit/667a0f059f5432244ab2cf8a23a22f53c7a36b4b) Thanks [@mcintyre94](https://github.com/mcintyre94)! - Update the TypeScript peer dependency from `^5.0.0` to `>=5.0.0` to allow TypeScript 6 and above.
+
+- Updated dependencies [[`d79f8d1`](https://github.com/anza-xyz/kit/commit/d79f8d115065557194db9604f3a0bfef7d37a2b6), [`667a0f0`](https://github.com/anza-xyz/kit/commit/667a0f059f5432244ab2cf8a23a22f53c7a36b4b), [`fdfcb6c`](https://github.com/anza-xyz/kit/commit/fdfcb6cbf439eb55e07ad7d59372347bd816d6d3), [`f53ce07`](https://github.com/anza-xyz/kit/commit/f53ce0796c782e79490e1cf11a55e28fb62b8c8f), [`43bc570`](https://github.com/anza-xyz/kit/commit/43bc570a5b51a9fda75abc1f0f818728ca3cd439), [`ffb7665`](https://github.com/anza-xyz/kit/commit/ffb76652f6b887eb5020c3584f1d827a1098dccc), [`f8d6131`](https://github.com/anza-xyz/kit/commit/f8d61310a0ca7dfeb86f7e7d3f5975b8a140370a)]:
+    - @solana/signers@6.8.0
+    - @solana/keys@6.8.0
+    - @solana/accounts@6.8.0
+    - @solana/addresses@6.8.0
+    - @solana/codecs@6.8.0
+    - @solana/errors@6.8.0
+    - @solana/functional@6.8.0
+    - @solana/instruction-plans@6.8.0
+    - @solana/instructions@6.8.0
+    - @solana/offchain-messages@6.8.0
+    - @solana/plugin-core@6.8.0
+    - @solana/plugin-interfaces@6.8.0
+    - @solana/program-client-core@6.8.0
+    - @solana/programs@6.8.0
+    - @solana/rpc@6.8.0
+    - @solana/rpc-api@6.8.0
+    - @solana/rpc-parsed-types@6.8.0
+    - @solana/rpc-spec-types@6.8.0
+    - @solana/rpc-subscriptions@6.8.0
+    - @solana/rpc-types@6.8.0
+    - @solana/subscribable@6.8.0
+    - @solana/sysvars@6.8.0
+    - @solana/transaction-confirmation@6.8.0
+    - @solana/transaction-messages@6.8.0
+    - @solana/transactions@6.8.0
+
+## 6.7.0
+
+### Patch Changes
+
+- Updated dependencies [[`2763d0c`](https://github.com/anza-xyz/kit/commit/2763d0c92b60089f4b20f6241cb5f91232cc2e75)]:
+    - @solana/plugin-core@6.7.0
+    - @solana/accounts@6.7.0
+    - @solana/addresses@6.7.0
+    - @solana/codecs@6.7.0
+    - @solana/errors@6.7.0
+    - @solana/functional@6.7.0
+    - @solana/instruction-plans@6.7.0
+    - @solana/instructions@6.7.0
+    - @solana/keys@6.7.0
+    - @solana/offchain-messages@6.7.0
+    - @solana/plugin-interfaces@6.7.0
+    - @solana/program-client-core@6.7.0
+    - @solana/programs@6.7.0
+    - @solana/rpc@6.7.0
+    - @solana/rpc-api@6.7.0
+    - @solana/rpc-parsed-types@6.7.0
+    - @solana/rpc-spec-types@6.7.0
+    - @solana/rpc-subscriptions@6.7.0
+    - @solana/rpc-types@6.7.0
+    - @solana/signers@6.7.0
+    - @solana/sysvars@6.7.0
+    - @solana/transaction-confirmation@6.7.0
+    - @solana/transaction-messages@6.7.0
+    - @solana/transactions@6.7.0
+
+## 6.6.0
+
+### Patch Changes
+
+- Updated dependencies [[`742ffca`](https://github.com/anza-xyz/kit/commit/742ffcaf5304f702334e1f0b2a14cf208ae0ee5f), [`7f02d23`](https://github.com/anza-xyz/kit/commit/7f02d23948cc09e3f0bc70931d845569f1cb38ad), [`9c4fd6e`](https://github.com/anza-xyz/kit/commit/9c4fd6e67a6f70b1386f0745cf5afe0f93c75e36), [`0fa54a4`](https://github.com/anza-xyz/kit/commit/0fa54a469937db3989f42afc4248882736f719f5), [`f055201`](https://github.com/anza-xyz/kit/commit/f055201c2dd3a4a69b9894d66b622ae81c13b8cd)]:
+    - @solana/instruction-plans@6.6.0
+    - @solana/transactions@6.6.0
+    - @solana/errors@6.6.0
+    - @solana/transaction-messages@6.6.0
+    - @solana/plugin-core@6.6.0
+    - @solana/signers@6.6.0
+    - @solana/plugin-interfaces@6.6.0
+    - @solana/program-client-core@6.6.0
+    - @solana/rpc-api@6.6.0
+    - @solana/transaction-confirmation@6.6.0
+    - @solana/accounts@6.6.0
+    - @solana/addresses@6.6.0
+    - @solana/instructions@6.6.0
+    - @solana/keys@6.6.0
+    - @solana/offchain-messages@6.6.0
+    - @solana/programs@6.6.0
+    - @solana/rpc@6.6.0
+    - @solana/rpc-subscriptions@6.6.0
+    - @solana/rpc-types@6.6.0
+    - @solana/sysvars@6.6.0
+    - @solana/rpc-parsed-types@6.6.0
+    - @solana/codecs@6.6.0
+    - @solana/functional@6.6.0
+    - @solana/rpc-spec-types@6.6.0
+
+## 6.5.0
+
+### Patch Changes
+
+- [#1485](https://github.com/anza-xyz/kit/pull/1485) [`4a4c217`](https://github.com/anza-xyz/kit/commit/4a4c21741e4982dd52e6d08a0e46ee626c73717c) Thanks [@lorisleiva](https://github.com/lorisleiva)! - Deprecated `getMinimumBalanceForRentExemption`. The minimum balance for an account is being actively reduced (see [SIMD-0437](https://github.com/solana-foundation/solana-improvement-documents/pull/437)) and is expected to become dynamic in future Solana upgrades (see [SIMD-0194](https://github.com/solana-foundation/solana-improvement-documents/pull/194) and [SIMD-0389](https://github.com/solana-foundation/solana-improvement-documents/pull/389)). Use the `getMinimumBalanceForRentExemption` RPC method or a `ClientWithGetMinimumBalance` plugin instead. This function will be removed in v7.
+
+- Updated dependencies [[`10cb920`](https://github.com/anza-xyz/kit/commit/10cb92045bba4710a6c6157a3963d9e3a61f755e), [`9e05736`](https://github.com/anza-xyz/kit/commit/9e057365a1a4e350f8a0ccc233b262e09b0134fa)]:
+    - @solana/plugin-interfaces@6.5.0
+    - @solana/signers@6.5.0
+    - @solana/program-client-core@6.5.0
+    - @solana/accounts@6.5.0
+    - @solana/addresses@6.5.0
+    - @solana/codecs@6.5.0
+    - @solana/errors@6.5.0
+    - @solana/functional@6.5.0
+    - @solana/instruction-plans@6.5.0
+    - @solana/instructions@6.5.0
+    - @solana/keys@6.5.0
+    - @solana/offchain-messages@6.5.0
+    - @solana/plugin-core@6.5.0
+    - @solana/programs@6.5.0
+    - @solana/rpc@6.5.0
+    - @solana/rpc-api@6.5.0
+    - @solana/rpc-parsed-types@6.5.0
+    - @solana/rpc-spec-types@6.5.0
+    - @solana/rpc-subscriptions@6.5.0
+    - @solana/rpc-types@6.5.0
+    - @solana/sysvars@6.5.0
+    - @solana/transaction-confirmation@6.5.0
+    - @solana/transaction-messages@6.5.0
+    - @solana/transactions@6.5.0
+
+## 6.4.0
+
+### Minor Changes
+
+- [#1476](https://github.com/anza-xyz/kit/pull/1476) [`3e9e0a2`](https://github.com/anza-xyz/kit/commit/3e9e0a207155b56e96b5ee556728b5afdb23d4fe) Thanks [@lorisleiva](https://github.com/lorisleiva)! - Add compute unit limit estimation utilities: `estimateComputeUnitLimitFactory`, `estimateAndSetComputeUnitLimitFactory`, and `fillTransactionMessageProvisoryComputeUnitLimit`. These replace the external `@solana-program/compute-budget` estimation functions with Kit-native equivalents that work across all transaction versions.
+
+### Patch Changes
+
+- [#1468](https://github.com/anza-xyz/kit/pull/1468) [`304436f`](https://github.com/anza-xyz/kit/commit/304436ffaad6812ee0cc2f67b5a881f7f918b3ae) Thanks [@amilz](https://github.com/amilz)! - Include source files in published packages so IDE "Go to Definition" navigates to TypeScript source instead of .d.ts type declarations
+
+- Updated dependencies [[`896412d`](https://github.com/anza-xyz/kit/commit/896412da20ced2b81f9f529e9b5feef16b7e790f), [`084e92e`](https://github.com/anza-xyz/kit/commit/084e92e668d41041c6424d616441557560873888), [`abeca1b`](https://github.com/anza-xyz/kit/commit/abeca1b28725f675128f68e4e73d2f655e500eaa)]:
+    - @solana/instruction-plans@6.4.0
+    - @solana/transaction-messages@6.4.0
+    - @solana/plugin-core@6.4.0
+    - @solana/accounts@6.4.0
+    - @solana/addresses@6.4.0
+    - @solana/codecs@6.4.0
+    - @solana/instructions@6.4.0
+    - @solana/keys@6.4.0
+    - @solana/offchain-messages@6.4.0
+    - @solana/program-client-core@6.4.0
+    - @solana/rpc-api@6.4.0
+    - @solana/rpc-types@6.4.0
+    - @solana/signers@6.4.0
+    - @solana/sysvars@6.4.0
+    - @solana/transaction-confirmation@6.4.0
+    - @solana/transactions@6.4.0
+    - @solana/plugin-interfaces@6.4.0
+    - @solana/programs@6.4.0
+    - @solana/rpc-parsed-types@6.4.0
+    - @solana/rpc-subscriptions@6.4.0
+    - @solana/rpc@6.4.0
+    - @solana/errors@6.4.0
+    - @solana/functional@6.4.0
+    - @solana/rpc-spec-types@6.4.0
+
 ## 6.3.1
 
 ### Patch Changes

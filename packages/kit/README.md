@@ -38,6 +38,39 @@ await airdrop({
 
 > [!NOTE] This only works on test clusters.
 
+### `createReactiveStoreWithInitialValueAndSlotTracking(config)`
+
+Creates a `ReactiveStore` that combines an initial RPC fetch with an ongoing subscription to keep its state up to date. Uses slot-based comparison to ensure only the most recent value is kept, regardless of whether it came from the RPC response or a subscription notification.
+
+The returned store is compatible with React's `useSyncExternalStore`, Svelte stores, Solid's `from()`, and any other reactive primitive that expects a `{ subscribe, getState }` contract.
+
+```ts
+import {
+    address,
+    createReactiveStoreWithInitialValueAndSlotTracking,
+    createSolanaRpc,
+    createSolanaRpcSubscriptions,
+} from '@solana/kit';
+
+const rpc = createSolanaRpc('http://127.0.0.1:8899');
+const rpcSubscriptions = createSolanaRpcSubscriptions('ws://127.0.0.1:8900');
+const myAddress = address('FnHyam9w4NZoWR6mKN1CuGBritdsEWZQa4Z4oawLZGxa');
+
+const balanceStore = createReactiveStoreWithInitialValueAndSlotTracking({
+    abortSignal: AbortSignal.timeout(60_000),
+    rpcRequest: rpc.getBalance(myAddress, { commitment: 'confirmed' }),
+    rpcValueMapper: lamports => lamports,
+    rpcSubscriptionRequest: rpcSubscriptions.accountNotifications(myAddress),
+    rpcSubscriptionValueMapper: ({ lamports }) => lamports,
+});
+
+const unsubscribe = balanceStore.subscribe(() => {
+    const error = balanceStore.getError();
+    if (error) console.error('Error:', error);
+    else console.log('Balance:', balanceStore.getState());
+});
+```
+
 ### `decompileTransactionMessageFetchingLookupTables(compiledTransactionMessage, rpc, config)`
 
 Returns a `TransactionMessage` from a `CompiledTransactionMessage`. If any of the accounts in the compiled message require an address lookup table to find their address, this function will use the supplied RPC instance to fetch the contents of the address lookup table from the network.
@@ -46,14 +79,11 @@ Returns a `TransactionMessage` from a `CompiledTransactionMessage`. If any of th
 
 Given a list of addresses belonging to address lookup tables, returns a map of lookup table addresses to an ordered array of the addresses they contain.
 
-### `getMinimumBalanceForRentExemption(space)`
+### `getMinimumBalanceForRentExemption(space)` (Deprecated)
+
+> **Deprecated**: The minimum balance for an account is being actively reduced (see [SIMD-0437](https://github.com/solana-foundation/solana-improvement-documents/pull/437)) and is expected to become dynamic in future Solana upgrades (see [SIMD-0194](https://github.com/solana-foundation/solana-improvement-documents/pull/194) and [SIMD-0389](https://github.com/solana-foundation/solana-improvement-documents/pull/389)), meaning a hardcoded local computation will no longer return accurate results. Use the `getMinimumBalanceForRentExemption` RPC method or a `ClientWithGetMinimumBalance` plugin instead. This function will be removed in v7.
 
 Calculates the minimum `Lamports` required to make an account rent exempt for a given data size, without performing an RPC call.
-
-Values are sourced from the on-chain rent parameters in the Solana runtime:
-https://github.com/anza-xyz/solana-sdk/blob/c07f692e41d757057c8700211a9300cdcd6d33b1/rent/src/lib.rs#L93-L97
-
-Note that this logic may change, or be incorrect depending on the cluster you are connected to. You can always use the RPC method `getMinimumBalanceForRentExemption` to get the current value.
 
 ```ts
 import { getMinimumBalanceForRentExemption } from '@solana/kit';

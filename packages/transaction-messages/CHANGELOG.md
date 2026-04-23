@@ -1,5 +1,96 @@
 # @solana/transaction-messages
 
+## 6.8.0
+
+### Patch Changes
+
+- [#1532](https://github.com/anza-xyz/kit/pull/1532) [`667a0f0`](https://github.com/anza-xyz/kit/commit/667a0f059f5432244ab2cf8a23a22f53c7a36b4b) Thanks [@mcintyre94](https://github.com/mcintyre94)! - Update the TypeScript peer dependency from `^5.0.0` to `>=5.0.0` to allow TypeScript 6 and above.
+
+- Updated dependencies [[`667a0f0`](https://github.com/anza-xyz/kit/commit/667a0f059f5432244ab2cf8a23a22f53c7a36b4b), [`43bc570`](https://github.com/anza-xyz/kit/commit/43bc570a5b51a9fda75abc1f0f818728ca3cd439), [`ffb7665`](https://github.com/anza-xyz/kit/commit/ffb76652f6b887eb5020c3584f1d827a1098dccc)]:
+    - @solana/addresses@6.8.0
+    - @solana/codecs-core@6.8.0
+    - @solana/codecs-data-structures@6.8.0
+    - @solana/codecs-numbers@6.8.0
+    - @solana/errors@6.8.0
+    - @solana/functional@6.8.0
+    - @solana/instructions@6.8.0
+    - @solana/nominal-types@6.8.0
+    - @solana/rpc-types@6.8.0
+
+## 6.7.0
+
+### Patch Changes
+
+- Updated dependencies []:
+    - @solana/addresses@6.7.0
+    - @solana/codecs-core@6.7.0
+    - @solana/codecs-data-structures@6.7.0
+    - @solana/codecs-numbers@6.7.0
+    - @solana/errors@6.7.0
+    - @solana/functional@6.7.0
+    - @solana/instructions@6.7.0
+    - @solana/nominal-types@6.7.0
+    - @solana/rpc-types@6.7.0
+
+## 6.6.0
+
+### Minor Changes
+
+- [#1496](https://github.com/anza-xyz/kit/pull/1496) [`7f02d23`](https://github.com/anza-xyz/kit/commit/7f02d23948cc09e3f0bc70931d845569f1cb38ad) Thanks [@mcintyre94](https://github.com/mcintyre94)! - `compileTransactionMessage` now enforces four Solana protocol limits at compile time, throwing a typed `SolanaError` instead of silently producing a transaction that would be rejected by the network:
+    - More than 64 unique account addresses → `SOLANA_ERROR__TRANSACTION__TOO_MANY_ACCOUNT_ADDRESSES`
+    - More than 12 unique signer addresses → `SOLANA_ERROR__TRANSACTION__TOO_MANY_SIGNER_ADDRESSES`
+    - More than 64 instructions → `SOLANA_ERROR__TRANSACTION__TOO_MANY_INSTRUCTIONS`
+    - More than 255 accounts in a single instruction → `SOLANA_ERROR__TRANSACTION__TOO_MANY_ACCOUNTS_IN_INSTRUCTION`
+
+    All four error codes (and their context types / human-readable messages) are exported from `@solana/errors`.
+
+### Patch Changes
+
+- Updated dependencies [[`7f02d23`](https://github.com/anza-xyz/kit/commit/7f02d23948cc09e3f0bc70931d845569f1cb38ad)]:
+    - @solana/errors@6.6.0
+    - @solana/addresses@6.6.0
+    - @solana/codecs-core@6.6.0
+    - @solana/codecs-data-structures@6.6.0
+    - @solana/codecs-numbers@6.6.0
+    - @solana/instructions@6.6.0
+    - @solana/rpc-types@6.6.0
+    - @solana/functional@6.6.0
+    - @solana/nominal-types@6.6.0
+
+## 6.5.0
+
+### Patch Changes
+
+- Updated dependencies []:
+    - @solana/addresses@6.5.0
+    - @solana/codecs-core@6.5.0
+    - @solana/codecs-data-structures@6.5.0
+    - @solana/codecs-numbers@6.5.0
+    - @solana/errors@6.5.0
+    - @solana/functional@6.5.0
+    - @solana/instructions@6.5.0
+    - @solana/nominal-types@6.5.0
+    - @solana/rpc-types@6.5.0
+
+## 6.4.0
+
+### Minor Changes
+
+- [#1472](https://github.com/anza-xyz/kit/pull/1472) [`084e92e`](https://github.com/anza-xyz/kit/commit/084e92e668d41041c6424d616441557560873888) Thanks [@lorisleiva](https://github.com/lorisleiva)! - Add legacy and v0 transaction support to compute budget setters and getters. Priority fees are now handled by version-gated helpers: `(get|set)TransactionMessagePriorityFeeLamports` for v1 (total lamports) and `(get|set)TransactionMessageComputeUnitPrice` for legacy/v0 (micro-lamports per compute unit).
+
+### Patch Changes
+
+- Updated dependencies [[`27c3975`](https://github.com/anza-xyz/kit/commit/27c39755f5185e09a194c0b22eac4286f14c552c)]:
+    - @solana/codecs-core@6.4.0
+    - @solana/addresses@6.4.0
+    - @solana/codecs-data-structures@6.4.0
+    - @solana/codecs-numbers@6.4.0
+    - @solana/instructions@6.4.0
+    - @solana/rpc-types@6.4.0
+    - @solana/errors@6.4.0
+    - @solana/functional@6.4.0
+    - @solana/nominal-types@6.4.0
+
 ## 6.3.1
 
 ### Patch Changes

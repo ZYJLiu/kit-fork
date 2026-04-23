@@ -343,6 +343,42 @@ const seed = new Uint8Array(await crypto.subtle.digest('SHA-256', message));
 const derivedSigner = await createKeyPairSignerFromPrivateKeyBytes(seed);
 ```
 
+#### `grindKeyPairSigner()`
+
+Mines a vanity `KeyPairSigner` whose address satisfies the provided `matches` criterion. The matcher may be a `RegExp` or a predicate function that receives the candidate address as a string. This is a thin wrapper around `grindKeyPair()` from `@solana/keys` that immediately wraps the resulting key pair in a `KeyPairSigner`.
+
+```ts
+import { grindKeyPairSigner } from '@solana/signers';
+
+const signer = await grindKeyPairSigner({ matches: /^anza/ });
+```
+
+The config is identical to `grindKeyPair()`'s and also accepts an `extractable` flag, a `concurrency` setting for the batch size (defaulting to `32`), and an `abortSignal` to cancel long-running grinds.
+
+#### `grindKeyPairSigners()`
+
+Mines multiple vanity `KeyPairSigners` whose addresses all satisfy the provided `matches` criterion. This is the batch variant of `grindKeyPairSigner()` and accepts the same configuration plus an `amount` field.
+
+```ts
+import { grindKeyPairSigners } from '@solana/signers';
+
+const signers = await grindKeyPairSigners({ matches: /^anza/, amount: 4 });
+```
+
+#### `writeKeyPairSigner()`
+
+Persists the `CryptoKeyPair` backing a `KeyPairSigner` to disk in the format produced by `solana-keygen`. This is a thin wrapper around `writeKeyPair()` from `@solana/keys` and requires that the signer's underlying key pair was created as extractable (e.g. via `generateKeyPairSigner(true)` or `createKeyPairSignerFromBytes(bytes, true)`).
+
+```ts
+import { generateKeyPairSigner, writeKeyPairSigner } from '@solana/signers';
+
+// Generate an extractable signer so its bytes can be persisted.
+const signer = await generateKeyPairSigner(true);
+await writeKeyPairSigner(signer, './my-keypair.json');
+```
+
+Like `writeKeyPair()`, this helper requires a writable filesystem, creates missing parent directories, writes the file with mode `0600`, and refuses to overwrite an existing file unless the caller passes `{ unsafelyOverwriteExistingKeyPair: true }` — which permanently destroys the previous key and any funds controlled by it.
+
 #### `isKeyPairSigner()`
 
 A type guard that returns `true` if the provided value is a `KeyPairSigner`.
@@ -515,9 +551,16 @@ const myTransactionMessageWithSigners = addSignersToTransactionMessage(mySigners
 
 ## Signing transactions with signers
 
-As we've seen in the previous section, we can store and extract `TransactionSigners` from instructions and transaction messages. This allows us to provide helper methods that sign transaction messages using the signers stored inside them.
+As we've seen in the previous section, we can store and extract `TransactionSigners` from instructions and transaction messages. This allows us to provide helper methods that sign and send transactions.
 
-### Functions
+There are two sets of signing functions:
+
+- **Transaction message helpers** extract signers from a `TransactionMessage` with embedded `TransactionSigners` in its account metas, compile it to a `Transaction`, and sign it.
+- **Transaction helpers** take a set of signers and an already-compiled `Transaction` directly, giving you full control over compilation and signer selection.
+
+### Signing transaction messages
+
+These functions extract all `TransactionSigners` from the provided transaction message and use them to sign the compiled transaction.
 
 #### `partiallySignTransactionMessageWithSigners()`
 
@@ -597,3 +640,53 @@ if (isTransactionWithSingleSendingSigner(transactionMessage)) {
     transactionSignature = await rpc.sendTransaction(encodedTransaction).send();
 }
 ```
+
+### Signing compiled transactions
+
+These functions accept a set of signers and an already-compiled `Transaction` directly. Use them when you have already compiled a transaction (e.g. via `compileTransaction`) and want to sign it with a specific set of signers.
+
+#### `partiallySignTransactionWithSigners()`
+
+Signs a compiled transaction using the provided `TransactionModifyingSigners` and `TransactionPartialSigners`. It first uses all modifying signers sequentially before using all partial signers in parallel.
+
+If a composite signer implements both interfaces, it will be used as a modifying signer if no other signer implements that interface. Otherwise, it will be used as a partial signer.
+
+```ts
+import { partiallySignTransactionWithSigners } from '@solana/signers';
+
+const signedTransaction = await partiallySignTransactionWithSigners(mySigners, compiledTransaction);
+
+// With additional config.
+const signedTransaction = await partiallySignTransactionWithSigners(mySigners, compiledTransaction, {
+    abortSignal: myAbortController.signal,
+});
+```
+
+Note that only `TransactionModifyingSigner` and `TransactionPartialSigner` interfaces are accepted. If you need to use a `TransactionSendingSigner`, see `signAndSendTransactionWithSigners` below.
+
+#### `signTransactionWithSigners()`
+
+This function works the same as `partiallySignTransactionWithSigners` except that it also ensures the transaction is fully signed before returning it. An error will be thrown if that's not the case.
+
+```ts
+import { signTransactionWithSigners } from '@solana/signers';
+
+const signedTransaction = await signTransactionWithSigners(mySigners, compiledTransaction);
+
+// We now know the transaction is fully signed.
+signedTransaction satisfies FullySignedTransaction;
+```
+
+#### `signAndSendTransactionWithSigners()`
+
+Signs a compiled transaction using the provided signers and sends it immediately to the blockchain. It returns the signature of the sent transaction (i.e. its identifier) as bytes.
+
+```ts
+import { signAndSendTransactionWithSigners } from '@solana/signers';
+
+const transactionSignature = await signAndSendTransactionWithSigners(mySigners, compiledTransaction);
+```
+
+Similarly to `partiallySignTransactionWithSigners`, it first uses all modifying signers sequentially before using all partial signers in parallel. It then sends the transaction using the resolved `TransactionSendingSigner`.
+
+The provided signers must contain at least one `TransactionSendingSigner` that can be unambiguously resolved. This is checked internally and will throw an error if the condition is not met.

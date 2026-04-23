@@ -1,5 +1,82 @@
 # @solana/program-client-core
 
+## 6.8.0
+
+### Patch Changes
+
+- [#1532](https://github.com/anza-xyz/kit/pull/1532) [`667a0f0`](https://github.com/anza-xyz/kit/commit/667a0f059f5432244ab2cf8a23a22f53c7a36b4b) Thanks [@mcintyre94](https://github.com/mcintyre94)! - Update the TypeScript peer dependency from `^5.0.0` to `>=5.0.0` to allow TypeScript 6 and above.
+
+- Updated dependencies [[`d79f8d1`](https://github.com/anza-xyz/kit/commit/d79f8d115065557194db9604f3a0bfef7d37a2b6), [`667a0f0`](https://github.com/anza-xyz/kit/commit/667a0f059f5432244ab2cf8a23a22f53c7a36b4b), [`fdfcb6c`](https://github.com/anza-xyz/kit/commit/fdfcb6cbf439eb55e07ad7d59372347bd816d6d3), [`43bc570`](https://github.com/anza-xyz/kit/commit/43bc570a5b51a9fda75abc1f0f818728ca3cd439), [`ffb7665`](https://github.com/anza-xyz/kit/commit/ffb76652f6b887eb5020c3584f1d827a1098dccc), [`f8d6131`](https://github.com/anza-xyz/kit/commit/f8d61310a0ca7dfeb86f7e7d3f5975b8a140370a)]:
+    - @solana/signers@6.8.0
+    - @solana/accounts@6.8.0
+    - @solana/addresses@6.8.0
+    - @solana/codecs-core@6.8.0
+    - @solana/errors@6.8.0
+    - @solana/instruction-plans@6.8.0
+    - @solana/instructions@6.8.0
+    - @solana/plugin-interfaces@6.8.0
+    - @solana/rpc-api@6.8.0
+
+## 6.7.0
+
+### Patch Changes
+
+- Updated dependencies []:
+    - @solana/accounts@6.7.0
+    - @solana/addresses@6.7.0
+    - @solana/codecs-core@6.7.0
+    - @solana/errors@6.7.0
+    - @solana/instruction-plans@6.7.0
+    - @solana/instructions@6.7.0
+    - @solana/plugin-interfaces@6.7.0
+    - @solana/rpc-api@6.7.0
+    - @solana/signers@6.7.0
+
+## 6.6.0
+
+### Patch Changes
+
+- Updated dependencies [[`742ffca`](https://github.com/anza-xyz/kit/commit/742ffcaf5304f702334e1f0b2a14cf208ae0ee5f), [`7f02d23`](https://github.com/anza-xyz/kit/commit/7f02d23948cc09e3f0bc70931d845569f1cb38ad), [`0fa54a4`](https://github.com/anza-xyz/kit/commit/0fa54a469937db3989f42afc4248882736f719f5), [`f055201`](https://github.com/anza-xyz/kit/commit/f055201c2dd3a4a69b9894d66b622ae81c13b8cd)]:
+    - @solana/instruction-plans@6.6.0
+    - @solana/errors@6.6.0
+    - @solana/signers@6.6.0
+    - @solana/plugin-interfaces@6.6.0
+    - @solana/rpc-api@6.6.0
+    - @solana/accounts@6.6.0
+    - @solana/addresses@6.6.0
+    - @solana/codecs-core@6.6.0
+    - @solana/instructions@6.6.0
+
+## 6.5.0
+
+### Patch Changes
+
+- Updated dependencies [[`10cb920`](https://github.com/anza-xyz/kit/commit/10cb92045bba4710a6c6157a3963d9e3a61f755e), [`9e05736`](https://github.com/anza-xyz/kit/commit/9e057365a1a4e350f8a0ccc233b262e09b0134fa)]:
+    - @solana/plugin-interfaces@6.5.0
+    - @solana/signers@6.5.0
+    - @solana/accounts@6.5.0
+    - @solana/addresses@6.5.0
+    - @solana/codecs-core@6.5.0
+    - @solana/errors@6.5.0
+    - @solana/instruction-plans@6.5.0
+    - @solana/instructions@6.5.0
+    - @solana/rpc-api@6.5.0
+
+## 6.4.0
+
+### Patch Changes
+
+- Updated dependencies [[`27c3975`](https://github.com/anza-xyz/kit/commit/27c39755f5185e09a194c0b22eac4286f14c552c), [`896412d`](https://github.com/anza-xyz/kit/commit/896412da20ced2b81f9f529e9b5feef16b7e790f)]:
+    - @solana/codecs-core@6.4.0
+    - @solana/instruction-plans@6.4.0
+    - @solana/accounts@6.4.0
+    - @solana/addresses@6.4.0
+    - @solana/instructions@6.4.0
+    - @solana/rpc-api@6.4.0
+    - @solana/signers@6.4.0
+    - @solana/plugin-interfaces@6.4.0
+    - @solana/errors@6.4.0
+
 ## 6.3.1
 
 ### Patch Changes

@@ -137,6 +137,10 @@ export async function createSignerFromKeyPair(keyPair: CryptoKeyPair): Promise<K
  * Generates a signer capable of signing messages and transactions by generating
  * a {@link CryptoKeyPair} and creating a {@link KeyPairSigner} from it.
  *
+ * @param extractable Setting this to `true` makes it possible to extract the bytes of the private
+ * key using the [`crypto.subtle.exportKey()`](https://developer.mozilla.org/en-US/docs/Web/API/SubtleCrypto/exportKey)
+ * API. Defaults to `false`, which prevents the bytes of the private key from being visible to JS.
+ *
  * @example
  * ```ts
  * import { generateKeyPairSigner } from '@solana/signers';
@@ -146,8 +150,8 @@ export async function createSignerFromKeyPair(keyPair: CryptoKeyPair): Promise<K
  *
  * @see {@link createSignerFromKeyPair}
  */
-export async function generateKeyPairSigner(): Promise<KeyPairSigner> {
-    return await createSignerFromKeyPair(await generateKeyPair());
+export async function generateKeyPairSigner(extractable: boolean = false): Promise<KeyPairSigner> {
+    return await createSignerFromKeyPair(await generateKeyPair(extractable));
 }
 
 /**
@@ -167,6 +171,8 @@ export async function generateKeyPairSigner(): Promise<KeyPairSigner> {
  * ```
  *
  * @see {@link createKeyPairSignerFromPrivateKeyBytes} if you only have the 32-bytes private key instead.
+ * @see {@link writeKeyPairSigner} — the inverse helper that persists a signer's key pair to
+ * disk in the same format.
  */
 export async function createKeyPairSignerFromBytes(
     bytes: ReadonlyUint8Array,

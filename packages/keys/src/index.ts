@@ -4,7 +4,9 @@
  * [`@solana/kit`](https://github.com/anza-xyz/kit/tree/main/packages/kit).
  * @packageDocumentation
  */
+export * from './grind-keypair';
 export * from './key-pair';
 export * from './private-key';
 export * from './public-key';
 export * from './signatures';
+export * from './write-keypair';
