@@ -1,3 +1,4 @@
+import { CardTab, CardTabs } from '@/components/card-tabs';
 import { overridenMdxComponents } from '@/lib/Overrides';
 import { Spread } from '@/lib/Spread';
 import { Popup, PopupContent, PopupTrigger } from 'fumadocs-twoslash/ui';
@@ -5,7 +6,7 @@ import { ImageZoom } from 'fumadocs-ui/components/image-zoom';
 import { Step, Steps } from 'fumadocs-ui/components/steps';
 import type { BaseLayoutProps } from 'fumadocs-ui/layouts/shared';
 import defaultMdxComponents from 'fumadocs-ui/mdx';
-import { BookTextIcon, LibraryBigIcon } from 'lucide-react';
+import { BookTextIcon, CookingPotIcon, LibraryBigIcon } from 'lucide-react';
 import { Logo, LogoWithSolana } from './logo';
 import { MDXComponents } from 'mdx/types';
 
@@ -33,6 +34,12 @@ export const baseOptions: BaseLayoutProps = {
             icon: <BookTextIcon />,
         },
         {
+            text: 'Recipes',
+            url: '/recipes',
+            active: 'nested-url',
+            icon: <CookingPotIcon />,
+        },
+        {
             text: 'API Reference',
             url: '/api',
             active: 'nested-url',
@@ -45,6 +52,8 @@ export const mdxComponents: MDXComponents = {
     ...defaultMdxComponents,
     ...overridenMdxComponents,
     img: props => <ImageZoom {...props} alt={props.alt ?? ''} />,
+    CardTab,
+    CardTabs,
     Popup,
     PopupContent,
     PopupTrigger,
